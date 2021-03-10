@@ -1,0 +1,23 @@
+{
+  "name": "zoritt_back_end_api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git+https://github.com/nattigy/zoritt_back_end_api.git",
+  "author": "Nathnael",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nattigy/zoritt_back_end_api/issues"
+  },
+  "homepage": "https://github.com/nattigy/zoritt_back_end_api#readme",
+  "description": "",
+  "dependencies": {
+    "apollo-server-express": "^2.21.1",
+    "graphql": "^15.5.0",
+    "graphql-compose": "^7.25.0",
+    "graphql-compose-mongoose": "^9.1.0",
+    "mongoose": "^5.11.19"
+  }
+}
