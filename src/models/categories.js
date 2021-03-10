@@ -11,6 +11,14 @@ export const CategorySchema = new Schema(
     subCategory: {
       type: [CategorySchema],
     },
+    businesses: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Business",
+        },
+      ],
+    },
   },
   {
     collection: "categories",
