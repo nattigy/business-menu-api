@@ -3,21 +3,13 @@ import { CategoryTC } from "../models/categories";
 import { UserTC } from "../models/user";
 
 const BusinessQuery = {
-  businessById: BusinessTC.mongooseResolvers.findById(),
-  businessByIds: BusinessTC.mongooseResolvers.findByIds(),
-  businessOne: BusinessTC.mongooseResolvers.findOne(),
-  businessMany: BusinessTC.mongooseResolvers.findMany(),
-  businessDataLoader: BusinessTC.mongooseResolvers.dataLoader(),
-  businessDataLoaderMany: BusinessTC.mongooseResolvers.dataLoaderMany(),
-  businessByIdLean: BusinessTC.mongooseResolvers.findByIdLean(),
-  businessByIdsLean: BusinessTC.mongooseResolvers.findByIdsLean(),
-  businessOneLean: BusinessTC.mongooseResolvers.findOneLean(),
-  businessManyLean: BusinessTC.mongooseResolvers.findManyLean(),
-  businessDataLoaderLean: BusinessTC.mongooseResolvers.dataLoaderLean(),
-  businessDataLoaderManyLean: BusinessTC.mongooseResolvers.dataLoaderManyLean(),
-  businessCount: BusinessTC.mongooseResolvers.count(),
-  businessConnection: BusinessTC.mongooseResolvers.connection(),
-  businessPagination: BusinessTC.mongooseResolvers.pagination(),
+  businessById: BusinessTC.getResolver("findById"),
+  businessByIds: BusinessTC.getResolver("findByIds"),
+  businessOne: BusinessTC.getResolver("findOne"),
+  businessMany: BusinessTC.getResolver("findMany"),
+  businessCount: BusinessTC.getResolver("count"),
+  businessConnection: BusinessTC.getResolver("connection"),
+  businessPagination: BusinessTC.getResolver("pagination"),
   businessCategories: BusinessTC.addRelation("categories", {
     resolver: () => CategoryTC.getResolver("findByIds"),
     prepareArgs: {
@@ -35,14 +27,14 @@ const BusinessQuery = {
 };
 
 const BusinessMutation = {
-  businessCreateOne: BusinessTC.mongooseResolvers.createOne(),
-  businessCreateMany: BusinessTC.mongooseResolvers.createMany(),
-  businessUpdateById: BusinessTC.mongooseResolvers.updateById(),
-  businessUpdateOne: BusinessTC.mongooseResolvers.updateOne(),
-  businessUpdateMany: BusinessTC.mongooseResolvers.updateMany(),
-  businessRemoveById: BusinessTC.mongooseResolvers.removeById(),
-  businessRemoveOne: BusinessTC.mongooseResolvers.removeOne(),
-  businessRemoveMany: BusinessTC.mongooseResolvers.removeMany(),
+  businessCreateOne: BusinessTC.getResolver("createOne"),
+  businessCreateMany: BusinessTC.getResolver("createMany"),
+  businessUpdateById: BusinessTC.getResolver("updateById"),
+  businessUpdateOne: BusinessTC.getResolver("updateOne"),
+  businessUpdateMany: BusinessTC.getResolver("updateMany"),
+  businessRemoveById: BusinessTC.getResolver("removeById"),
+  businessRemoveOne: BusinessTC.getResolver("removeOne"),
+  businessRemoveMany: BusinessTC.getResolver("removeMany"),
 };
 
 export { BusinessQuery, BusinessMutation };

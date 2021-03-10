@@ -1,32 +1,24 @@
 import { UserTC } from "../models/user";
 
 const UserQuery = {
-  userById: UserTC.mongooseResolvers.findById(),
-  userByIds: UserTC.mongooseResolvers.findByIds(),
-  userOne: UserTC.mongooseResolvers.findOne(),
-  userMany: UserTC.mongooseResolvers.findMany(),
-  userDataLoader: UserTC.mongooseResolvers.dataLoader(),
-  userDataLoaderMany: UserTC.mongooseResolvers.dataLoaderMany(),
-  userByIdLean: UserTC.mongooseResolvers.findByIdLean(),
-  userByIdsLean: UserTC.mongooseResolvers.findByIdsLean(),
-  userOneLean: UserTC.mongooseResolvers.findOneLean(),
-  userManyLean: UserTC.mongooseResolvers.findManyLean(),
-  userDataLoaderLean: UserTC.mongooseResolvers.dataLoaderLean(),
-  userDataLoaderManyLean: UserTC.mongooseResolvers.dataLoaderManyLean(),
-  userCount: UserTC.mongooseResolvers.count(),
-  userConnection: UserTC.mongooseResolvers.connection(),
-  userPagination: UserTC.mongooseResolvers.pagination(),
+  userById: UserTC.getResolver("findById"),
+  userByIds: UserTC.getResolver("findByIds"),
+  userOne: UserTC.getResolver("findOne"),
+  userMany: UserTC.getResolver("findMany"),
+  userCount: UserTC.getResolver("count"),
+  userConnection: UserTC.getResolver("connection"),
+  userPagination: UserTC.getResolver("pagination"),
 };
 
 const UserMutation = {
-  userCreateOne: UserTC.mongooseResolvers.createOne(),
-  userCreateMany: UserTC.mongooseResolvers.createMany(),
-  userUpdateById: UserTC.mongooseResolvers.updateById(),
-  userUpdateOne: UserTC.mongooseResolvers.updateOne(),
-  userUpdateMany: UserTC.mongooseResolvers.updateMany(),
-  userRemoveById: UserTC.mongooseResolvers.removeById(),
-  userRemoveOne: UserTC.mongooseResolvers.removeOne(),
-  userRemoveMany: UserTC.mongooseResolvers.removeMany(),
+  userCreateOne: UserTC.getResolver("createOne"),
+  userCreateMany: UserTC.getResolver("createMany"),
+  userUpdateById: UserTC.getResolver("updateById"),
+  userUpdateOne: UserTC.getResolver("updateOne"),
+  userUpdateMany: UserTC.getResolver("updateMany"),
+  userRemoveById: UserTC.getResolver("removeById"),
+  userRemoveOne: UserTC.getResolver("removeOne"),
+  userRemoveMany: UserTC.getResolver("removeMany"),
 };
 
 export { UserQuery, UserMutation };

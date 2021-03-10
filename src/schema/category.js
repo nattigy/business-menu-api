@@ -2,21 +2,13 @@ import { CategoryTC } from "../models/categories";
 import { BusinessTC } from "../models/business";
 
 const CategoryQuery = {
-  categoryById: CategoryTC.mongooseResolvers.findById(),
-  categoryByIds: CategoryTC.mongooseResolvers.findByIds(),
-  categoryOne: CategoryTC.mongooseResolvers.findOne(),
-  categoryMany: CategoryTC.mongooseResolvers.findMany(),
-  categoryDataLoader: CategoryTC.mongooseResolvers.dataLoader(),
-  categoryDataLoaderMany: CategoryTC.mongooseResolvers.dataLoaderMany(),
-  categoryByIdLean: CategoryTC.mongooseResolvers.findByIdLean(),
-  categoryByIdsLean: CategoryTC.mongooseResolvers.findByIdsLean(),
-  categoryOneLean: CategoryTC.mongooseResolvers.findOneLean(),
-  categoryManyLean: CategoryTC.mongooseResolvers.findManyLean(),
-  categoryDataLoaderLean: CategoryTC.mongooseResolvers.dataLoaderLean(),
-  categoryDataLoaderManyLean: CategoryTC.mongooseResolvers.dataLoaderManyLean(),
-  categoryCount: CategoryTC.mongooseResolvers.count(),
-  categoryConnection: CategoryTC.mongooseResolvers.connection(),
-  categoryPagination: CategoryTC.mongooseResolvers.pagination(),
+  categoryById: CategoryTC.getResolver("findById"),
+  categoryByIds: CategoryTC.getResolver("findByIds"),
+  categoryOne: CategoryTC.getResolver("findOne"),
+  categoryMany: CategoryTC.getResolver("findMany"),
+  categoryCount: CategoryTC.getResolver("count"),
+  categoryConnection: CategoryTC.getResolver("connection"),
+  categoryPagination: CategoryTC.getResolver("pagination"),
   businesses: CategoryTC.addRelation("businesses", {
     resolver: () => BusinessTC.getResolver("findByIds"),
     prepareArgs: {
@@ -27,14 +19,14 @@ const CategoryQuery = {
 };
 
 const CategoryMutation = {
-  categoryCreateOne: CategoryTC.mongooseResolvers.createOne(),
-  categoryCreateMany: CategoryTC.mongooseResolvers.createMany(),
-  categoryUpdateById: CategoryTC.mongooseResolvers.updateById(),
-  categoryUpdateOne: CategoryTC.mongooseResolvers.updateOne(),
-  categoryUpdateMany: CategoryTC.mongooseResolvers.updateMany(),
-  categoryRemoveById: CategoryTC.mongooseResolvers.removeById(),
-  categoryRemoveOne: CategoryTC.mongooseResolvers.removeOne(),
-  categoryRemoveMany: CategoryTC.mongooseResolvers.removeMany(),
+  categoryCreateOne: CategoryTC.getResolver("createOne"),
+  categoryCreateMany: CategoryTC.getResolver("createMany"),
+  categoryUpdateById: CategoryTC.getResolver("updateById"),
+  categoryUpdateOne: CategoryTC.getResolver("updateOne"),
+  categoryUpdateMany: CategoryTC.getResolver("updateMany"),
+  categoryRemoveById: CategoryTC.getResolver("removeById"),
+  categoryRemoveOne: CategoryTC.getResolver("removeOne"),
+  categoryRemoveMany: CategoryTC.getResolver("removeMany"),
 };
 
 export { CategoryQuery, CategoryMutation };
