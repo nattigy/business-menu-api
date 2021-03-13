@@ -9,7 +9,7 @@ export const CategorySchema = new Schema(
       trim: true,
     },
     subCategory: {
-      type: [CategorySchema],
+      type: [String],
     },
     businesses: {
       type: [
