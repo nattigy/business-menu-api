@@ -40,7 +40,7 @@
     "graphql-tools": "^7.0.4",
     "mongoose": "^5.11.19",
     "mongoose-bcrypt": "^1.9.0",
-    "mongoose-timestamp": "^0.6.0",
+    "mongoose-timestamp": "^0.6.0"
   },
   "husky": {
     "hooks": {

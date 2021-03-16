@@ -1,4 +1,6 @@
-import { Schema } from "mongoose";
+import mongoose,{ Schema } from "mongoose";
+import timestamps from "mongoose-timestamp";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 export const postSchema = new Schema({
   description: {
@@ -12,6 +14,9 @@ export const postSchema = new Schema({
   },
 });
 
+postSchema.plugin(timestamps);
+
 postSchema.index({ createdAt: 1, updatedAt: 1 });
 
-export default postSchema;
+export const Post = mongoose.model("Post", postSchema);
+export const PostTC = composeWithMongoose(Post);

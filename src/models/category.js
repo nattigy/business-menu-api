@@ -8,8 +8,11 @@ export const CategorySchema = new Schema(
       type: String,
       trim: true,
     },
-    subCategory: {
-      type: [String],
+    parent: {
+      type: String,
+    },
+    autocompleteTerm: {
+      type: String,
     },
     businesses: {
       type: [

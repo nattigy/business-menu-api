@@ -10,6 +10,12 @@ export const UserSchema = new Schema(
     email: {
       type: String,
     },
+    phoneNumber: {
+      type: String
+    },
+    firebaseId: {
+      type: String,
+    },
     password: {
       type: String,
     },

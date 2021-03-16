@@ -1,4 +1,4 @@
-import { CategoryTC } from "../models/categories";
+import { CategoryTC } from "../models/category";
 import { BusinessTC } from "../models/business";
 
 const CategoryQuery = {

@@ -1,6 +1,8 @@
 import { BusinessTC } from "../models/business";
-import { CategoryTC } from "../models/categories";
+import { CategoryTC } from "../models/category";
 import { UserTC } from "../models/user";
+import { PostTC } from "../models/post";
+import { EventTC } from "../models/event";
 
 const BusinessQuery = {
   businessById: BusinessTC.getResolver("findById"),
@@ -10,6 +12,20 @@ const BusinessQuery = {
   businessCount: BusinessTC.getResolver("count"),
   businessConnection: BusinessTC.getResolver("connection"),
   businessPagination: BusinessTC.getResolver("pagination"),
+  businessPosts: BusinessTC.addRelation("posts", {
+    resolver: () => PostTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.posts,
+    },
+    projection: { posts: 1 },
+  }),
+  businessEvents: BusinessTC.addRelation("events", {
+    resolver: () => EventTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.events,
+    },
+    projection: { events: 1 },
+  }),
   businessCategories: BusinessTC.addRelation("categories", {
     resolver: () => CategoryTC.getResolver("findByIds"),
     prepareArgs: {

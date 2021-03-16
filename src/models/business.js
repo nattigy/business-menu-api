@@ -3,8 +3,6 @@ import timestamps from "mongoose-timestamp";
 import { composeWithMongoose } from "graphql-compose-mongoose";
 
 import openHoursSchema from "./openHours";
-import postSchema from "./post";
-import eventSchema from "./event";
 
 export const BusinessSchema = new Schema(
   {
@@ -56,10 +54,20 @@ export const BusinessSchema = new Schema(
       default: [],
     },
     posts: {
-      type: [postSchema],
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Post",
+        },
+      ],
     },
     events: {
-      type: [eventSchema],
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Event",
+        },
+      ],
     },
     categories: {
       type: [
