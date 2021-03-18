@@ -30,6 +30,7 @@ export const UserSchema = new Schema(
           ref: "Business",
         },
       ],
+      default: [],
     },
   },
   {
