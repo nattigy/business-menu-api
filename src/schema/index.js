@@ -4,6 +4,7 @@ import { BusinessQuery, BusinessMutation } from "./business";
 import { CategoryQuery, CategoryMutation } from "./category";
 import { PostQuery, PostMutation } from "./post";
 import { EventQuery, EventMutation } from "./event";
+import { PhotoQuery, PhotoMutation } from "./post";
 
 const schemaComposer = new SchemaComposer();
 
@@ -13,6 +14,7 @@ schemaComposer.Query.addFields({
   ...CategoryQuery,
   ...PostQuery,
   ...EventQuery,
+  ...PhotoQuery
 });
 
 schemaComposer.Mutation.addFields({
@@ -21,6 +23,7 @@ schemaComposer.Mutation.addFields({
   ...CategoryMutation,
   ...PostMutation,
   ...EventMutation,
+  ...PhotoMutation
 });
 
 export default schemaComposer.buildSchema();

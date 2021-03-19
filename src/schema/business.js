@@ -3,6 +3,7 @@ import { CategoryTC } from "../models/category";
 import { UserTC } from "../models/user";
 import { PostTC } from "../models/post";
 import { EventTC } from "../models/event";
+import { PhotoTC } from "../models/photo";
 
 const BusinessQuery = {
   businessById: BusinessTC.getResolver("findById"),
@@ -12,6 +13,13 @@ const BusinessQuery = {
   businessCount: BusinessTC.getResolver("count"),
   businessConnection: BusinessTC.getResolver("connection"),
   businessPagination: BusinessTC.getResolver("pagination"),
+  businessPhotos: BusinessTC.addRelation("pictures", {
+    resolver: () => PhotoTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.photos,
+    },
+    projection: { photos: 1 },
+  }),
   businessPosts: BusinessTC.addRelation("posts", {
     resolver: () => PostTC.getResolver("findByIds"),
     prepareArgs: {

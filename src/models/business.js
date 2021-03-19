@@ -28,9 +28,6 @@ export const BusinessSchema = new Schema(
     logoPics: {
       type: [String],
     },
-    pictures: {
-      type: [String],
-    },
     slogan: {
       type: String,
     },
@@ -52,6 +49,14 @@ export const BusinessSchema = new Schema(
     openHours: {
       type: [openHoursSchema],
       default: [],
+    },
+    pictures: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Photo",
+        },
+      ],
     },
     posts: {
       type: [
