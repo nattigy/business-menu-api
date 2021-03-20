@@ -6,8 +6,8 @@ export const photoSchema = new Schema({
   caption: {
     type: String,
   },
-  photos: {
-    type: [String],
+  photo: {
+    type: String,
   },
   numberOfLikes: {
       type: [String]
