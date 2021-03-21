@@ -9,7 +9,7 @@ export const BusinessSchema = new Schema(
     businessName: {
       type: String,
       trim: true,
-      // index: true
+      index: true
     },
     phoneNumber: {
       type: [String],
