@@ -9,10 +9,10 @@ export const BusinessSchema = new Schema(
     businessName: {
       type: String,
       trim: true,
+      index: true
     },
     phoneNumber: {
       type: [String],
-      index: true,
     },
     location: {
       type: String,
@@ -49,6 +49,10 @@ export const BusinessSchema = new Schema(
     openHours: {
       type: [openHoursSchema],
       default: [],
+    },
+    searchIndex: {
+      type: [String],
+      index: true
     },
     pictures: {
       type: [
