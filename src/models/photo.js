@@ -10,7 +10,7 @@ export const photoSchema = new Schema({
     type: String,
   },
   numberOfLikes: {
-      type: [String]
+      type: Number
   }
 });
 

@@ -26,7 +26,7 @@ export const BusinessSchema = new Schema(
       type: String,
     },
     logoPics: {
-      type: [String],
+      type: String,
     },
     slogan: {
       type: String,

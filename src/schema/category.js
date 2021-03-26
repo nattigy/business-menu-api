@@ -1,5 +1,4 @@
 import { CategoryTC } from "../models/category";
-import { BusinessTC } from "../models/business";
 
 const CategoryQuery = {
   categoryById: CategoryTC.getResolver("findById"),
@@ -9,13 +8,6 @@ const CategoryQuery = {
   categoryCount: CategoryTC.getResolver("count"),
   categoryConnection: CategoryTC.getResolver("connection"),
   categoryPagination: CategoryTC.getResolver("pagination"),
-  businesses: CategoryTC.addRelation("businesses", {
-    resolver: () => BusinessTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.businesses,
-    },
-    projection: { businesses: 1 },
-  }),
 };
 
 const CategoryMutation = {

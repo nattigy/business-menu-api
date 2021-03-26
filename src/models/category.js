@@ -14,14 +14,6 @@ export const CategorySchema = new Schema(
     autocompleteTerm: {
       type: String,
     },
-    businesses: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Business",
-        },
-      ],
-    },
   },
   {
     collection: "categories",

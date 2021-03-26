@@ -9,13 +9,6 @@ const PostQuery = {
   postCount: PostTC.getResolver("count"),
   postConnection: PostTC.getResolver("connection"),
   postPagination: PostTC.getResolver("pagination"),
-  businesse: PostTC.addRelation("businesses", {
-    resolver: () => BusinessTC.getResolver("findById"),
-    prepareArgs: {
-      _ids: (source) => source.business,
-    },
-    projection: { business: 1 },
-  }),
 };
 
 const PostMutation = {

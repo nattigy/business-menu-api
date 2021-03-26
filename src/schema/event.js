@@ -9,13 +9,6 @@ const EventQuery = {
   eventCount: EventTC.getResolver("count"),
   eventConnection: EventTC.getResolver("connection"),
   eventPagination: EventTC.getResolver("pagination"),
-  businesse: EventTC.addRelation("businesses", {
-    resolver: () => BusinessTC.getResolver("findById"),
-    prepareArgs: {
-      _ids: (source) => source.business,
-    },
-    projection: { business: 1 },
-  }),
 };
 
 const EventMutation = {
