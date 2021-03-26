@@ -59,12 +59,7 @@ export const BusinessSchema = new Schema(
       index: true
     },
     pictures: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Photo",
-        },
-      ],
+      type: [String],
     },
     posts: {
       type: [
