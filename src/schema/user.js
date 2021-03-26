@@ -1,4 +1,5 @@
 import { UserTC } from "../models/user";
+import { BusinessTC } from "../models/business";
 
 const UserQuery = {
   userById: UserTC.getResolver("findById"),
@@ -8,6 +9,13 @@ const UserQuery = {
   userCount: UserTC.getResolver("count"),
   userConnection: UserTC.getResolver("connection"),
   userPagination: UserTC.getResolver("pagination"),
+  businesses: UserTC.addRelation("businesses", {
+    resolver: () => BusinessTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.businesses,
+    },
+    projection: { businesses: 1 },
+  }),
 };
 
 const UserMutation = {
