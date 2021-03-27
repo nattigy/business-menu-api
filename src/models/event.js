@@ -15,7 +15,7 @@ export const eventSchema = new Schema({
   link: {
     type: String,
   },
-  video: {
+  videos: {
     type: [String],
   },
   photos: {

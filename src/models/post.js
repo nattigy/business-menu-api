@@ -6,7 +6,7 @@ export const postSchema = new Schema({
   description: {
     type: String,
   },
-  video: {
+  videos: {
     type: [String],
   },
   photos: {
