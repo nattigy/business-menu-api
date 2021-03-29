@@ -9,42 +9,54 @@ export const BusinessSchema = new Schema(
     businessName: {
       type: String,
       trim: true,
-      index: true
+      index: true,
+      default: "",
     },
     phoneNumber: {
       type: [String],
+      default: [],
     },
     location: {
       type: String,
       index: true,
+      default: "",
     },
     emails: {
       type: [String],
       trim: true,
+      default: [],
     },
     website: {
       type: String,
+      default: "",
     },
     logoPics: {
       type: String,
+      default: "",
     },
     slogan: {
       type: String,
+      default: "",
     },
     description: {
       type: String,
+      default: "",
     },
     specialization: {
       type: String,
+      default: "",
     },
     history: {
       type: String,
+      default: "",
     },
     establishedIn: {
-      type: Date,
+      type: String,
+      default: "",
     },
     subscription: {
       type: String,
+      default: "",
     },
     openHours: {
       type: [openHoursSchema],
@@ -52,14 +64,17 @@ export const BusinessSchema = new Schema(
     },
     searchIndex: {
       type: [String],
-      index: true
+      index: true,
+      default: [],
     },
     categoriesName: {
       type: [String],
-      index: true
+      index: true,
+      default: [],
     },
     pictures: {
       type: [String],
+      default: [],
     },
     posts: {
       type: [
@@ -68,6 +83,7 @@ export const BusinessSchema = new Schema(
           ref: "Post",
         },
       ],
+      default: [],
     },
     events: {
       type: [
@@ -76,6 +92,7 @@ export const BusinessSchema = new Schema(
           ref: "Event",
         },
       ],
+      default: [],
     },
     categories: {
       type: [
@@ -84,6 +101,7 @@ export const BusinessSchema = new Schema(
           ref: "Category",
         },
       ],
+      default: [],
     },
     owner: {
       type: Schema.Types.ObjectId,
