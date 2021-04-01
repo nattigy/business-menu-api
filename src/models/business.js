@@ -56,7 +56,7 @@ export const BusinessSchema = new Schema(
     },
     subscription: {
       type: String,
-      default: "",
+      default: "Free",
     },
     openHours: {
       type: [openHoursSchema],
