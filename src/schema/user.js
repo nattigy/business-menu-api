@@ -1,5 +1,7 @@
 import { UserTC } from "../models/user";
 import { BusinessTC } from "../models/business";
+import { PostTC } from "../models/post";
+import { EventTC } from "../models/event";
 
 const UserQuery = {
   userById: UserTC.getResolver("findById"),
@@ -9,6 +11,27 @@ const UserQuery = {
   userCount: UserTC.getResolver("count"),
   userConnection: UserTC.getResolver("connection"),
   userPagination: UserTC.getResolver("pagination"),
+  interestedInEvents: UserTC.addRelation("interestedInEvents", {
+    resolver: () => EventTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.interestedInEvents,
+    },
+    projection: { interestedInEvents: 1 },
+  }),
+  likedPosts: UserTC.addRelation("likedPosts", {
+    resolver: () => PostTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.likedPosts,
+    },
+    projection: { likedPosts: 1 },
+  }),
+  favorites: UserTC.addRelation("favorites", {
+    resolver: () => BusinessTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.favorites,
+    },
+    projection: { favorites: 1 },
+  }),
   businesses: UserTC.addRelation("businesses", {
     resolver: () => BusinessTC.getResolver("findByIds"),
     prepareArgs: {

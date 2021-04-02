@@ -12,6 +12,10 @@ export const postSchema = new Schema({
   photos: {
     type: [String],
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "Business",
+  },
 });
 
 postSchema.plugin(timestamps);

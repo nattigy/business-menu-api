@@ -9,6 +9,13 @@ const EventQuery = {
   eventCount: EventTC.getResolver("count"),
   eventConnection: EventTC.getResolver("connection"),
   eventPagination: EventTC.getResolver("pagination"),
+  owner: EventTC.addRelation("owner", {
+    resolver: () => BusinessTC.getResolver("findById"),
+    prepareArgs: {
+      _id: (source) => source.owner,
+    },
+    projection: { owner: 1 },
+  }),
 };
 
 const EventMutation = {

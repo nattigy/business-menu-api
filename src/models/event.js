@@ -21,6 +21,10 @@ export const eventSchema = new Schema({
   photos: {
     type: [String],
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "Business",
+  },
 });
 
 eventSchema.plugin(timestamps);

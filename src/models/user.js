@@ -23,6 +23,33 @@ export const UserSchema = new Schema(
       type: String,
       enum: ["Normal", "Owner", "Admin", "Sales"],
     },
+    interestedInEvents: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Event",
+        },
+      ],
+      default: [],
+    },
+    favorites: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Business",
+        },
+      ],
+      default: [],
+    },
+    likedPosts: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Post",
+        },
+      ],
+      default: [],
+    },
     businesses: {
       type: [
         {
