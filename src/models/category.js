@@ -14,6 +14,10 @@ export const CategorySchema = new Schema(
     autocompleteTerm: {
       type: String,
     },
+    categoryIndex: {
+      type: [String],
+      index: true
+    }
   },
   {
     collection: "categories",
