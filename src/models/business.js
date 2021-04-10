@@ -56,7 +56,7 @@ export const BusinessSchema = new Schema(
     },
     subscription: {
       type: String,
-      enum: ["Free", "1_Feather", "2_Feather", "3_Feather", "4_Feather"]
+      enum: ["Free", "1_Feather", "2_Feather", "3_Feather", "4_Feather"],
       default: "Free",
     },
     openHours: {
