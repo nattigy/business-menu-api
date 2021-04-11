@@ -2,6 +2,7 @@ import { SchemaComposer } from "graphql-compose";
 import { UserQuery, UserMutation } from "./user";
 import { BusinessQuery, BusinessMutation } from "./business";
 import { CategoryQuery, CategoryMutation } from "./category";
+import { BusinessListQuery, BusinessListMutation } from "./businessList";
 import { PostQuery, PostMutation } from "./post";
 import { EventQuery, EventMutation } from "./event";
 
@@ -13,6 +14,7 @@ schemaComposer.Query.addFields({
   ...CategoryQuery,
   ...PostQuery,
   ...EventQuery,
+  ...BusinessListQuery,
 });
 
 schemaComposer.Mutation.addFields({
@@ -21,6 +23,7 @@ schemaComposer.Mutation.addFields({
   ...CategoryMutation,
   ...PostMutation,
   ...EventMutation,
+  ...BusinessListMutation,
 });
 
 export default schemaComposer.buildSchema();
