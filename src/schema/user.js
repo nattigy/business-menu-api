@@ -2,6 +2,7 @@ import { UserTC } from "../models/user";
 import { BusinessTC } from "../models/business";
 import { PostTC } from "../models/post";
 import { EventTC } from "../models/event";
+import { CouponTC } from "../models/coupon";
 
 const UserQuery = {
   userById: UserTC.getResolver("findById"),
@@ -38,6 +39,13 @@ const UserQuery = {
       _ids: (source) => source.businesses,
     },
     projection: { businesses: 1 },
+  }),
+  coupons: UserTC.addRelation("coupons", {
+    resolver: () => CouponTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.coupons,
+    },
+    projection: { coupons: 1 },
   }),
 };
 

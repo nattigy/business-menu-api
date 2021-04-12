@@ -59,6 +59,15 @@ export const UserSchema = new Schema(
       ],
       default: [],
     },
+    coupons: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Coupon",
+        },
+      ],
+      default: [],
+    },
   },
   {
     collection: "users",
