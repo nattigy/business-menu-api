@@ -1,24 +1,24 @@
-import { BusinessListTC } from "../models/businessList";
+import { BusienssListTC } from "../models/businessList";
 
 const BusinessListQuery = {
-  businessListById: BusinessListTC.getResolver("findById"),
-  businessListByIds: BusinessListTC.getResolver("findByIds"),
-  businessListOne: BusinessListTC.getResolver("findOne"),
-  businessListMany: BusinessListTC.getResolver("findMany"),
-  businessListCount: BusinessListTC.getResolver("count"),
-  businessListConnection: BusinessListTC.getResolver("connection"),
-  businessListPagination: BusinessListTC.getResolver("pagination"),
+  businessListById: BusienssListTC.getResolver("findById"),
+  businessListByIds: BusienssListTC.getResolver("findByIds"),
+  businessListOne: BusienssListTC.getResolver("findOne"),
+  businessListMany: BusienssListTC.getResolver("findMany"),
+  businessListCount: BusienssListTC.getResolver("count"),
+  businessListConnection: BusienssListTC.getResolver("connection"),
+  businessListPagination: BusienssListTC.getResolver("pagination"),
 };
 
 const BusinessListMutation = {
-  businessListCreateOne: BusinessListTC.getResolver("createOne"),
-  businessListCreateMany: BusinessListTC.getResolver("createMany"),
-  businessListUpdateById: BusinessListTC.getResolver("updateById"),
-  businessListUpdateOne: BusinessListTC.getResolver("updateOne"),
-  businessListUpdateMany: BusinessListTC.getResolver("updateMany"),
-  businessListRemoveById: BusinessListTC.getResolver("removeById"),
-  businessListRemoveOne: BusinessListTC.getResolver("removeOne"),
-  businessListRemoveMany: BusinessListTC.getResolver("removeMany"),
+  businessListCreateOne: BusienssListTC.getResolver("createOne"),
+  businessListCreateMany: BusienssListTC.getResolver("createMany"),
+  businessListUpdateById: BusienssListTC.getResolver("updateById"),
+  businessListUpdateOne: BusienssListTC.getResolver("updateOne"),
+  businessListUpdateMany: BusienssListTC.getResolver("updateMany"),
+  businessListRemoveById: BusienssListTC.getResolver("removeById"),
+  businessListRemoveOne: BusienssListTC.getResolver("removeOne"),
+  businessListRemoveMany: BusienssListTC.getResolver("removeMany"),
 };
 
 export { BusinessListQuery, BusinessListMutation };
