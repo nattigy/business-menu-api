@@ -94,11 +94,6 @@ export const BusinessSchema = new Schema(
       index: true,
       default: [],
     },
-    categoriesName: {
-      type: [String],
-      index: true,
-      default: [],
-    },
     pictures: {
       type: [String],
       default: [],
