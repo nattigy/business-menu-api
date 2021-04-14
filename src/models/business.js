@@ -2,7 +2,29 @@ import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
 import { composeWithMongoose } from "graphql-compose-mongoose";
 
-import openHoursSchema from "./openHours";
+const openHoursSchema = new Schema({
+  day: {
+    type: String,
+  },
+  opens: {
+    type: String,
+  },
+  closes: {
+    type: String,
+  },
+});
+
+const restaurantMenuSchema = new Schema({
+  image: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  price: {
+    type: String,
+  },
+});
 
 export const BusinessSchema = new Schema(
   {
@@ -61,6 +83,10 @@ export const BusinessSchema = new Schema(
     },
     openHours: {
       type: [openHoursSchema],
+      default: [],
+    },
+    restaurantMenu: {
+      type: [restaurantMenuSchema],
       default: [],
     },
     searchIndex: {
