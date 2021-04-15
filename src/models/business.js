@@ -14,7 +14,7 @@ const openHoursSchema = new Schema({
   },
 });
 
-const restaurantMenuSchema = new Schema({
+const menuListSchema = new Schema({
   image: {
     type: String,
   },
@@ -23,6 +23,16 @@ const restaurantMenuSchema = new Schema({
   },
   price: {
     type: String,
+  },
+});
+
+const restaurantMenuSchema = new Schema({
+  category: {
+    type: String,
+  },
+  menuList: {
+    type: [menuListSchema],
+    default: [],
   },
 });
 
