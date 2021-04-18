@@ -1,153 +1,166 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, {Schema} from "mongoose";
 import timestamps from "mongoose-timestamp";
-import { composeWithMongoose } from "graphql-compose-mongoose";
+import {composeWithMongoose} from "graphql-compose-mongoose";
 
 const openHoursSchema = new Schema({
-  day: {
-    type: String,
-  },
-  opens: {
-    type: String,
-  },
-  closes: {
-    type: String,
-  },
+    day: {
+        type: String,
+    },
+    opens: {
+        type: String,
+    },
+    closes: {
+        type: String,
+    },
 });
 
 const menuListSchema = new Schema({
-  image: {
-    type: String,
-  },
-  name: {
-    type: String,
-  },
-  price: {
-    type: String,
-  },
+    image: {
+        type: String,
+    },
+    name: {
+        type: String,
+    },
+    price: {
+        type: String,
+    },
 });
 
 const restaurantMenuSchema = new Schema({
-  category: {
-    type: String,
-  },
-  menuList: {
-    type: [menuListSchema],
-    default: [],
-  },
+    category: {
+        type: String,
+    },
+    menuList: {
+        type: [menuListSchema],
+        default: [],
+    },
 });
 
 export const BusinessSchema = new Schema(
-  {
-    businessName: {
-      type: String,
-      trim: true,
-      index: true,
-      default: "",
-    },
-    phoneNumber: {
-      type: [String],
-      default: [],
-    },
-    location: {
-      type: String,
-      index: true,
-      default: "",
-    },
-    emails: {
-      type: [String],
-      trim: true,
-      default: [],
-    },
-    website: {
-      type: String,
-      default: "",
-    },
-    logoPics: {
-      type: String,
-      default: "",
-    },
-    slogan: {
-      type: String,
-      default: "",
-    },
-    description: {
-      type: String,
-      default: "",
-    },
-    specialization: {
-      type: String,
-      default: "",
-    },
-    history: {
-      type: String,
-      default: "",
-    },
-    establishedIn: {
-      type: String,
-      default: "",
-    },
-    subscription: {
-      type: String,
-      enum: ["FREE", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4"],
-      default: "Free",
-    },
-    openHours: {
-      type: [openHoursSchema],
-      default: [],
-    },
-    restaurantMenu: {
-      type: [restaurantMenuSchema],
-      default: [],
-    },
-    searchIndex: {
-      type: [String],
-      index: true,
-      default: [],
-    },
-    pictures: {
-      type: [String],
-      default: [],
-    },
-    posts: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Post",
+    {
+        businessName: {
+            type: String,
+            trim: true,
+            index: true,
+            default: "",
         },
-      ],
-      default: [],
-    },
-    events: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Event",
+        phoneNumber: {
+            type: [String],
+            default: [],
         },
-      ],
-      default: [],
-    },
-    categories: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Category",
+        location: {
+            type: String,
+            index: true,
+            default: "",
         },
-      ],
-      default: [],
+        emails: {
+            type: [String],
+            trim: true,
+            default: [],
+        },
+        website: {
+            type: String,
+            default: "",
+        },
+        logoPics: {
+            type: String,
+            default: "",
+        },
+        slogan: {
+            type: String,
+            default: "",
+        },
+        description: {
+            type: String,
+            default: "",
+        },
+        specialization: {
+            type: String,
+            default: "",
+        },
+        history: {
+            type: String,
+            default: "",
+        },
+        establishedIn: {
+            type: String,
+            default: "",
+        },
+        subscription: {
+            type: String,
+            enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4"],
+            default: "FEATHER_0",
+        },
+        openHours: {
+            type: [openHoursSchema],
+            default: [],
+        },
+        restaurantMenu: {
+            type: [restaurantMenuSchema],
+            default: [],
+        },
+        searchIndex: {
+            type: [String],
+            index: true,
+            default: [],
+        },
+        pictures: {
+            type: [String],
+            default: [],
+        },
+        isLiked: {
+            type: Boolean,
+            default: false,
+        },
+        favoriteList: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+            ],
+            default: [],
+        },
+        posts: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Post",
+                },
+            ],
+            default: [],
+        },
+        events: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Event",
+                },
+            ],
+            default: [],
+        },
+        categories: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Category",
+                },
+            ],
+            default: [],
+        },
+        owner: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
     },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  },
-  {
-    collection: "businesses",
-  }
+    {
+        collection: "businesses",
+    }
 );
 
 BusinessSchema.plugin(timestamps);
 
-BusinessSchema.index({ createdAt: 1, updatedAt: 1 });
+BusinessSchema.index({createdAt: 1, updatedAt: 1});
 
 export const Business = mongoose.model("Business", BusinessSchema);
 export const BusinessTC = composeWithMongoose(Business);
