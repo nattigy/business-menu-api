@@ -12,6 +12,9 @@ const openHoursSchema = new Schema({
     closes: {
         type: String,
     },
+    isOpen: {
+        type: Boolean,
+    }
 });
 
 const menuListSchema = new Schema({
