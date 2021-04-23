@@ -4,10 +4,10 @@ import {composeWithMongoose} from "graphql-compose-mongoose";
 
 export const CouponSchema = new Schema(
     {
-        used: {
+        taken: {
             type: Boolean,
         },
-        registered: {
+        sold: {
             type: Boolean,
         },
         value: {
