@@ -4,7 +4,7 @@ import {composeWithMongoose} from "graphql-compose-mongoose";
 
 export const RequestSchema = new Schema(
     {
-        referance: {
+        reference: {
             type: String,
         },
         amount: {
