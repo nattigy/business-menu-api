@@ -68,7 +68,7 @@ const UserMutation = {
     userCreateMany: UserTC.getResolver("createMany"),
     userUpdateById: UserTC.getResolver("updateById"),
     userUpdateOne: UserTC.getResolver("updateOne"),
-    userAddCoupon: PostTC.getResolver("userAddCoupon"),
+    userAddCoupon: UserTC.getResolver("userAddCoupon"),
     userUpdateMany: UserTC.getResolver("updateMany"),
     userRemoveById: UserTC.getResolver("removeById"),
     userRemoveOne: UserTC.getResolver("removeOne"),
