@@ -10,6 +10,9 @@ export const RequestSchema = new Schema(
         amount: {
             type: Number,
         },
+        backName: {
+            type: String,
+        },
         dateDeposited: {
             type: Date,
         },
