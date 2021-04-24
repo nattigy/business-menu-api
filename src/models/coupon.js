@@ -6,9 +6,11 @@ export const CouponSchema = new Schema(
     {
         taken: {
             type: Boolean,
+            default: false
         },
         sold: {
             type: Boolean,
+            default: false
         },
         value: {
             type: Number,
