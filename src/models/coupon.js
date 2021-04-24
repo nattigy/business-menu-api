@@ -17,7 +17,7 @@ export const CouponSchema = new Schema(
         },
         subscription: {
             type: String,
-            enums: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4"],
+            enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4"],
         },
         owner: {
             type: Schema.Types.ObjectId,
