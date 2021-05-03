@@ -3,13 +3,14 @@ import {EventTC, Event} from "../models/event";
 import {User} from "../models/user";
 
 EventTC.addResolver({
-    name: "getEvents",
+    name: "getEventsLoggedIn",
     kind: "query",
     type: EventTC.getResolver("findMany").getType(),
     args: {"user_id": "String", limit: "Int", fromDate: "String", sort: "String"},
     resolve: async ({args}) => {
         let events = await Event.find({
-            "createdAt": {$gte: args.fromDate}
+            "createdAt": {$gte: args.fromDate},
+            // "endDate": {$gte: new Date().toISOString()}
         })
             .sort({"createdAt": args.sort}).limit(args.limit);
         events = events.map(e => ({...e._doc, isInterested: e._doc.interestedUsers.includes(args.user_id)}));
@@ -22,7 +23,7 @@ const EventQuery = {
     eventByIds: EventTC.getResolver("findByIds"),
     eventOne: EventTC.getResolver("findOne"),
     eventMany: EventTC.getResolver("findMany"),
-    getEvents: EventTC.getResolver("getEvents"),
+    getEventsLoggedIn: EventTC.getResolver("getEventsLoggedIn"),
     eventCount: EventTC.getResolver("count"),
     eventConnection: EventTC.getResolver("connection"),
     eventPagination: EventTC.getResolver("pagination"),
