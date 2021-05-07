@@ -44,7 +44,7 @@ EventTC.addFields({
 });
 
 EventTC.addResolver({
-    name: "eventPushToArray",
+    name: "eventLike",
     kind: "mutation",
     type: EventTC,
     args: {"user_id": "String", event_id: "String"},
@@ -62,11 +62,31 @@ EventTC.addResolver({
     },
 });
 
+EventTC.addResolver({
+    name: "eventUnlike",
+    kind: "mutation",
+    type: EventTC,
+    args: {"user_id": "String", event_id: "String"},
+    resolve: async ({args}) => {
+        await Event.updateOne(
+            {_id: args.event_id},
+            {$pull: {interestedUsers: args.user_id}}
+        ).then(async () => {
+            await User.updateOne(
+                {_id: args.user_id},
+                {$pull: {interestedInEvents: args.event_id}}
+            );
+        }).catch((error) => error);
+        return Event.findById(args.event_id);
+    },
+});
+
 const EventMutation = {
     eventCreateOne: EventTC.getResolver("createOne"),
     eventCreateMany: EventTC.getResolver("createMany"),
     eventUpdateById: EventTC.getResolver("updateById"),
-    eventPushToArray: EventTC.getResolver("eventPushToArray"),
+    eventLike: EventTC.getResolver("eventLike"),
+    eventUnlike: EventTC.getResolver("eventUnlike"),
     eventUpdateOne: EventTC.getResolver("updateOne"),
     eventUpdateMany: EventTC.getResolver("updateMany"),
     eventRemoveById: EventTC.getResolver("removeById"),
