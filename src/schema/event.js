@@ -1,6 +1,6 @@
 import {BusinessTC} from "../models/business";
 import {EventTC, Event} from "../models/event";
-import {User} from "../models/user";
+import {User, UserTC} from "../models/user";
 
 EventTC.addResolver({
     name: "getEventsLoggedIn",
@@ -27,6 +27,13 @@ const EventQuery = {
     eventCount: EventTC.getResolver("count"),
     eventConnection: EventTC.getResolver("connection"),
     eventPagination: EventTC.getResolver("pagination"),
+    interestedUsers: EventTC.addRelation("interestedUsers", {
+        resolver: () => UserTC.getResolver("findByIds"),
+        prepareArgs: {
+            _ids: (source) => source.interestedUsers,
+        },
+        projection: {interestedUsers: 1},
+    }),
     owner: EventTC.addRelation("owner", {
         resolver: () => BusinessTC.getResolver("findById"),
         prepareArgs: {
