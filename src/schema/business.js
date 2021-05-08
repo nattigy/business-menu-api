@@ -64,14 +64,14 @@ BusinessTC.addFields({
 });
 
 BusinessTC.addResolver({
-    name: "businessPushToArray",
+    name: "addToFavorite",
     kind: "mutation",
     type: BusinessTC,
     args: {"user_id": "String", business_id: "String"},
     resolve: async ({args}) => {
         await Business.updateOne(
             {_id: args.business_id},
-            {$addToSet: {likeList: args.user_id}}
+            {$addToSet: {favoriteList: args.user_id}}
         ).then(async () => {
             await User.updateOne(
                 {_id: args.user_id},
@@ -82,11 +82,31 @@ BusinessTC.addResolver({
     },
 });
 
+BusinessTC.addResolver({
+    name: "removeFromFavorite",
+    kind: "mutation",
+    type: BusinessTC,
+    args: {"user_id": "String", business_id: "String"},
+    resolve: async ({args}) => {
+        await Post.updateOne(
+            {_id: args.post_id},
+            {$pull: {favoriteList: args.user_id}}
+        ).then(async () => {
+            await User.updateOne(
+                {_id: args.user_id},
+                {$pull: {favorites: args.business_id}}
+            );
+        }).catch((error) => error);
+        return Business.findById(args.business_id);
+    },
+});
+
 const BusinessMutation = {
     businessCreateOne: BusinessTC.getResolver("createOne"),
     businessCreateMany: BusinessTC.getResolver("createMany"),
     businessUpdateById: BusinessTC.getResolver("updateById"),
-    businessPushToArray: BusinessTC.getResolver("businessPushToArray"),
+    addToFavorite: BusinessTC.getResolver("addToFavorite"),
+    removeFromFavorite: BusinessTC.getResolver("removeFromFavorite"),
     businessUpdateOne: BusinessTC.getResolver("updateOne"),
     businessUpdateMany: BusinessTC.getResolver("updateMany"),
     businessRemoveById: BusinessTC.getResolver("removeById"),

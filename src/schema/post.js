@@ -43,7 +43,7 @@ PostTC.addFields({
 });
 
 PostTC.addResolver({
-    name: "postPushToArray",
+    name: "postLike",
     kind: "mutation",
     type: PostTC,
     args: {"user_id": "String", post_id: "String"},
@@ -61,11 +61,31 @@ PostTC.addResolver({
     },
 });
 
+PostTC.addResolver({
+    name: "postUnlike",
+    kind: "mutation",
+    type: PostTC,
+    args: {"user_id": "String", post_id: "String"},
+    resolve: async ({args}) => {
+        await Post.updateOne(
+            {_id: args.post_id},
+            {$pull: {likeList: args.user_id}}
+        ).then(async () => {
+            await User.updateOne(
+                {_id: args.user_id},
+                {$pull: {likedPosts: args.post_id}}
+            );
+        }).catch((error) => error);
+        return Post.findById(args.post_id);
+    },
+});
+
 const PostMutation = {
     postCreateOne: PostTC.getResolver("createOne"),
     postCreateMany: PostTC.getResolver("createMany"),
     postUpdateById: PostTC.getResolver("updateById"),
-    postPushToArray: PostTC.getResolver("postPushToArray"),
+    postLike: PostTC.getResolver("postLike"),
+    postUnlike: PostTC.getResolver("postUnlike"),
     postUpdateOne: PostTC.getResolver("updateOne"),
     postUpdateMany: PostTC.getResolver("updateMany"),
     postRemoveById: PostTC.getResolver("removeById"),
