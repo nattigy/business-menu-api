@@ -3,7 +3,7 @@ import {PostTC, Post} from "../models/post";
 import {User} from "../models/user";
 
 PostTC.addResolver({
-    name: "getPosts",
+    name: "getPostLoggedIn",
     kind: "query",
     type: PostTC.getResolver("findMany").getType(),
     args: {"user_id": "String", limit: "Int", fromDate: "String", sort: "String"},
@@ -22,7 +22,7 @@ const PostQuery = {
     postByIds: PostTC.getResolver("findByIds"),
     postOne: PostTC.getResolver("findOne"),
     postMany: PostTC.getResolver("findMany"),
-    getPosts: PostTC.getResolver("getPosts"),
+    getPostLoggedIn: PostTC.getResolver("getPostLoggedIn"),
     postCount: PostTC.getResolver("count"),
     postConnection: PostTC.getResolver("connection"),
     postPagination: PostTC.getResolver("pagination"),
