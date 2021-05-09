@@ -54,7 +54,7 @@ EventTC.addResolver({
     name: "eventLike",
     kind: "mutation",
     type: EventTC,
-    args: {"user_id": "String", event_id: "String"},
+    args: {user_id: "String", event_id: "String"},
     resolve: async ({args}) => {
         await Event.updateOne(
             {_id: args.event_id},

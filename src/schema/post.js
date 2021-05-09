@@ -1,6 +1,6 @@
 import {BusinessTC} from "../models/business";
 import {PostTC, Post} from "../models/post";
-import {User} from "../models/user";
+import {User, UserTC} from "../models/user";
 
 PostTC.addResolver({
     name: "getPostLoggedIn",
@@ -26,6 +26,13 @@ const PostQuery = {
     postCount: PostTC.getResolver("count"),
     postConnection: PostTC.getResolver("connection"),
     postPagination: PostTC.getResolver("pagination"),
+    likeList: PostTC.addRelation("likeList", {
+        resolver: () => UserTC.getResolver("findByIds"),
+        prepareArgs: {
+            _ids: (source) => source.likeList,
+        },
+        projection: {likeList: 1},
+    }),
     owner: PostTC.addRelation("owner", {
         resolver: () => BusinessTC.getResolver("findById"),
         prepareArgs: {
