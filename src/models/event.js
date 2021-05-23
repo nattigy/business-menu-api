@@ -21,6 +21,12 @@ export const eventSchema = new Schema({
     endDate: {
         type: Date,
     },
+    startTime: {
+        type: String
+    },
+    endTime: {
+        type: String
+    },
     videos: {
         type: [String],
     },

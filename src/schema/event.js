@@ -10,9 +10,12 @@ EventTC.addResolver({
     resolve: async ({args}) => {
         let events = await Event.find({
             "createdAt": {$gte: args.fromDate},
-            // "endDate": {$gte: new Date().toISOString()}
+            "endDate": {$gte: new Date().toISOString()}
         })
-            .sort({"createdAt": args.sort}).limit(args.limit);
+            .sort({
+                "startDate": "asce",
+                "createdAt": args.sort
+            }).limit(args.limit);
         events = events.map(e => ({...e._doc, isInterested: e._doc.interestedUsers.includes(args.user_id)}));
         return events;
     },

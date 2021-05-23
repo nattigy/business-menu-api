@@ -6,6 +6,7 @@ export const BusienssListSchema = new Schema(
     {
         autocompleteTerm: {
             type: String,
+            index: true,
         },
     },
     {

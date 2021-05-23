@@ -94,6 +94,11 @@ export const BusinessSchema = new Schema(
             enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4", "SPONSORED"],
             default: "FEATHER_0",
         },
+        state: {
+            type: String,
+            enum: ["ACTIVE", "BLOCKED"],
+            default: "ACTIVE",
+        },
         openHours: {
             type: [openHoursSchema],
             default: [],
