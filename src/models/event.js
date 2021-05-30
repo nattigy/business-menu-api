@@ -3,53 +3,53 @@ import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
 export const eventSchema = new Schema({
-    title: {
-        type: String,
-    },
-    description: {
-        type: String,
-    },
-    location: {
-        type: String,
-    },
-    link: {
-        type: String,
-    },
-    startDate: {
-        type: Date,
-    },
-    endDate: {
-        type: Date,
-    },
-    startTime: {
-        type: String,
-    },
-    endTime: {
-        type: String,
-    },
-    videos: {
-        type: [String],
-    },
-    photos: {
-        type: [String],
-    },
-    isInterested: {
-        type: Boolean,
-        default: false,
-    },
-    interestedUsers: {
-        type: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
-        default: [],
-    },
-    owner: {
+  title: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  location: {
+    type: String,
+  },
+  link: {
+    type: String,
+  },
+  startDate: {
+    type: Date,
+  },
+  endDate: {
+    type: Date,
+  },
+  startTime: {
+    type: String,
+  },
+  endTime: {
+    type: String,
+  },
+  videos: {
+    type: [String],
+  },
+  photos: {
+    type: [String],
+  },
+  isInterested: {
+    type: Boolean,
+    default: false,
+  },
+  interestedUsers: {
+    type: [
+      {
         type: Schema.Types.ObjectId,
-        ref: "Business",
-    },
+        ref: "User",
+      },
+    ],
+    default: [],
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "Business",
+  },
 });
 
 eventSchema.plugin(timestamps);

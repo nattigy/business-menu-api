@@ -3,32 +3,32 @@ import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
 export const postSchema = new Schema({
-    description: {
-        type: String,
-    },
-    videos: {
-        type: [String],
-    },
-    photos: {
-        type: [String],
-    },
-    isLiked: {
-        type: Boolean,
-        default: false,
-    },
-    likeList: {
-        type: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
-        default: [],
-    },
-    owner: {
+  description: {
+    type: String,
+  },
+  videos: {
+    type: [String],
+  },
+  photos: {
+    type: [String],
+  },
+  isLiked: {
+    type: Boolean,
+    default: false,
+  },
+  likeList: {
+    type: [
+      {
         type: Schema.Types.ObjectId,
-        ref: "Business",
-    },
+        ref: "User",
+      },
+    ],
+    default: [],
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "Business",
+  },
 });
 
 postSchema.plugin(timestamps);
