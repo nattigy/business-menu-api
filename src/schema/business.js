@@ -116,14 +116,13 @@ BusinessTC.addResolver({
     pictures: ["String"],
     categories: ["String"],
     searchIndex: ["String"],
-    lng: "Int",
-    lat: "Int",
+    lng: "Float",
+    lat: "Float",
   },
   resolve: async ({args}) => {
     let bizId = "";
     await Business.create(
       {
-        user_id: args.user_id,
         businessName: args.businessName,
         phoneNumber: args.phoneNumber,
         location: args.location,
