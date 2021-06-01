@@ -69,6 +69,10 @@ export const BusinessSchema = new Schema(
       type: Number,
       index: true,
     },
+    distance: {
+      type: Number,
+      index: true,
+    },
     emails: {
       type: [String],
       trim: true,
