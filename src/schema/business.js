@@ -133,6 +133,7 @@ BusinessTC.addResolver({
         searchIndex: args.searchIndex,
         lng: args.lng,
         lat: args.lat,
+        owner: args.user_id,
       }
     )
       .then(async (res) => {
