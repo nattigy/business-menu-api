@@ -15,6 +15,12 @@ export const CouponSchema = new Schema(
     value: {
       type: Number,
     },
+    duration: {
+      type: Number,
+    },
+    expiryDate: {
+      type: Date,
+    },
     subscription: {
       type: String,
       enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4"],
