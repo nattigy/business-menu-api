@@ -11,7 +11,7 @@ PostTC.addResolver({
     let posts = await Post.find({
       "createdAt": {$gte: args.fromDate}
     })
-      .sort({"createdAt": args.sort}).limit(args.limit);
+      .sort({"createdAt": -1}).limit(args.limit);
     posts = posts.map(e => ({...e._doc, isLiked: e._doc.likeList.includes(args.user_id)}));
     return posts;
   },
