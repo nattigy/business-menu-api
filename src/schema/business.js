@@ -136,20 +136,20 @@ BusinessTC.addResolver({
       }
     )
       .then(async (res) => {
-      bizId = res._id;
-      await BusinessList.create(
-        {
-          autocompleteTerm: args.businessName.toLowerCase()
-        }
-      )
-        .then(async () => {
-          await User.updateOne(
-            {_id: args.user_id},
-            {$addToSet: {businesses: bizId}}
-          );
-        })
-        .catch((error) => error);
-    }).catch((error) => error);
+        bizId = res._id;
+        await BusinessList.create(
+          {
+            autocompleteTerm: args.businessName.toLowerCase()
+          }
+        )
+          .then(async () => {
+            await User.updateOne(
+              {_id: args.user_id},
+              {$addToSet: {businesses: bizId}}
+            );
+          })
+          .catch((error) => error);
+      }).catch((error) => error);
     return Business.findById(bizId);
   },
 });
