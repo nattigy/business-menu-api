@@ -13,7 +13,7 @@ EventTC.addResolver({
       "endDate": {$gte: new Date().toISOString()}
     })
       .sort({
-        "startDate": "asce",
+        "startDate": -1,
         "createdAt": args.sort
       }).limit(args.limit);
     events = events.map(e => ({...e._doc, isInterested: e._doc.interestedUsers.includes(args.user_id)}));
@@ -76,7 +76,7 @@ EventTC.addResolver({
   name: "eventUnlike",
   kind: "mutation",
   type: EventTC,
-  args: {"user_id": "String", event_id: "String"},
+  args: {user_id: "String", event_id: "String"},
   resolve: async ({args}) => {
     await Event.updateOne(
       {_id: args.event_id},
