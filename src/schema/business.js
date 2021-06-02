@@ -65,7 +65,7 @@ BusinessTC.addFields({
 });
 
 BusinessTC.addResolver({
-  name: "addToFavorite",
+  name: "businessAddToFavorite",
   kind: "mutation",
   type: BusinessTC,
   args: {user_id: "String", business_id: "String"},
@@ -84,7 +84,7 @@ BusinessTC.addResolver({
 });
 
 BusinessTC.addResolver({
-  name: "removeFromFavorite",
+  name: "businessRemoveFromFavorite",
   kind: "mutation",
   type: BusinessTC,
   args: {user_id: "String", business_id: "String"},
@@ -160,8 +160,8 @@ const BusinessMutation = {
   businessCreateOneCustom: BusinessTC.getResolver("businessCreateOneCustom"),
   businessCreateMany: BusinessTC.getResolver("createMany"),
   businessUpdateById: BusinessTC.getResolver("updateById"),
-  addToFavorite: BusinessTC.getResolver("addToFavorite"),
-  removeFromFavorite: BusinessTC.getResolver("removeFromFavorite"),
+  businessAddToFavorite: BusinessTC.getResolver("businessAddToFavorite"),
+  businessRemoveFromFavorite: BusinessTC.getResolver("businessRemoveFromFavorite"),
   businessUpdateOne: BusinessTC.getResolver("updateOne"),
   businessUpdateMany: BusinessTC.getResolver("updateMany"),
   businessRemoveById: BusinessTC.getResolver("removeById"),
