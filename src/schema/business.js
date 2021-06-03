@@ -25,9 +25,9 @@ BusinessTC.addResolver({
   args: {user_id: "String", business_id: "String"},
   resolve: async ({args}) => {
     let business = await Business.find({
-      id: args.business_id
+      _id: args.business_id
     });
-    business = {...business._doc, isLiked: business._doc.favoriteList.includes(args.user_id)};
+    business = {...business[0]._doc, isLiked: business[0]._doc.favoriteList.includes(args.user_id)};
     return business;
   },
 });
