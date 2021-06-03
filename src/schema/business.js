@@ -6,10 +6,10 @@ import {Post, PostTC} from "../models/post";
 import {EventTC} from "../models/event";
 
 BusinessTC.addResolver({
-  name: "getBusinesses",
+  name: "getBusinessesLoggedIn",
   kind: "query",
   type: BusinessTC.getResolver("findMany").getType(),
-  args: {"user_id": "String", limit: "Int", sort: "String"},
+  args: {user_id: "String", limit: "Int", sort: "String"},
   resolve: async ({args}) => {
     let businesses = await Business.find()
       .sort({"subscription": args.sort}).limit(args.limit);
@@ -23,7 +23,7 @@ const BusinessQuery = {
   businessByIds: BusinessTC.getResolver("findByIds"),
   businessOne: BusinessTC.getResolver("findOne"),
   businessMany: BusinessTC.getResolver("findMany"),
-  getBusinesses: BusinessTC.getResolver("getBusinesses"),
+  getBusinessesLoggedIn: BusinessTC.getResolver("getBusinessesLoggedIn"),
   businessCount: BusinessTC.getResolver("count"),
   businessConnection: BusinessTC.getResolver("connection"),
   businessPagination: BusinessTC.getResolver("pagination"),
