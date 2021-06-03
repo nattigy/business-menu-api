@@ -18,12 +18,27 @@ BusinessTC.addResolver({
   },
 });
 
+BusinessTC.addResolver({
+  name: "businessByIdLoggedIn",
+  kind: "query",
+  type: BusinessTC.getResolver("findById").getType(),
+  args: {user_id: "String", business_id: "String"},
+  resolve: async ({args}) => {
+    let business = await Business.find({
+      id: args.business_id
+    });
+    business = {...business._doc, isLiked: business._doc.favoriteList.includes(args.user_id)};
+    return business;
+  },
+});
+
 const BusinessQuery = {
   businessById: BusinessTC.getResolver("findById"),
   businessByIds: BusinessTC.getResolver("findByIds"),
   businessOne: BusinessTC.getResolver("findOne"),
   businessMany: BusinessTC.getResolver("findMany"),
   getBusinessesLoggedIn: BusinessTC.getResolver("getBusinessesLoggedIn"),
+  businessByIdLoggedIn: BusinessTC.getResolver("businessByIdLoggedIn"),
   businessCount: BusinessTC.getResolver("count"),
   businessConnection: BusinessTC.getResolver("connection"),
   businessPagination: BusinessTC.getResolver("pagination"),
