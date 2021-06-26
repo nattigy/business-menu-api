@@ -7,12 +7,15 @@ export const CategorySchema = new Schema(
     name: {
       type: String,
       trim: true,
+      index: true
     },
     parent: {
       type: String,
+      index: true
     },
     autocompleteTerm: {
       type: String,
+      index: true
     },
     categoryIndex: {
       type: [String],
