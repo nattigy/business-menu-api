@@ -7,6 +7,15 @@ export const UserSchema = new Schema(
     fullName: {
       type: String,
     },
+    firstName: {
+      type: String
+    },
+    middleName: {
+      type: String
+    },
+    lastName: {
+      type: String
+    },
     email: {
       type: String,
     },
