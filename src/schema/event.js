@@ -1,4 +1,4 @@
-import {BusinessTC} from "../models/business";
+import {Business, BusinessTC} from "../models/business";
 import {Event, EventTC} from "../models/event";
 import {User, UserTC} from "../models/user";
 
@@ -91,6 +91,25 @@ EventTC.addResolver({
   },
 });
 
+EventTC.addResolver({
+  name: "eventDeleteById",
+  kind: "mutation",
+  type: EventTC.getResolver("removeById"),
+  args: {event_id: "String", owner: "String"},
+  resolve: async ({args}) => {
+    await Event.remove(
+      {_id: args.event_id},
+      async () => {
+        await Business.updateOne(
+          {_id: args.owner},
+          {$pull: {events: args.event_id}}
+        );
+      }
+    ).catch((error) => error);
+    return args.event_id;
+  },
+});
+
 const EventMutation = {
   eventCreateOne: EventTC.getResolver("createOne"),
   eventCreateMany: EventTC.getResolver("createMany"),
@@ -100,6 +119,7 @@ const EventMutation = {
   eventUpdateOne: EventTC.getResolver("updateOne"),
   eventUpdateMany: EventTC.getResolver("updateMany"),
   eventRemoveById: EventTC.getResolver("removeById"),
+  eventDeleteById: EventTC.getResolver("eventDeleteById"),
   eventRemoveOne: EventTC.getResolver("removeOne"),
   eventRemoveMany: EventTC.getResolver("removeMany"),
 };

@@ -1,4 +1,4 @@
-import {BusinessTC} from "../models/business";
+import {Business, BusinessTC} from "../models/business";
 import {Post, PostTC} from "../models/post";
 import {User, UserTC} from "../models/user";
 
@@ -87,6 +87,25 @@ PostTC.addResolver({
   },
 });
 
+PostTC.addResolver({
+  name: "postDeleteById",
+  kind: "mutation",
+  type: PostTC.getResolver("removeById"),
+  args: {post_id: "String", owner: "String"},
+  resolve: async ({args}) => {
+    await Post.remove(
+      {_id: args.post_id},
+      async () => {
+        await Business.updateOne(
+          {_id: args.owner},
+          {$pull: {posts: args.post_id}}
+        );
+      }
+    ).catch((error) => error);
+    return args.post_id;
+  },
+});
+
 const PostMutation = {
   postCreateOne: PostTC.getResolver("createOne"),
   postCreateMany: PostTC.getResolver("createMany"),
@@ -96,6 +115,7 @@ const PostMutation = {
   postUpdateOne: PostTC.getResolver("updateOne"),
   postUpdateMany: PostTC.getResolver("updateMany"),
   postRemoveById: PostTC.getResolver("removeById"),
+  postDeleteById: PostTC.getResolver("postDeleteById"),
   postRemoveOne: PostTC.getResolver("removeOne"),
   postRemoveMany: PostTC.getResolver("removeMany"),
 };
