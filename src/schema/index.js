@@ -7,6 +7,7 @@ import {PostMutation, PostQuery} from "./post";
 import {EventMutation, EventQuery} from "./event";
 import {CouponMutation, CouponQuery} from "./coupon";
 import {RequestMutation, RequestQuery} from "./request";
+import {ZorittQuery, ZorittMutation} from "./zoritt";
 
 const schemaComposer = new SchemaComposer();
 
@@ -18,7 +19,8 @@ schemaComposer.Query.addFields({
   ...EventQuery,
   ...BusinessListQuery,
   ...CouponQuery,
-  ...RequestQuery
+  ...RequestQuery,
+  ...ZorittQuery,
 });
 
 schemaComposer.Mutation.addFields({
@@ -29,7 +31,8 @@ schemaComposer.Mutation.addFields({
   ...EventMutation,
   ...BusinessListMutation,
   ...CouponMutation,
-  ...RequestMutation
+  ...RequestMutation,
+  ...ZorittMutation,
 });
 
 export default schemaComposer.buildSchema();
