@@ -18,6 +18,98 @@ BusinessTC.addResolver({
   },
 });
 
+function calculateDistance({lat, lng, bizLat, bizLng}) {
+  return (
+    (
+      (
+        Math.acos(
+          Math.sin((lat * Math.PI / 180))
+          *
+          Math.sin((bizLat * Math.PI / 180)) + Math.cos((lat * Math.PI / 180))
+          *
+          Math.cos((bizLat * Math.PI / 180)) * Math.cos(((lng - bizLng) * Math.PI / 180)))
+      ) * 180 / Math.PI
+    ) * 60 * 1.1515 * 1.609344
+  );
+}
+
+BusinessTC.addResolver({
+  name: "businessFilterByLocation",
+  kind: "query",
+  type: BusinessTC.getResolver("findMany").getType(),
+  args: {lat: "Float", lng: "Float", query: "[String]", distance: "Int"},
+  resolve: async ({args}) => {
+    let businesses = await Business.find({
+      searchIndex: {
+        $in: args.query
+      }
+    });
+    businesses = businesses.filter((biz) => {
+      const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
+      biz.distance = distance;
+      return distance <= args.distance && biz;
+    });
+    return businesses;
+  },
+});
+
+BusinessTC.addResolver({
+  name: "businessFilterByLocationAndFilter",
+  kind: "query",
+  type: BusinessTC.getResolver("findMany").getType(),
+  args: {lat: "Float", lng: "Float", query: "[String]", distance: "Int"},
+  resolve: async ({args}) => {
+    let businesses = await Business.find({
+      searchIndex: {
+        $in: args.query
+      }
+    });
+    businesses = businesses.filter((biz) => {
+      const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
+      biz.distance = distance;
+      return distance <= args.distance && biz;
+    });
+    businesses = businesses.filter((biz) => {
+      const now = new Date();
+      const hour = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
+      if(biz.openHours.length > 0){
+        const day = biz.openHours[now.getDay()-1];
+        const opens = parseInt(day.opens.split(":")[0]) <= hour;
+        const closes = parseInt(day.closes.split(":")[0])+6 >= hour;
+        return day.isOpen && opens && closes && biz;
+      }
+      return null;
+    });
+    return businesses;
+  },
+});
+
+BusinessTC.addResolver({
+  name: "businessFilterByFilter",
+  kind: "query",
+  type: BusinessTC.getResolver("findMany").getType(),
+  args: {query: "[String]"},
+  resolve: async ({args}) => {
+    let businesses = await Business.find({
+      searchIndex: {
+        $in: args.query
+      }
+    });
+    businesses = businesses.filter((biz) => {
+      const now = new Date();
+      const hour = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
+      if(biz.openHours.length > 0){
+        const day = biz.openHours[now.getDay()-1];
+        const opens = parseInt(day.opens.split(":")[0]) <= hour;
+        const closes = parseInt(day.closes.split(":")[0])+6 >= hour;
+        return day.isOpen && opens && closes && biz;
+      }
+      return null;
+    });
+    return businesses;
+  },
+});
+
 BusinessTC.addResolver({
   name: "businessByIdLoggedIn",
   kind: "query",
@@ -39,6 +131,9 @@ const BusinessQuery = {
   businessMany: BusinessTC.getResolver("findMany"),
   getBusinessesLoggedIn: BusinessTC.getResolver("getBusinessesLoggedIn"),
   businessByIdLoggedIn: BusinessTC.getResolver("businessByIdLoggedIn"),
+  businessFilterByLocation: BusinessTC.getResolver("businessFilterByLocation"),
+  businessFilterByFilter: BusinessTC.getResolver("businessFilterByFilter"),
+  businessFilterByLocationAndFilter: BusinessTC.getResolver("businessFilterByLocationAndFilter"),
   businessCount: BusinessTC.getResolver("count"),
   businessConnection: BusinessTC.getResolver("connection"),
   businessPagination: BusinessTC.getResolver("pagination"),
