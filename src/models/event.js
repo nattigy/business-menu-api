@@ -17,9 +17,11 @@ export const eventSchema = new Schema({
   },
   startDate: {
     type: Date,
+    index: true,
   },
   endDate: {
     type: Date,
+    index: true,
   },
   startTime: {
     type: String,
