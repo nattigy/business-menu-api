@@ -110,6 +110,7 @@ export const BusinessSchema = new Schema(
       type: String,
       enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4", "SPONSORED"],
       default: "FEATHER_0",
+      index: true
     },
     state: {
       type: String,
