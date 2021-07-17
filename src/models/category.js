@@ -9,6 +9,7 @@ export const CategorySchema = new Schema(
       trim: true,
       index: true
     },
+    image: String,
     parent: {
       type: String,
       index: true

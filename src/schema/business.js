@@ -2,7 +2,7 @@ import {Business, BusinessTC} from "../models/business";
 import {BusinessList} from "../models/businessList";
 import {CategoryTC} from "../models/category";
 import {User, UserTC} from "../models/user";
-import {Post, PostTC} from "../models/post";
+import {PostTC} from "../models/post";
 import {EventTC} from "../models/event";
 
 BusinessTC.addResolver({
