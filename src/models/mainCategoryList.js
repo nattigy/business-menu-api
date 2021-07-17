@@ -7,6 +7,7 @@ export const MainCategoryListSchema = new Schema(
     name: {
       type: String,
       trim: true,
+      index: true,
     },
     image: String,
     sub_categories: {
