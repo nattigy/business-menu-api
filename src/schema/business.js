@@ -199,8 +199,8 @@ BusinessTC.addResolver({
   type: BusinessTC,
   args: {user_id: "String", business_id: "String"},
   resolve: async ({args}) => {
-    await Post.updateOne(
-      {_id: args.post_id},
+    await Business.updateOne(
+      {_id: args.business_id},
       {$pull: {favoriteList: args.user_id}}
     ).then(async () => {
       await User.updateOne(
