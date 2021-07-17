@@ -43,7 +43,7 @@ BusinessTC.addResolver({
       searchIndex: {
         $in: args.query
       }
-    });
+    }).sort({"subscription": "desc"});
     businesses = businesses.filter((biz) => {
       const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
       biz.distance = distance;
@@ -63,7 +63,7 @@ BusinessTC.addResolver({
       searchIndex: {
         $in: args.query
       }
-    });
+    }).sort({"subscription": "desc"});
     businesses = businesses.filter((biz) => {
       const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
       biz.distance = distance;
@@ -78,7 +78,7 @@ BusinessTC.addResolver({
         const closes = parseInt(day.closes.split(":")[0])+6 >= hour;
         return day.isOpen && opens && closes && biz;
       }
-      return null;
+      return [];
     });
     return businesses;
   },
@@ -94,7 +94,7 @@ BusinessTC.addResolver({
       searchIndex: {
         $in: args.query
       }
-    });
+    }).sort({"subscription": "desc"});
     businesses = businesses.filter((biz) => {
       const now = new Date();
       const hour = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
@@ -104,7 +104,7 @@ BusinessTC.addResolver({
         const closes = parseInt(day.closes.split(":")[0])+6 >= hour;
         return day.isOpen && opens && closes && biz;
       }
-      return null;
+      return [];
     });
     return businesses;
   },
