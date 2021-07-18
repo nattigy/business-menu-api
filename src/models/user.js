@@ -22,6 +22,9 @@ export const UserSchema = new Schema(
     phoneNumber: {
       type: String
     },
+    image: {
+      type: String
+    },
     firebaseId: {
       type: String,
     },
