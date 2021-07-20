@@ -12,6 +12,11 @@ export const CouponSchema = new Schema(
       type: Boolean,
       default: false
     },
+    type: {
+      type: String,
+      default: "FREE",
+      enum: ["FREE", "PAID"],
+    },
     value: {
       type: Number,
     },
