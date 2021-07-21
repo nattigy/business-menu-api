@@ -31,8 +31,14 @@ export const UserSchema = new Schema(
     password: {
       type: String,
     },
+    status: {
+      type: String,
+      default: "ACTIVE",
+      enum: ["ACTIVE", "BLOCKED"],
+    },
     userType: {
       type: String,
+      default: "Normal",
       enum: ["Normal", "Owner", "Admin", "Sales"],
     },
     interestedInEvents: {
