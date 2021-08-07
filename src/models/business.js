@@ -130,6 +130,11 @@ export const BusinessSchema = new Schema(
       index: true,
       default: [],
     },
+    categoryIndex: {
+      type: [String],
+      index: true,
+      default: [],
+    },
     pictures: {
       type: [String],
       default: [],
