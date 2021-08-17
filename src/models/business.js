@@ -125,6 +125,10 @@ export const BusinessSchema = new Schema(
       type: [restaurantMenuSchema],
       default: [],
     },
+    searchAutocomplete: {
+      type: String,
+      index: true,
+    },
     searchIndex: {
       type: [String],
       index: true,
