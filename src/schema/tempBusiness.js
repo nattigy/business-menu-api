@@ -74,7 +74,7 @@ TempBusinessTC.addResolver({
 });
 
 const TempBusinessMutation = {
-  businessCreateOneCustom: BusinessTC.getResolver("businessCreateOneCustom"),
+  businessCreateOneCustom: TempBusinessTC.getResolver("businessCreateOneCustom"),
   tempBusinessCreateOne: TempBusinessTC.getResolver("createOne"),
   tempBusinessCreateMany: TempBusinessTC.getResolver("createMany"),
   tempBusinessUpdateById: TempBusinessTC.getResolver("updateById"),
