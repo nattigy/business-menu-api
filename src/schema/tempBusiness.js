@@ -2,6 +2,7 @@ import {TempBusiness, TempBusinessTC} from "../models/tempBusiness";
 import {User, UserTC} from "../models/user";
 import {BusinessTC} from "../models/business";
 import {BusinessList} from "../models/businessList";
+import {CategoryTC} from "../models/category";
 
 const TempBusinessQuery = {
   tempBusinessById: TempBusinessTC.getResolver("findById"),
@@ -17,6 +18,13 @@ const TempBusinessQuery = {
       _id: (source) => source.owner,
     },
     projection: {owner: 1},
+  }),
+  businessCategories: BusinessTC.addRelation("categories", {
+    resolver: () => CategoryTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.categories,
+    },
+    projection: {categories: 1},
   }),
 };
 
