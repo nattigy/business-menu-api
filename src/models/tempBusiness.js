@@ -51,6 +51,10 @@ export const TempBusinessSchema = new Schema(
       index: true,
       default: [],
     },
+    pictures: {
+      type: [String],
+      default: [],
+    },
     categories: {
       type: [
         {
