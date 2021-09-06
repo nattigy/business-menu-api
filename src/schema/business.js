@@ -220,62 +220,8 @@ BusinessTC.addResolver({
   },
 });
 
-BusinessTC.addResolver({
-  name: "businessCreateOneCustom",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {
-    user_id: "String",
-    businessName: "String",
-    phoneNumber: "String",
-    location: "String",
-    locationDescription: "String",
-    pictures: ["String"],
-    categories: ["String"],
-    searchIndex: ["String"],
-    categoryIndex: ["String"],
-    lng: "Float",
-    lat: "Float",
-  },
-  resolve: async ({args}) => {
-    let bizId = "";
-    await Business.create(
-      {
-        businessName: args.businessName,
-        phoneNumber: args.phoneNumber,
-        location: args.location,
-        locationDescription: args.locationDescription,
-        pictures: args.pictures,
-        categories: args.categories,
-        searchIndex: args.searchIndex,
-        categoryIndex: args.categoryIndex,
-        lng: args.lng,
-        lat: args.lat,
-        owner: args.user_id,
-      }
-    )
-      .then(async (res) => {
-        bizId = res._id;
-        await BusinessList.create(
-          {
-            autocompleteTerm: args.businessName.toLowerCase()
-          }
-        )
-          .then(async () => {
-            await User.updateOne(
-              {_id: args.user_id},
-              {$addToSet: {businesses: bizId}}
-            );
-          })
-          .catch((error) => error);
-      }).catch((error) => error);
-    return Business.findById(bizId);
-  },
-});
-
 const BusinessMutation = {
   businessCreateOne: BusinessTC.getResolver("createOne"),
-  businessCreateOneCustom: BusinessTC.getResolver("businessCreateOneCustom"),
   businessCreateMany: BusinessTC.getResolver("createMany"),
   businessUpdateById: BusinessTC.getResolver("updateById"),
   businessAddToFavorite: BusinessTC.getResolver("businessAddToFavorite"),
