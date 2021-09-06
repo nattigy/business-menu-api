@@ -234,6 +234,7 @@ BusinessTC.addResolver({
     categories: ["String"],
     searchIndex: ["String"],
     categoryIndex: ["String"],
+    claimed: "Boolean",
     lng: "Float",
     lat: "Float",
   },
@@ -243,6 +244,7 @@ BusinessTC.addResolver({
       {
         businessName: args.businessName,
         phoneNumber: args.phoneNumber,
+        claimed: args.claimed,
         location: args.location,
         locationDescription: args.locationDescription,
         pictures: args.pictures,
