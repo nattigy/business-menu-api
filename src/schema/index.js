@@ -10,6 +10,7 @@ import {RequestMutation, RequestQuery} from "./request";
 import {ZorittQuery, ZorittMutation} from "./zoritt";
 import {MainCategoryListTCQuery, MainCategoryListTCMutation} from "./mainCategoryList";
 import {BranchQuery, BranchMutation} from "./branch";
+import {TempBusinessQuery, TempBusinessMutation} from "./tempBusiness";
 
 const schemaComposer = new SchemaComposer();
 
@@ -25,6 +26,7 @@ schemaComposer.Query.addFields({
   ...ZorittQuery,
   ...MainCategoryListTCQuery,
   ...BranchQuery,
+  ...TempBusinessQuery,
 });
 
 schemaComposer.Mutation.addFields({
@@ -39,6 +41,7 @@ schemaComposer.Mutation.addFields({
   ...ZorittMutation,
   ...MainCategoryListTCMutation,
   ...BranchMutation,
+  ...TempBusinessMutation,
 });
 
 export default schemaComposer.buildSchema();
