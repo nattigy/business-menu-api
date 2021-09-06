@@ -4,6 +4,7 @@ import {CategoryTC} from "../models/category";
 import {User, UserTC} from "../models/user";
 import {PostTC} from "../models/post";
 import {EventTC} from "../models/event";
+import {BranchTC} from "../models/branch";
 
 BusinessTC.addResolver({
   name: "getBusinessesLoggedIn",
@@ -157,6 +158,13 @@ const BusinessQuery = {
       _ids: (source) => source.categories,
     },
     projection: {categories: 1},
+  }),
+  branches: BusinessTC.addRelation("branches", {
+    resolver: () => BranchTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.branches,
+    },
+    projection: {branches: 1},
   }),
   businessOwner: BusinessTC.addRelation("owner", {
     resolver: () => UserTC.getResolver("findById"),
