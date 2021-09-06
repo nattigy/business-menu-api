@@ -47,6 +47,10 @@ export const BusinessSchema = new Schema(
       index: true,
       default: "",
     },
+    claimed: {
+      type: Boolean,
+      default: true,
+    },
     phoneNumber: {
       type: [String],
       default: [],
