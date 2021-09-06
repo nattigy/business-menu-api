@@ -19,7 +19,7 @@ const TempBusinessQuery = {
     },
     projection: {owner: 1},
   }),
-  businessCategories: BusinessTC.addRelation("categories", {
+  businessCategories: TempBusinessTC.addRelation("categories", {
     resolver: () => CategoryTC.getResolver("findByIds"),
     prepareArgs: {
       _ids: (source) => source.categories,
