@@ -61,6 +61,15 @@ export const BusinessSchema = new Schema(
       index: true,
       default: "",
     },
+    branches: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Branch",
+        },
+      ],
+      default: []
+    },
     lat: {
       type: Number,
       index: true,
