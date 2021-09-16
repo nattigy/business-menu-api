@@ -1,8 +1,9 @@
 import {TempBusiness, TempBusinessTC} from "../models/tempBusiness";
 import {User, UserTC} from "../models/user";
-import {BusinessTC} from "../models/business";
+import {Business} from "../models/business";
 import {BusinessList} from "../models/businessList";
 import {CategoryTC} from "../models/category";
+import {Branch} from "../models/branch";
 
 const TempBusinessQuery = {
   tempBusinessById: TempBusinessTC.getResolver("findById"),
@@ -76,6 +77,21 @@ TempBusinessTC.addResolver({
             );
           })
           .catch((error) => error);
+        await Branch.create({
+          branchName: args.businessName,
+          phoneNumber: args.phoneNumber,
+          location: args.location,
+          locationDescription: args.locationDescription,
+          lng: args.lng,
+          lat: args.lat,
+          state: "ACTIVE",
+          pictures: args.pictures,
+          owner: bizId
+        }).then(async (bb) => {
+          await Business.findByIdAndUpdate(bizId, {
+            branches: [bb._id]
+          });
+        }).catch((error) => error);
       }).catch((error) => error);
     return TempBusiness.findById(bizId);
   },
@@ -83,13 +99,8 @@ TempBusinessTC.addResolver({
 
 const TempBusinessMutation = {
   businessCreateOneCustom: TempBusinessTC.getResolver("businessCreateOneCustom"),
-  tempBusinessCreateOne: TempBusinessTC.getResolver("createOne"),
-  tempBusinessCreateMany: TempBusinessTC.getResolver("createMany"),
   tempBusinessUpdateById: TempBusinessTC.getResolver("updateById"),
-  tempBusinessUpdateOne: TempBusinessTC.getResolver("updateOne"),
-  tempBusinessUpdateMany: TempBusinessTC.getResolver("updateMany"),
   tempBusinessRemoveById: TempBusinessTC.getResolver("removeById"),
-  tempBusinessRemoveOne: TempBusinessTC.getResolver("removeOne"),
   tempBusinessRemoveMany: TempBusinessTC.getResolver("removeMany"),
 };
 

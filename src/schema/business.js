@@ -4,7 +4,9 @@ import {CategoryTC} from "../models/category";
 import {User, UserTC} from "../models/user";
 import {PostTC} from "../models/post";
 import {EventTC} from "../models/event";
-import {BranchTC} from "../models/branch";
+import {Branch, BranchTC} from "../models/branch";
+import {Schema} from "mongoose";
+import { schemaComposer, toInputObjectType } from 'graphql-compose'
 
 BusinessTC.addResolver({
   name: "getBusinessesLoggedIn",
@@ -270,8 +272,104 @@ BusinessTC.addResolver({
             );
           })
           .catch((error) => error);
+        await Branch.create({
+          branchName: args.businessName,
+          phoneNumber: args.phoneNumber,
+          location: args.location,
+          locationDescription: args.locationDescription,
+          lng: args.lng,
+          lat: args.lat,
+          state: "ACTIVE",
+          pictures: args.pictures,
+          owner: bizId
+        }).then(async (bb) => {
+          await Business.findByIdAndUpdate(bizId, {
+            branches: [bb._id]
+          });
+        }).catch((error) => error);
       }).catch((error) => error);
     return Business.findById(bizId);
+  },
+});
+
+const InputTC = schemaComposer.createObjectTC({
+  name: 'businessCreateManyCustomInput',
+  fields: {
+    user_id: "String",
+    businessName: "String",
+    phoneNumber: "String",
+    location: "String",
+    locationDescription: "String",
+    pictures: ["String"],
+    categories: ["String"],
+    searchIndex: ["String"],
+    categoryIndex: ["String"],
+    claimed: "Boolean",
+    lng: "Float",
+    lat: "Float",
+  }
+});
+
+const InputITC = toInputObjectType(InputTC);
+
+BusinessTC.addResolver({
+  name: "businessCreateManyCustom",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    businesses: [InputITC]
+  },
+  resolve: async ({args}) => {
+    for (let i = 0; i < args.businesses.length; i ++){
+      let bizId = "";
+      await Business.create(
+        {
+          businessName: args.businesses[i].businessName,
+          phoneNumber: args.businesses[i].phoneNumber,
+          claimed: args.businesses[i].claimed,
+          location: args.businesses[i].location,
+          locationDescription: args.businesses[i].locationDescription,
+          pictures: args.businesses[i].pictures,
+          categories: args.businesses[i].categories,
+          searchIndex: args.businesses[i].searchIndex,
+          categoryIndex: args.businesses[i].categoryIndex,
+          lng: args.businesses[i].lng,
+          lat: args.businesses[i].lat,
+          owner: args.businesses[i].user_id,
+        }
+      )
+        .then(async (res) => {
+          bizId = res._id;
+          await BusinessList.create(
+            {
+              autocompleteTerm: args.businesses[i].businessName.toLowerCase()
+            }
+          )
+            .then(async () => {
+              await User.updateOne(
+                {_id: args.businesses[i].user_id},
+                {$addToSet: {businesses: bizId}}
+              );
+            })
+            .catch((error) => error);
+          await Branch.create({
+            branchName: args.businesses[i].businessName,
+            phoneNumber: args.businesses[i].phoneNumber,
+            location: args.businesses[i].location,
+            locationDescription: args.businesses[i].locationDescription,
+            lng: args.businesses[i].lng,
+            lat: args.businesses[i].lat,
+            state: "ACTIVE",
+            pictures: args.businesses[i].pictures,
+            owner: bizId
+          }).then(async (bb) => {
+            await Business.findByIdAndUpdate(bizId, {
+              branches: [bb._id]
+            });
+          }).catch((error) => error);
+        }).catch((error) => error);
+    }
+    // return Business.findByIds(bizId);
   },
 });
 
@@ -279,6 +377,7 @@ const BusinessMutation = {
   businessCreateOne: BusinessTC.getResolver("createOne"),
   businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin"),
   businessCreateMany: BusinessTC.getResolver("createMany"),
+  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom"),
   businessUpdateById: BusinessTC.getResolver("updateById"),
   businessAddToFavorite: BusinessTC.getResolver("businessAddToFavorite"),
   businessRemoveFromFavorite: BusinessTC.getResolver("businessRemoveFromFavorite"),
