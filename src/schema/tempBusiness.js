@@ -1,9 +1,7 @@
 import {TempBusiness, TempBusinessTC} from "../models/tempBusiness";
 import {User, UserTC} from "../models/user";
-import {Business} from "../models/business";
 import {BusinessList} from "../models/businessList";
 import {CategoryTC} from "../models/category";
-import {Branch} from "../models/branch";
 
 const TempBusinessQuery = {
   tempBusinessById: TempBusinessTC.getResolver("findById"),
@@ -77,21 +75,6 @@ TempBusinessTC.addResolver({
             );
           })
           .catch((error) => error);
-        await Branch.create({
-          branchName: args.businessName,
-          phoneNumber: args.phoneNumber,
-          location: args.location,
-          locationDescription: args.locationDescription,
-          lng: args.lng,
-          lat: args.lat,
-          state: "ACTIVE",
-          pictures: args.pictures,
-          owner: bizId
-        }).then(async (bb) => {
-          await Business.findByIdAndUpdate(bizId, {
-            branches: [bb._id]
-          });
-        }).catch((error) => error);
       }).catch((error) => error);
     return TempBusiness.findById(bizId);
   },
