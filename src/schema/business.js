@@ -293,7 +293,7 @@ BusinessTC.addResolver({
 });
 
 const InputTC = schemaComposer.createObjectTC({
-  name: 'businessCreateManyCustomInput',
+  name: 'BusinessCreateManyCustomInput',
   fields: {
     user_id: "String",
     businessName: "String",
