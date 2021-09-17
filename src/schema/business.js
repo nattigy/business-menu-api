@@ -2,8 +2,8 @@ import {Business, BusinessTC} from "../models/business";
 import {BusinessList} from "../models/businessList";
 import {CategoryTC} from "../models/category";
 import {User, UserTC} from "../models/user";
-import {PostTC} from "../models/post";
-import {EventTC} from "../models/event";
+import {Post, PostTC} from "../models/post";
+import {Event, EventTC} from "../models/event";
 import {Branch, BranchTC} from "../models/branch";
 import {Schema} from "mongoose";
 import { schemaComposer, toInputObjectType } from 'graphql-compose'
@@ -373,6 +373,31 @@ BusinessTC.addResolver({
   },
 });
 
+BusinessTC.addResolver({
+  name: "removeByIdCustom",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    id: "String"
+  },
+  resolve: async ({args}) => {
+    const business = await Business.findById(args.id);
+    await Business.findByIdAndDelete(args.id);
+    for (let i = 0; i < business.events.length; i++){
+      await Event.findByIdAndDelete(business.events[i]);
+    }
+    for (let i = 0; i < business.posts.length; i++){
+      await Post.findByIdAndDelete(business.posts[i]);
+    }
+    for (let i = 0; i < business.branches.length; i++){
+      await Post.findByIdAndDelete(business.branches[i]);
+    }
+    await User.findByIdAndUpdate(business.owner, {
+      $pull: {businesses: args.id}
+    });
+  },
+});
+
 const BusinessMutation = {
   businessCreateOne: BusinessTC.getResolver("createOne"),
   businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin"),
@@ -384,6 +409,7 @@ const BusinessMutation = {
   businessUpdateOne: BusinessTC.getResolver("updateOne"),
   businessUpdateMany: BusinessTC.getResolver("updateMany"),
   businessRemoveById: BusinessTC.getResolver("removeById"),
+  businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom"),
   businessRemoveOne: BusinessTC.getResolver("removeOne"),
   businessRemoveMany: BusinessTC.getResolver("removeMany"),
 };
