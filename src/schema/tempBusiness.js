@@ -80,10 +80,30 @@ TempBusinessTC.addResolver({
   },
 });
 
+TempBusinessTC.addResolver({
+  name: "removeByIdCustom",
+  kind: "mutation",
+  type: TempBusinessTC,
+  args: {
+    businessId: "String",
+    userId: "String",
+  },
+  resolve: async ({args}) => {
+    const biz = await TempBusiness.findByIdAndDelete(args.businessId)
+      .then(async () => {
+        await User.updateOne(
+          {_id: args.userId},
+          {$pull: {businesses: args.businessId}}
+        );
+      });
+    return biz;
+  },
+});
+
 const TempBusinessMutation = {
   businessCreateOneCustom: TempBusinessTC.getResolver("businessCreateOneCustom"),
   tempBusinessUpdateById: TempBusinessTC.getResolver("updateById"),
-  tempBusinessRemoveById: TempBusinessTC.getResolver("removeById"),
+  tempBusinessRemoveById: TempBusinessTC.getResolver("removeByIdCustom"),
   tempBusinessRemoveMany: TempBusinessTC.getResolver("removeMany"),
 };
 
