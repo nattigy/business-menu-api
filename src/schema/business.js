@@ -310,14 +310,14 @@ const InputTC = schemaComposer.createObjectTC({
   }
 });
 
-const InputITC = toInputObjectType(InputTC);
+const BusinessCreateManyCustomInput = toInputObjectType(InputTC);
 
 BusinessTC.addResolver({
   name: "businessCreateManyCustom",
   kind: "mutation",
   type: BusinessTC,
   args: {
-    businesses: [InputITC]
+    businesses: [BusinessCreateManyCustomInput]
   },
   resolve: async ({args}) => {
     for (let i = 0; i < args.businesses.length; i ++){
