@@ -297,7 +297,7 @@ const InputTC = schemaComposer.createObjectTC({
   fields: {
     user_id: "String",
     businessName: "String",
-    phoneNumber: "String",
+    phoneNumber: ["String"],
     location: "String",
     locationDescription: "String",
     pictures: ["String"],
