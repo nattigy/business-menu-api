@@ -1,8 +1,14 @@
-import {User, UserTC} from "../models/user";
-import {BusinessTC} from "../models/business";
-import {PostTC} from "../models/post";
-import {EventTC} from "../models/event";
-import {CouponTC} from "../models/coupon";
+import {UserTC} from "../../models/user";
+import {BusinessTC} from "../../models/business";
+import {PostTC} from "../../models/post";
+import {EventTC} from "../../models/event";
+import {CouponTC} from "../../models/coupon";
+
+import Resolvers from "./resolvers";
+
+for (const resolver in Resolvers) {
+  UserTC.addResolver(Resolvers[resolver]);
+}
 
 const UserQuery = {
   userById: UserTC.getResolver("findById"),
@@ -49,21 +55,8 @@ const UserQuery = {
   }),
 };
 
-UserTC.addResolver({
-  name: "userAddCoupon",
-  kind: "mutation",
-  type: UserTC,
-  args: {coupon: "MongoID", id: "MongoID"},
-  resolve: async ({args}) => {
-    await User.updateOne(
-      {_id: args.id},
-      {$addToSet: {coupons: args.coupon}}
-    ).catch((error) => error);
-    return User.findById(args.id);
-  },
-});
-
 const UserMutation = {
+  userSignUp: UserTC.getResolver("userSignUp"),
   userCreateOne: UserTC.getResolver("createOne"),
   userCreateMany: UserTC.getResolver("createMany"),
   userUpdateById: UserTC.getResolver("updateById"),

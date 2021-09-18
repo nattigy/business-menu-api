@@ -1,6 +1,6 @@
-import {CouponTC} from "../models/coupon";
-import {UserTC} from "../models/user";
-import {BusinessTC} from "../models/business";
+import {CouponTC} from "../../models/coupon";
+import {UserTC} from "../../models/user";
+import {BusinessTC} from "../../models/business";
 
 const CouponQuery = {
   couponById: CouponTC.getResolver("findById"),

@@ -1,4 +1,4 @@
-import {CategoryTC} from "../models/category";
+import {CategoryTC} from "../../models/category";
 
 const CategoryQuery = {
   categoryById: CategoryTC.getResolver("findById"),

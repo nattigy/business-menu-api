@@ -1,4 +1,4 @@
-import {RequestTC} from "../models/request";
+import {RequestTC} from "../../models/request";
 
 const RequestQuery = {
   requestById: RequestTC.getResolver("findById"),

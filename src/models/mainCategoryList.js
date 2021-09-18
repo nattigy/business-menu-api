@@ -2,7 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
-export const MainCategoryListSchema = new Schema(
+const MainCategoryListSchema = new Schema(
   {
     name: {
       type: String,
@@ -10,9 +10,15 @@ export const MainCategoryListSchema = new Schema(
       index: true,
     },
     image: String,
-    sub_categories: {
-      type: [String],
-    }
+    subCategories: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Category",
+        },
+      ],
+      default: [],
+    },
   },
   {
     collection: "mainCategoryList",
@@ -20,8 +26,9 @@ export const MainCategoryListSchema = new Schema(
 );
 
 MainCategoryListSchema.plugin(timestamps);
-
 MainCategoryListSchema.index({createdAt: 1, updatedAt: 1});
 
-export const MainCategoryList = mongoose.model("MainCategoryList", MainCategoryListSchema);
-export const MainCategoryListTC = composeWithMongoose(MainCategoryList);
+export const MainCategoryListModel = mongoose.model("MainCategoryList", MainCategoryListSchema);
+export const MainCategoryListTC = composeWithMongoose(MainCategoryListModel);
+
+module.exports = {MainCategoryListModel, MainCategoryListTC, MainCategoryListSchema};

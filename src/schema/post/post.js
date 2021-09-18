@@ -1,6 +1,6 @@
-import {Business, BusinessTC} from "../models/business";
-import {Post, PostTC} from "../models/post";
-import {User, UserTC} from "../models/user";
+import {Business, BusinessTC} from "../../models/business";
+import {Post, PostTC} from "../../models/post";
+import {User, UserTC} from "../../models/user";
 
 PostTC.addResolver({
   name: "getPostLoggedIn",

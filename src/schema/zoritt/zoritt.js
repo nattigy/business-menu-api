@@ -1,4 +1,4 @@
-import {ZorittTC} from "../models/zoritt";
+import {ZorittTC} from "../../models/zoritt";
 
 const ZorittQuery = {
   zorittById: ZorittTC.getResolver("findById"),

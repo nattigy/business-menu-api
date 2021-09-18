@@ -1,25 +1,23 @@
-import {Business, BusinessTC} from "../models/business";
-import {BusinessList} from "../models/businessList";
-import {CategoryTC} from "../models/category";
-import {User, UserTC} from "../models/user";
-import {Post, PostTC} from "../models/post";
-import {Event, EventTC} from "../models/event";
-import {Branch, BranchTC} from "../models/branch";
-import {Schema} from "mongoose";
-import { schemaComposer, toInputObjectType } from 'graphql-compose'
+import {schemaComposer, toInputObjectType} from "graphql-compose";
 
-BusinessTC.addResolver({
+import {BusinessModel, BusinessTC} from "../../models/business";
+import {UserModel} from "../../models/user";
+import {BusinessList} from "../../models/businessList";
+import {EventModel} from "../../models/event";
+import {PostModel} from "../../models/post";
+
+const getBusinessesLoggedIn = {
   name: "getBusinessesLoggedIn",
   kind: "query",
   type: BusinessTC.getResolver("findMany").getType(),
   args: {user_id: "String", limit: "Int", sort: "String"},
   resolve: async ({args}) => {
-    let businesses = await Business.find()
+    let businesses = await BusinessModel.find()
       .sort({"subscription": args.sort}).limit(args.limit);
     businesses = businesses.map(e => ({...e._doc, isLiked: e._doc.favoriteList.includes(args.user_id)}));
     return businesses;
   },
-});
+};
 
 function calculateDistance({lat, lng, bizLat, bizLng}) {
   return (
@@ -36,13 +34,13 @@ function calculateDistance({lat, lng, bizLat, bizLng}) {
   );
 }
 
-BusinessTC.addResolver({
+const businessFilterByLocation = {
   name: "businessFilterByLocation",
   kind: "query",
   type: BusinessTC.getResolver("findMany").getType(),
   args: {lat: "Float", lng: "Float", query: "[String]", distance: "Int"},
   resolve: async ({args}) => {
-    let businesses = await Business.find({
+    let businesses = await BusinessModel.find({
       searchIndex: {
         $in: args.query
       }
@@ -54,15 +52,15 @@ BusinessTC.addResolver({
     });
     return businesses;
   },
-});
+};
 
-BusinessTC.addResolver({
+const businessFilterByLocationAndFilter = {
   name: "businessFilterByLocationAndFilter",
   kind: "query",
   type: BusinessTC.getResolver("findMany").getType(),
   args: {lat: "Float", lng: "Float", query: "[String]", distance: "Int"},
   resolve: async ({args}) => {
-    let businesses = await Business.find({
+    let businesses = await BusinessModel.find({
       searchIndex: {
         $in: args.query
       }
@@ -85,15 +83,15 @@ BusinessTC.addResolver({
     });
     return businesses;
   },
-});
+};
 
-BusinessTC.addResolver({
+const businessFilterByFilter = {
   name: "businessFilterByFilter",
   kind: "query",
   type: BusinessTC.getResolver("findMany").getType(),
   args: {query: "[String]"},
   resolve: async ({args}) => {
-    let businesses = await Business.find({
+    let businesses = await BusinessModel.find({
       searchIndex: {
         $in: args.query
       }
@@ -111,118 +109,61 @@ BusinessTC.addResolver({
     });
     return businesses;
   },
-});
+}
 
-BusinessTC.addResolver({
+const businessByIdLoggedIn = {
   name: "businessByIdLoggedIn",
   kind: "query",
   type: BusinessTC.getResolver("findById").getType(),
   args: {user_id: "String", business_id: "String"},
   resolve: async ({args}) => {
-    let business = await Business.find({
+    let business = await BusinessModel.find({
       _id: args.business_id
     });
     business = {...business[0]._doc, isLiked: business[0]._doc.favoriteList.includes(args.user_id)};
     return business;
   },
-});
-
-const BusinessQuery = {
-  businessById: BusinessTC.getResolver("findById"),
-  businessByIds: BusinessTC.getResolver("findByIds"),
-  businessOne: BusinessTC.getResolver("findOne"),
-  businessMany: BusinessTC.getResolver("findMany"),
-  getBusinessesLoggedIn: BusinessTC.getResolver("getBusinessesLoggedIn"),
-  businessByIdLoggedIn: BusinessTC.getResolver("businessByIdLoggedIn"),
-  businessFilterByLocation: BusinessTC.getResolver("businessFilterByLocation"),
-  businessFilterByFilter: BusinessTC.getResolver("businessFilterByFilter"),
-  businessFilterByLocationAndFilter: BusinessTC.getResolver("businessFilterByLocationAndFilter"),
-  businessCount: BusinessTC.getResolver("count"),
-  businessConnection: BusinessTC.getResolver("connection"),
-  businessPagination: BusinessTC.getResolver("pagination"),
-  businessPosts: BusinessTC.addRelation("posts", {
-    resolver: () => PostTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.posts,
-    },
-    projection: {posts: 1},
-  }),
-  businessEvents: BusinessTC.addRelation("events", {
-    resolver: () => EventTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.events,
-    },
-    projection: {events: 1},
-  }),
-  businessCategories: BusinessTC.addRelation("categories", {
-    resolver: () => CategoryTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.categories,
-    },
-    projection: {categories: 1},
-  }),
-  branches: BusinessTC.addRelation("branches", {
-    resolver: () => BranchTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.branches,
-    },
-    projection: {branches: 1},
-  }),
-  businessOwner: BusinessTC.addRelation("owner", {
-    resolver: () => UserTC.getResolver("findById"),
-    prepareArgs: {
-      _id: (source) => source.owner,
-    },
-    projection: {owner: 1},
-  }),
 };
 
-BusinessTC.addFields({
-  likeCount: {
-    type: 'Int',
-    resolve: (business) => business ? business.favoriteList ? business.favoriteList.length : 0 : 0,
-  },
-});
-
-BusinessTC.addResolver({
+const businessAddToFavorite = {
   name: "businessAddToFavorite",
   kind: "mutation",
   type: BusinessTC,
   args: {user_id: "String", business_id: "String"},
   resolve: async ({args}) => {
-    await Business.updateOne(
+    await BusinessModel.updateOne(
       {_id: args.business_id},
       {$addToSet: {favoriteList: args.user_id}}
     ).then(async () => {
-      await User.updateOne(
+      await UserModel.updateOne(
         {_id: args.user_id},
         {$addToSet: {favorites: args.business_id}}
       );
     }).catch((error) => error);
-    return Business.findById(args.business_id);
+    return BusinessModel.findById(args.business_id);
   },
-});
+};
 
-BusinessTC.addResolver({
+const businessRemoveFromFavorite = {
   name: "businessRemoveFromFavorite",
   kind: "mutation",
   type: BusinessTC,
   args: {user_id: "String", business_id: "String"},
   resolve: async ({args}) => {
-    await Business.updateOne(
+    await BusinessModel.updateOne(
       {_id: args.business_id},
       {$pull: {favoriteList: args.user_id}}
     ).then(async () => {
-      await User.updateOne(
+      await UserModel.updateOne(
         {_id: args.user_id},
         {$pull: {favorites: args.business_id}}
       );
     }).catch((error) => error);
-    return Business.findById(args.business_id);
+    return BusinessModel.findById(args.business_id);
   },
-});
+};
 
-BusinessTC.addResolver({
+const businessCreateOneCustomAdmin = {
   name: "businessCreateOneCustomAdmin",
   kind: "mutation",
   type: BusinessTC,
@@ -242,7 +183,7 @@ BusinessTC.addResolver({
   },
   resolve: async ({args}) => {
     let bizId = "";
-    await Business.create(
+    await BusinessModel.create(
       {
         businessName: args.businessName,
         phoneNumber: args.phoneNumber,
@@ -256,6 +197,16 @@ BusinessTC.addResolver({
         lng: args.lng,
         lat: args.lat,
         owner: args.user_id,
+        branches: [
+          {
+            phoneNumber: args.phoneNumber,
+            location: args.location,
+            locationDescription: args.locationDescription,
+            lng: args.lng,
+            lat: args.lat,
+            pictures: args.pictures[0],
+          }
+        ]
       }
     )
       .then(async (res) => {
@@ -266,31 +217,16 @@ BusinessTC.addResolver({
           }
         )
           .then(async () => {
-            await User.updateOne(
+            await UserModel.updateOne(
               {_id: args.user_id},
               {$addToSet: {businesses: bizId}}
             );
           })
           .catch((error) => error);
-        await Branch.create({
-          branchName: args.businessName,
-          phoneNumber: args.phoneNumber,
-          location: args.location,
-          locationDescription: args.locationDescription,
-          lng: args.lng,
-          lat: args.lat,
-          state: "ACTIVE",
-          pictures: args.pictures,
-          owner: bizId
-        }).then(async (bb) => {
-          await Business.findByIdAndUpdate(bizId, {
-            branches: [bb._id]
-          });
-        }).catch((error) => error);
       }).catch((error) => error);
-    return Business.findById(bizId);
+    return BusinessModel.findById(bizId);
   },
-});
+};
 
 const InputTC = schemaComposer.createObjectTC({
   name: 'BusinessCreateManyCustomInput',
@@ -312,17 +248,17 @@ const InputTC = schemaComposer.createObjectTC({
 
 const BusinessCreateManyCustomInput = toInputObjectType(InputTC);
 
-BusinessTC.addResolver({
+const businessCreateManyCustom = {
   name: "businessCreateManyCustom",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {
+    kind: "mutation",
+    type: BusinessTC,
+    args: {
     businesses: [BusinessCreateManyCustomInput]
   },
   resolve: async ({args}) => {
     for (let i = 0; i < args.businesses.length; i ++){
       let bizId = "";
-      await Business.create(
+      await BusinessModel.create(
         {
           businessName: args.businesses[i].businessName,
           phoneNumber: args.businesses[i].phoneNumber,
@@ -336,6 +272,16 @@ BusinessTC.addResolver({
           lng: args.businesses[i].lng,
           lat: args.businesses[i].lat,
           owner: args.businesses[i].user_id,
+          branches: [
+            {
+              phoneNumber: args.businesses[i].phoneNumber,
+              location: args.businesses[i].location,
+              locationDescription: args.businesses[i].locationDescription,
+              lng: args.businesses[i].lng,
+              lat: args.businesses[i].lat,
+              pictures: args.businesses[i].pictures[0],
+            }
+          ]
         }
       )
         .then(async (res) => {
@@ -346,34 +292,19 @@ BusinessTC.addResolver({
             }
           )
             .then(async () => {
-              await User.updateOne(
+              await UserModel.updateOne(
                 {_id: args.businesses[i].user_id},
                 {$addToSet: {businesses: bizId}}
               );
             })
             .catch((error) => error);
-          await Branch.create({
-            branchName: args.businesses[i].businessName,
-            phoneNumber: args.businesses[i].phoneNumber,
-            location: args.businesses[i].location,
-            locationDescription: args.businesses[i].locationDescription,
-            lng: args.businesses[i].lng,
-            lat: args.businesses[i].lat,
-            state: "ACTIVE",
-            pictures: args.businesses[i].pictures,
-            owner: bizId
-          }).then(async (bb) => {
-            await Business.findByIdAndUpdate(bizId, {
-              branches: [bb._id]
-            });
-          }).catch((error) => error);
         }).catch((error) => error);
     }
-    // return Business.findByIds(bizId);
+    // return BusinessModel.findByIds(bizId);
   },
-});
+};
 
-BusinessTC.addResolver({
+const removeByIdCustom = {
   name: "removeByIdCustom",
   kind: "mutation",
   type: BusinessTC,
@@ -381,37 +312,32 @@ BusinessTC.addResolver({
     id: "String"
   },
   resolve: async ({args}) => {
-    const business = await Business.findById(args.id);
-    await Business.findByIdAndDelete(args.id);
+    const business = await BusinessModel.findById(args.id);
+    await BusinessModel.findByIdAndDelete(args.id);
     for (let i = 0; i < business.events.length; i++){
-      await Event.findByIdAndDelete(business.events[i]);
+      await EventModel.findByIdAndDelete(business.events[i]);
     }
     for (let i = 0; i < business.posts.length; i++){
-      await Post.findByIdAndDelete(business.posts[i]);
+      await PostModel.findByIdAndDelete(business.posts[i]);
     }
     for (let i = 0; i < business.branches.length; i++){
-      await Post.findByIdAndDelete(business.branches[i]);
+      await PostModel.findByIdAndDelete(business.branches[i]);
     }
-    await User.findByIdAndUpdate(business.owner, {
+    await UserModel.findByIdAndUpdate(business.owner, {
       $pull: {businesses: args.id}
     });
   },
-});
-
-const BusinessMutation = {
-  businessCreateOne: BusinessTC.getResolver("createOne"),
-  businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin"),
-  businessCreateMany: BusinessTC.getResolver("createMany"),
-  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom"),
-  businessUpdateById: BusinessTC.getResolver("updateById"),
-  businessAddToFavorite: BusinessTC.getResolver("businessAddToFavorite"),
-  businessRemoveFromFavorite: BusinessTC.getResolver("businessRemoveFromFavorite"),
-  businessUpdateOne: BusinessTC.getResolver("updateOne"),
-  businessUpdateMany: BusinessTC.getResolver("updateMany"),
-  businessRemoveById: BusinessTC.getResolver("removeById"),
-  businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom"),
-  businessRemoveOne: BusinessTC.getResolver("removeOne"),
-  businessRemoveMany: BusinessTC.getResolver("removeMany"),
 };
 
-export {BusinessQuery, BusinessMutation};
+export default {
+  getBusinessesLoggedIn,
+  businessFilterByLocation,
+  businessFilterByLocationAndFilter,
+  businessFilterByFilter,
+  businessByIdLoggedIn,
+  businessAddToFavorite,
+  businessRemoveFromFavorite,
+  businessCreateOneCustomAdmin,
+  businessCreateManyCustom,
+  removeByIdCustom,
+};

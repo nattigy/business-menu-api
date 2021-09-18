@@ -2,11 +2,8 @@ import mongoose, {Schema} from "mongoose";
 import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
-export const UserSchema = new Schema(
+const UserSchema = new Schema(
   {
-    fullName: {
-      type: String,
-    },
     firstName: {
       type: String
     },
@@ -93,8 +90,9 @@ export const UserSchema = new Schema(
 );
 
 UserSchema.plugin(timestamps);
-
 UserSchema.index({createdAt: 1, updatedAt: 1});
 
-export const User = mongoose.model("User", UserSchema);
-export const UserTC = composeWithMongoose(User);
+const UserModel = mongoose.model("User", UserSchema);
+const UserTC = composeWithMongoose(UserModel);
+
+module.exports = {UserModel, UserTC, UserSchema};

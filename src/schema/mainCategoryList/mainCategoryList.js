@@ -1,4 +1,4 @@
-import {MainCategoryListTC} from "../models/mainCategoryList";
+import {MainCategoryListTC} from "../../models/mainCategoryList";
 
 const MainCategoryListTCQuery = {
   mainCategoryListById: MainCategoryListTC.getResolver("findById"),

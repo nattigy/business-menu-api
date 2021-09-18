@@ -1,4 +1,4 @@
-import {BusinessListTC} from "../models/businessList";
+import {BusinessListTC} from "../../models/businessList";
 
 const BusinessListQuery = {
   businessListById: BusinessListTC.getResolver("findById"),

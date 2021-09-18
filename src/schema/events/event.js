@@ -1,6 +1,6 @@
-import {Business, BusinessTC} from "../models/business";
-import {Event, EventTC} from "../models/event";
-import {User, UserTC} from "../models/user";
+import {Business, BusinessTC} from "../../models/business";
+import {Event, EventTC} from "../../models/event";
+import {User, UserTC} from "../../models/user";
 
 EventTC.addResolver({
   name: "getEventsLoggedIn",

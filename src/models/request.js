@@ -2,7 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
-export const RequestSchema = new Schema(
+const RequestSchema = new Schema(
   {
     reference: {
       type: String,
@@ -32,8 +32,9 @@ export const RequestSchema = new Schema(
 );
 
 RequestSchema.plugin(timestamps);
-
 RequestSchema.index({createdAt: 1, updatedAt: 1});
 
-export const Request = mongoose.model("Request", RequestSchema);
-export const RequestTC = composeWithMongoose(Request);
+const RequestModel = mongoose.model("Request", RequestSchema);
+const RequestTC = composeWithMongoose(RequestModel);
+
+module.exports = {RequestModel, RequestTC, RequestSchema};
