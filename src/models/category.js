@@ -2,7 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
-export const CategorySchema = new Schema(
+const CategorySchema = new Schema(
   {
     name: {
       type: String,
@@ -29,8 +29,9 @@ export const CategorySchema = new Schema(
 );
 
 CategorySchema.plugin(timestamps);
-
 CategorySchema.index({createdAt: 1, updatedAt: 1});
 
-export const Category = mongoose.model("Category", CategorySchema);
-export const CategoryTC = composeWithMongoose(Category);
+const CategoryModel = mongoose.model("Category", CategorySchema);
+const CategoryTC = composeWithMongoose(CategoryModel);
+
+module.exports = {CategoryModel, CategoryTC, CategorySchema};

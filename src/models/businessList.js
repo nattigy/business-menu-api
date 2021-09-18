@@ -2,7 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
-export const BusinessListSchema = new Schema(
+const BusinessListSchema = new Schema(
   {
     autocompleteTerm: {
       type: String,
@@ -15,8 +15,9 @@ export const BusinessListSchema = new Schema(
 );
 
 BusinessListSchema.plugin(timestamps);
-
 BusinessListSchema.index({createdAt: 1, updatedAt: 1});
 
-export const BusinessList = mongoose.model("BusinessList", BusinessListSchema);
-export const BusinessListTC = composeWithMongoose(BusinessList);
+const BusinessListModel = mongoose.model("BusinessList", BusinessListSchema);
+const BusinessListTC = composeWithMongoose(BusinessListModel);
+
+module.exports = {BusinessListModel, BusinessListTC, BusinessListSchema};

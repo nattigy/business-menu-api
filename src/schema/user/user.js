@@ -56,16 +56,15 @@ const UserQuery = {
 };
 
 const UserMutation = {
-  userSignUp: UserTC.getResolver("userSignUp"),
   userCreateOne: UserTC.getResolver("createOne"),
   userCreateMany: UserTC.getResolver("createMany"),
   userUpdateById: UserTC.getResolver("updateById"),
   userUpdateOne: UserTC.getResolver("updateOne"),
-  userAddCoupon: UserTC.getResolver("userAddCoupon"),
   userUpdateMany: UserTC.getResolver("updateMany"),
   userRemoveById: UserTC.getResolver("removeById"),
   userRemoveOne: UserTC.getResolver("removeOne"),
   userRemoveMany: UserTC.getResolver("removeMany"),
+  userAddCoupon: UserTC.getResolver("userAddCoupon"),
 };
 
 export {UserQuery, UserMutation};

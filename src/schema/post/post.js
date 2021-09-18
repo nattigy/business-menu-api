@@ -1,38 +1,17 @@
-import {Business, BusinessTC} from "../../models/business";
-import {Post, PostTC} from "../../models/post";
-import {User, UserTC} from "../../models/user";
+import {BusinessTC} from "../../models/business";
+import {PostTC} from "../../models/post";
 
-PostTC.addResolver({
-  name: "getPostLoggedIn",
-  kind: "query",
-  type: PostTC.getResolver("findMany").getType(),
-  args: {"user_id": "String", limit: "Int", fromDate: "String", sort: "String"},
-  resolve: async ({args}) => {
-    let posts = await Post.find({
-      "createdAt": {$gte: args.fromDate}
-    })
-      .sort({"createdAt": -1}).limit(args.limit);
-    posts = posts.map(e => ({...e._doc, isLiked: e._doc.likeList.includes(args.user_id)}));
-    return posts;
-  },
-});
+import Resolvers from "./resolvers";
+
+for (const resolver in Resolvers) {
+  PostTC.addResolver(Resolvers[resolver]);
+}
 
 const PostQuery = {
   postById: PostTC.getResolver("findById"),
   postByIds: PostTC.getResolver("findByIds"),
   postOne: PostTC.getResolver("findOne"),
   postMany: PostTC.getResolver("findMany"),
-  getPostLoggedIn: PostTC.getResolver("getPostLoggedIn"),
-  postCount: PostTC.getResolver("count"),
-  postConnection: PostTC.getResolver("connection"),
-  postPagination: PostTC.getResolver("pagination"),
-  likeList: PostTC.addRelation("likeList", {
-    resolver: () => UserTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.likeList,
-    },
-    projection: {likeList: 1},
-  }),
   owner: PostTC.addRelation("owner", {
     resolver: () => BusinessTC.getResolver("findById"),
     prepareArgs: {
@@ -40,84 +19,36 @@ const PostQuery = {
     },
     projection: {owner: 1},
   }),
+  postIsLiked: PostTC.addFields({
+    likeCount: {
+      type: 'Int',
+      resolve: (post) => post ? post.likeList ? post.likeList.length : 0 : 0,
+    },
+    isLiked: {
+      type: 'Boolean',
+      resolve: (source, _, context) => {
+        // get user id => context.req.headers.authorization
+        return false;
+      },
+    },
+    likeList: {
+      type: '[MongoID]',
+      resolve: () => []
+    }
+  }),
 };
-
-PostTC.addFields({
-  likeCount: {
-    type: 'Int',
-    resolve: (post) => post ? post.likeList ? post.likeList.length : 0 : 0,
-  },
-});
-
-PostTC.addResolver({
-  name: "postLike",
-  kind: "mutation",
-  type: PostTC,
-  args: {"user_id": "String", post_id: "String"},
-  resolve: async ({args}) => {
-    await Post.updateOne(
-      {_id: args.post_id},
-      {$addToSet: {likeList: args.user_id}}
-    ).then(async () => {
-      await User.updateOne(
-        {_id: args.user_id},
-        {$addToSet: {likedPosts: args.post_id}}
-      );
-    }).catch((error) => error);
-    return Post.findById(args.post_id);
-  },
-});
-
-PostTC.addResolver({
-  name: "postUnlike",
-  kind: "mutation",
-  type: PostTC,
-  args: {"user_id": "String", post_id: "String"},
-  resolve: async ({args}) => {
-    await Post.updateOne(
-      {_id: args.post_id},
-      {$pull: {likeList: args.user_id}}
-    ).then(async () => {
-      await User.updateOne(
-        {_id: args.user_id},
-        {$pull: {likedPosts: args.post_id}}
-      );
-    }).catch((error) => error);
-    return Post.findById(args.post_id);
-  },
-});
-
-PostTC.addResolver({
-  name: "postDeleteById",
-  kind: "mutation",
-  type: PostTC.getResolver("removeById"),
-  args: {post_id: "String", owner: "String"},
-  resolve: async ({args}) => {
-    await Post.remove(
-      {_id: args.post_id},
-      async () => {
-        await Business.updateOne(
-          {_id: args.owner},
-          {$pull: {posts: args.post_id}}
-        );
-      }
-    ).catch((error) => error);
-    return args.post_id;
-  },
-});
 
 const PostMutation = {
   postCreateOne: PostTC.getResolver("createOne"),
   postCreateMany: PostTC.getResolver("createMany"),
   postUpdateById: PostTC.getResolver("updateById"),
-  postLike: PostTC.getResolver("postLike"),
-  postUnlike: PostTC.getResolver("postUnlike"),
   postUpdateOne: PostTC.getResolver("updateOne"),
   postUpdateMany: PostTC.getResolver("updateMany"),
   postRemoveById: PostTC.getResolver("removeById"),
-  postDeleteById: PostTC.getResolver("postDeleteById"),
   postRemoveOne: PostTC.getResolver("removeOne"),
   postRemoveMany: PostTC.getResolver("removeMany"),
+  postDeleteById: PostTC.getResolver("postDeleteById"),
+  postLikeUnLike: PostTC.getResolver("postLikeUnLike"),
 };
 
 export {PostQuery, PostMutation};

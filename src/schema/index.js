@@ -13,29 +13,29 @@ import {MainCategoryListTCQuery, MainCategoryListTCMutation} from "./mainCategor
 const schemaComposer = new SchemaComposer();
 
 schemaComposer.Query.addFields({
-  // ...UserQuery,
-  // ...BusinessQuery,
+  ...UserQuery,
+  ...BusinessQuery,
   ...CategoryQuery,
-  // ...PostQuery,
-  // ...EventQuery,
-  // ...BusinessListQuery,
-  // ...CouponQuery,
-  // ...RequestQuery,
-  // ...ZorittQuery,
-  // ...MainCategoryListTCQuery,
+  ...PostQuery,
+  ...EventQuery,
+  ...BusinessListQuery,
+  ...CouponQuery,
+  ...RequestQuery,
+  ...ZorittQuery,
+  ...MainCategoryListTCQuery,
 });
 
 schemaComposer.Mutation.addFields({
-  // ...UserMutation,
-  // ...BusinessMutation,
-  // ...CategoryMutation,
-  // ...PostMutation,
-  // ...EventMutation,
-  // ...BusinessListMutation,
-  // ...CouponMutation,
-  // ...RequestMutation,
-  // ...ZorittMutation,
-  // ...MainCategoryListTCMutation,
+  ...UserMutation,
+  ...BusinessMutation,
+  ...CategoryMutation,
+  ...PostMutation,
+  ...EventMutation,
+  ...BusinessListMutation,
+  ...CouponMutation,
+  ...RequestMutation,
+  ...ZorittMutation,
+  ...MainCategoryListTCMutation,
 });
 
 export default schemaComposer.buildSchema();

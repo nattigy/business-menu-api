@@ -2,40 +2,15 @@ import {schemaComposer, toInputObjectType} from "graphql-compose";
 
 import {BusinessModel, BusinessTC} from "../../models/business";
 import {UserModel} from "../../models/user";
-import {BusinessList} from "../../models/businessList";
+import {BusinessListModel} from "../../models/businessList";
 import {EventModel} from "../../models/event";
 import {PostModel} from "../../models/post";
+import {calculateDistance} from "../../utils/utils";
 
-const getBusinessesLoggedIn = {
-  name: "getBusinessesLoggedIn",
-  kind: "query",
-  type: BusinessTC.getResolver("findMany").getType(),
-  args: {user_id: "String", limit: "Int", sort: "String"},
-  resolve: async ({args}) => {
-    let businesses = await BusinessModel.find()
-      .sort({"subscription": args.sort}).limit(args.limit);
-    businesses = businesses.map(e => ({...e._doc, isLiked: e._doc.favoriteList.includes(args.user_id)}));
-    return businesses;
-  },
-};
+// Queries
 
-function calculateDistance({lat, lng, bizLat, bizLng}) {
-  return (
-    (
-      (
-        Math.acos(
-          Math.sin((lat * Math.PI / 180))
-          *
-          Math.sin((bizLat * Math.PI / 180)) + Math.cos((lat * Math.PI / 180))
-          *
-          Math.cos((bizLat * Math.PI / 180)) * Math.cos(((lng - bizLng) * Math.PI / 180)))
-      ) * 180 / Math.PI
-    ) * 60 * 1.1515 * 1.609344
-  );
-}
-
-const businessFilterByLocation = {
-  name: "businessFilterByLocation",
+const getBusinessesByFilter = {
+  name: "getBusinessesByFilter",
   kind: "query",
   type: BusinessTC.getResolver("findMany").getType(),
   args: {lat: "Float", lng: "Float", query: "[String]", distance: "Int"},
@@ -54,112 +29,40 @@ const businessFilterByLocation = {
   },
 };
 
-const businessFilterByLocationAndFilter = {
-  name: "businessFilterByLocationAndFilter",
-  kind: "query",
-  type: BusinessTC.getResolver("findMany").getType(),
-  args: {lat: "Float", lng: "Float", query: "[String]", distance: "Int"},
-  resolve: async ({args}) => {
-    let businesses = await BusinessModel.find({
-      searchIndex: {
-        $in: args.query
-      }
-    }).sort({"subscription": "desc"});
-    businesses = businesses.filter((biz) => {
-      const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
-      biz.distance = distance;
-      return distance <= args.distance && biz;
-    });
-    businesses = businesses.filter((biz) => {
-      const now = new Date();
-      const hour = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
-      if(biz.openHours.length > 0){
-        const day = biz.openHours[now.getDay()-1];
-        const opens = parseInt(day.opens.split(":")[0]) <= hour;
-        const closes = parseInt(day.closes.split(":")[0])+6 >= hour;
-        return day.isOpen && opens && closes && biz;
-      }
-      return [];
-    });
-    return businesses;
-  },
-};
+// Mutations
 
-const businessFilterByFilter = {
-  name: "businessFilterByFilter",
-  kind: "query",
-  type: BusinessTC.getResolver("findMany").getType(),
-  args: {query: "[String]"},
-  resolve: async ({args}) => {
-    let businesses = await BusinessModel.find({
-      searchIndex: {
-        $in: args.query
-      }
-    }).sort({"subscription": "desc"});
-    businesses = businesses.filter((biz) => {
-      const now = new Date();
-      const hour = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
-      if(biz.openHours.length > 0){
-        const day = biz.openHours[now.getDay()-1];
-        const opens = parseInt(day.opens.split(":")[0]) <= hour;
-        const closes = parseInt(day.closes.split(":")[0])+6 >= hour;
-        return day.isOpen && opens && closes && biz;
-      }
-      return [];
-    });
-    return businesses;
-  },
-}
-
-const businessByIdLoggedIn = {
-  name: "businessByIdLoggedIn",
-  kind: "query",
-  type: BusinessTC.getResolver("findById").getType(),
-  args: {user_id: "String", business_id: "String"},
-  resolve: async ({args}) => {
-    let business = await BusinessModel.find({
-      _id: args.business_id
-    });
-    business = {...business[0]._doc, isLiked: business[0]._doc.favoriteList.includes(args.user_id)};
-    return business;
-  },
-};
-
-const businessAddToFavorite = {
-  name: "businessAddToFavorite",
+const businessLikeUnLike = {
+  name: "businessLikeUnLike",
   kind: "mutation",
   type: BusinessTC,
   args: {user_id: "String", business_id: "String"},
-  resolve: async ({args}) => {
-    await BusinessModel.updateOne(
-      {_id: args.business_id},
-      {$addToSet: {favoriteList: args.user_id}}
-    ).then(async () => {
-      await UserModel.updateOne(
-        {_id: args.user_id},
-        {$addToSet: {favorites: args.business_id}}
-      );
-    }).catch((error) => error);
-    return BusinessModel.findById(args.business_id);
-  },
-};
+  resolve: async ({args: {user_id, business_id}}) => {
+    const {favoriteList} = await BusinessModel.findById(
+      business_id, {favoriteList: 1},
+    );
 
-const businessRemoveFromFavorite = {
-  name: "businessRemoveFromFavorite",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {user_id: "String", business_id: "String"},
-  resolve: async ({args}) => {
-    await BusinessModel.updateOne(
-      {_id: args.business_id},
-      {$pull: {favoriteList: args.user_id}}
-    ).then(async () => {
-      await UserModel.updateOne(
-        {_id: args.user_id},
-        {$pull: {favorites: args.business_id}}
-      );
-    }).catch((error) => error);
-    return BusinessModel.findById(args.business_id);
+    if (favoriteList.contains(user_id)) {
+      await BusinessModel.updateOne(
+        {_id: business_id},
+        {$pull: {favoriteList: user_id}}
+      ).then(async () => {
+        await UserModel.updateOne(
+          {_id: user_id},
+          {$pull: {favorites: business_id}}
+        );
+      }).catch((error) => error);
+    } else {
+      await BusinessModel.updateOne(
+        {_id: business_id},
+        {$addToSet: {favoriteList: user_id}}
+      ).then(async () => {
+        await UserModel.updateOne(
+          {_id: user_id},
+          {$addToSet: {favorites: business_id}}
+        );
+      }).catch((error) => error);
+    }
+    return BusinessModel.findById(business_id);
   },
 };
 
@@ -211,7 +114,7 @@ const businessCreateOneCustomAdmin = {
     )
       .then(async (res) => {
         bizId = res._id;
-        await BusinessList.create(
+        await BusinessListModel.create(
           {
             autocompleteTerm: args.businessName.toLowerCase()
           }
@@ -250,13 +153,13 @@ const BusinessCreateManyCustomInput = toInputObjectType(InputTC);
 
 const businessCreateManyCustom = {
   name: "businessCreateManyCustom",
-    kind: "mutation",
-    type: BusinessTC,
-    args: {
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
     businesses: [BusinessCreateManyCustomInput]
   },
   resolve: async ({args}) => {
-    for (let i = 0; i < args.businesses.length; i ++){
+    for (let i = 0; i < args.businesses.length; i++) {
       let bizId = "";
       await BusinessModel.create(
         {
@@ -286,7 +189,7 @@ const businessCreateManyCustom = {
       )
         .then(async (res) => {
           bizId = res._id;
-          await BusinessList.create(
+          await BusinessListModel.create(
             {
               autocompleteTerm: args.businesses[i].businessName.toLowerCase()
             }
@@ -314,13 +217,13 @@ const removeByIdCustom = {
   resolve: async ({args}) => {
     const business = await BusinessModel.findById(args.id);
     await BusinessModel.findByIdAndDelete(args.id);
-    for (let i = 0; i < business.events.length; i++){
+    for (let i = 0; i < business.events.length; i++) {
       await EventModel.findByIdAndDelete(business.events[i]);
     }
-    for (let i = 0; i < business.posts.length; i++){
+    for (let i = 0; i < business.posts.length; i++) {
       await PostModel.findByIdAndDelete(business.posts[i]);
     }
-    for (let i = 0; i < business.branches.length; i++){
+    for (let i = 0; i < business.branches.length; i++) {
       await PostModel.findByIdAndDelete(business.branches[i]);
     }
     await UserModel.findByIdAndUpdate(business.owner, {
@@ -330,13 +233,8 @@ const removeByIdCustom = {
 };
 
 export default {
-  getBusinessesLoggedIn,
-  businessFilterByLocation,
-  businessFilterByLocationAndFilter,
-  businessFilterByFilter,
-  businessByIdLoggedIn,
-  businessAddToFavorite,
-  businessRemoveFromFavorite,
+  getBusinessesByFilter,
+  businessLikeUnLike,
   businessCreateOneCustomAdmin,
   businessCreateManyCustom,
   removeByIdCustom,

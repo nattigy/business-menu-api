@@ -11,13 +11,11 @@ for (const resolver in Resolvers) {
 }
 
 const BusinessQuery = {
-  // getBusinessById: BusinessTC.getResolver("getBusinessById"),
-  // getBusinessesByCategory: BusinessTC.getResolver("getBusinessesByCategory"),
-  // getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter"),
   businessById: BusinessTC.getResolver("findById"),
   businessByIds: BusinessTC.getResolver("findByIds"),
   businessOne: BusinessTC.getResolver("findOne"),
   businessMany: BusinessTC.getResolver("findMany"),
+  getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter"),
   businessPosts: BusinessTC.addRelation("posts", {
     resolver: () => PostTC.getResolver("findByIds"),
     prepareArgs: {
@@ -46,29 +44,38 @@ const BusinessQuery = {
     },
     projection: {owner: 1},
   }),
+  businessIsLiked: BusinessTC.addFields({
+    likeCount: {
+      type: 'Int',
+      resolve: (business) => business ? business.favoriteList ? business.favoriteList.length : 0 : 0,
+    },
+    isLiked: {
+      type: 'Boolean',
+      resolve: (source, _, context) => {
+        // get user id => context.req.headers.authorization
+        return false;
+      },
+    },
+    favoriteList: {
+      type: '[MongoID]',
+      resolve: () => []
+    }
+  }),
 };
-
-BusinessTC.addFields({
-  likeCount: {
-    type: 'Int',
-    resolve: (business) => business ? business.favoriteList ? business.favoriteList.length : 0 : 0,
-  },
-});
 
 const BusinessMutation = {
   businessCreateOne: BusinessTC.getResolver("createOne"),
-  businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin"),
   businessCreateMany: BusinessTC.getResolver("createMany"),
-  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom"),
   businessUpdateById: BusinessTC.getResolver("updateById"),
-  businessAddToFavorite: BusinessTC.getResolver("businessAddToFavorite"),
-  businessRemoveFromFavorite: BusinessTC.getResolver("businessRemoveFromFavorite"),
   businessUpdateOne: BusinessTC.getResolver("updateOne"),
   businessUpdateMany: BusinessTC.getResolver("updateMany"),
   businessRemoveById: BusinessTC.getResolver("removeById"),
-  businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom"),
   businessRemoveOne: BusinessTC.getResolver("removeOne"),
   businessRemoveMany: BusinessTC.getResolver("removeMany"),
+  businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin"),
+  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom"),
+  businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom"),
+  businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike"),
 };
 
 export {BusinessQuery, BusinessMutation};

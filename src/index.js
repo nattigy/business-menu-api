@@ -6,14 +6,14 @@ import {ApolloServer, PubSub } from "apollo-server-express";
 // import csrf from "csurf";
 // import bodyParser from "body-parser";
 
-// import "./utils/db";
+import "./config/mongodb-config";
 import schema from "./schema";
 
 // const csrfMiddleware = csrf({ cookie: true });
 
 dotenv.config();
 const app = express();
-// const pubSub = new PubSub();
+const pubSub = new PubSub();
 
 // app.use(cookieParser());
 // app.use(csrfMiddleware);
@@ -29,7 +29,7 @@ const server = new ApolloServer({
   introspection: true,
   tracing: true,
   path: "/",
-  // context: ({ req }) => ({ req, pubSub })
+  context: ({ req }) => ({ req, pubSub })
 });
 
 server.applyMiddleware({
