@@ -263,4 +263,4 @@ BusinessSchema.index({createdAt: 1, updatedAt: 1});
 const BusinessModel = mongoose.model("Business", BusinessSchema);
 const BusinessTC = composeWithMongoose(BusinessModel);
 
-module.exports = {BusinessModel, BusinessTC, BusinessSchema};
+export {BusinessModel, BusinessTC, BusinessSchema};

@@ -14,7 +14,7 @@ const eventLikeUnLike = {
       event_id, {interestedUsers: 1},
     );
 
-    if(interestedUsers.contains(user_id)){
+    if (interestedUsers.contains(user_id)) {
       await EventModel.updateOne(
         {_id: event_id},
         {$pull: {interestedUsers: user_id}}
@@ -58,7 +58,4 @@ const eventDeleteById = {
   },
 };
 
-export default {
-  eventLikeUnLike,
-  eventDeleteById
-};
+export default {eventLikeUnLike, eventDeleteById};

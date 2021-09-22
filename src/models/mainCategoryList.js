@@ -28,7 +28,7 @@ const MainCategoryListSchema = new Schema(
 MainCategoryListSchema.plugin(timestamps);
 MainCategoryListSchema.index({createdAt: 1, updatedAt: 1});
 
-export const MainCategoryListModel = mongoose.model("MainCategoryList", MainCategoryListSchema);
-export const MainCategoryListTC = composeWithMongoose(MainCategoryListModel);
+const MainCategoryListModel = mongoose.model("MainCategoryList", MainCategoryListSchema);
+const MainCategoryListTC = composeWithMongoose(MainCategoryListModel);
 
-module.exports = {MainCategoryListModel, MainCategoryListTC, MainCategoryListSchema};
+export {MainCategoryListModel, MainCategoryListTC, MainCategoryListSchema};

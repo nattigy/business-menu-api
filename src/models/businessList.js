@@ -20,4 +20,4 @@ BusinessListSchema.index({createdAt: 1, updatedAt: 1});
 const BusinessListModel = mongoose.model("BusinessList", BusinessListSchema);
 const BusinessListTC = composeWithMongoose(BusinessListModel);
 
-module.exports = {BusinessListModel, BusinessListTC, BusinessListSchema};
+export {BusinessListModel, BusinessListTC, BusinessListSchema};

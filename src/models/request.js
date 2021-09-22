@@ -37,4 +37,4 @@ RequestSchema.index({createdAt: 1, updatedAt: 1});
 const RequestModel = mongoose.model("Request", RequestSchema);
 const RequestTC = composeWithMongoose(RequestModel);
 
-module.exports = {RequestModel, RequestTC, RequestSchema};
+export {RequestModel, RequestTC, RequestSchema};

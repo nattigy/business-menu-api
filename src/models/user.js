@@ -1,6 +1,8 @@
 import mongoose, {Schema} from "mongoose";
+import {schemaComposer} from "graphql-compose";
 import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
+import bcrypt from 'bcryptjs';
 
 const UserSchema = new Schema(
   {
@@ -33,10 +35,25 @@ const UserSchema = new Schema(
       default: "ACTIVE",
       enum: ["ACTIVE", "BLOCKED"],
     },
-    userType: {
-      type: String,
-      default: "Normal",
-      enum: ["Normal", "Owner", "Admin", "Sales"],
+    role: {
+      type: [String],
+      default: "NORMAL",
+      enum: ["NORMAL", "OWNER", "ADMIN", "SALES"],
+    },
+    locale: String,
+    account: {
+      verification: {
+        verified: {
+          type: Boolean,
+          default: false
+        },
+        token: String,
+        expiresIn: Date
+      },
+      resetPassword: {
+        token: String,
+        expiresIn: Date
+      }
     },
     interestedInEvents: {
       type: [
@@ -92,7 +109,39 @@ const UserSchema = new Schema(
 UserSchema.plugin(timestamps);
 UserSchema.index({createdAt: 1, updatedAt: 1});
 
-const UserModel = mongoose.model("User", UserSchema);
-const UserTC = composeWithMongoose(UserModel);
+UserSchema.statics.emailExist = function (email) {
+  return this.findOne({email});
+};
 
-module.exports = {UserModel, UserTC, UserSchema};
+UserSchema.methods.comparePassword = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
+const UserModel = mongoose.model("User", UserSchema);
+const UserTC = composeWithMongoose(UserModel).removeField('password');
+
+const UserAccountTC = UserTC.getFieldTC('account');
+
+UserAccountTC.getFieldTC('verification').removeField(['token', 'expiresIn']);
+
+UserAccountTC.removeField('resetPassword');
+
+schemaComposer.createObjectTC({
+  name: 'AccessToken',
+  fields: {accessToken: 'String!'}
+});
+
+schemaComposer.createObjectTC({
+  name: 'Succeed',
+  fields: {succeed: 'Boolean!'}
+});
+
+schemaComposer.createEnumTC({
+  name: 'Locale',
+  values: {
+    en: {value: 'en'},
+    am: {value: 'am'}
+  }
+});
+
+export {UserModel, UserTC, UserSchema};

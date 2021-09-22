@@ -34,4 +34,4 @@ CategorySchema.index({createdAt: 1, updatedAt: 1});
 const CategoryModel = mongoose.model("Category", CategorySchema);
 const CategoryTC = composeWithMongoose(CategoryModel);
 
-module.exports = {CategoryModel, CategoryTC, CategorySchema};
+export {CategoryModel, CategoryTC, CategorySchema};

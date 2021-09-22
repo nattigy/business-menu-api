@@ -56,7 +56,4 @@ const postDeleteById = {
   },
 };
 
-export default {
-  postLikeUnLike,
-  postDeleteById,
-};
+export default {postLikeUnLike, postDeleteById};

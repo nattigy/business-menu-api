@@ -50,4 +50,4 @@ CouponSchema.index({createdAt: 1, updatedAt: 1});
 const CouponModel = mongoose.model("Coupon", CouponSchema);
 const CouponTC = composeWithMongoose(CouponModel);
 
-module.exports = {CouponModel, CouponTC, CouponSchema};
+export {CouponModel, CouponTC, CouponSchema};

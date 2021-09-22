@@ -50,4 +50,4 @@ PostSchema.index({createdAt: 1, updatedAt: 1});
 const PostModel = mongoose.model("Post", PostSchema);
 const PostTC = composeWithMongoose(PostModel);
 
-module.exports = {PostModel, PostTC, PostSchema};
+export {PostModel, PostTC, PostSchema};

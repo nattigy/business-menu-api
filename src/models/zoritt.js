@@ -19,4 +19,4 @@ ZorittSchema.index({createdAt: 1, updatedAt: 1});
 const ZorittModel = mongoose.model("Zoritt", ZorittSchema);
 const ZorittTC = composeWithMongoose(ZorittModel);
 
-module.exports = {ZorittModel, ZorittTC, ZorittSchema};
+export {ZorittModel, ZorittTC, ZorittSchema};

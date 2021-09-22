@@ -60,4 +60,4 @@ EventSchema.index({createdAt: 1, updatedAt: 1});
 const EventModel = mongoose.model("Event", EventSchema);
 const EventTC = composeWithMongoose(EventModel);
 
-module.exports  = {EventModel, EventTC, EventSchema};
+export {EventModel, EventTC, EventSchema};
