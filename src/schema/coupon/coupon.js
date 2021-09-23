@@ -1,15 +1,13 @@
 import {CouponTC} from "../../models/coupon";
 import {UserTC} from "../../models/user";
 import {BusinessTC} from "../../models/business";
+import {authMiddleware as middleware} from "../../middleware/authMiddleware";
 
 const CouponQuery = {
-  couponById: CouponTC.getResolver("findById"),
-  couponByIds: CouponTC.getResolver("findByIds"),
-  couponOne: CouponTC.getResolver("findOne"),
-  couponMany: CouponTC.getResolver("findMany"),
-  couponCount: CouponTC.getResolver("count"),
-  couponConnection: CouponTC.getResolver("connection"),
-  couponPagination: CouponTC.getResolver("pagination"),
+  couponById: CouponTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
+  couponByIds: CouponTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
+  couponOne: CouponTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
+  couponMany: CouponTC.getResolver("findMany",[middleware.isAuth, middleware.isAdmin]),
   owner: CouponTC.addRelation("owner", {
     resolver: () => UserTC.getResolver("findById"),
     prepareArgs: {
@@ -27,14 +25,14 @@ const CouponQuery = {
 };
 
 const CouponMutation = {
-  couponCreateOne: CouponTC.getResolver("createOne"),
-  couponCreateMany: CouponTC.getResolver("createMany"),
-  couponUpdateById: CouponTC.getResolver("updateById"),
-  couponUpdateOne: CouponTC.getResolver("updateOne"),
-  couponUpdateMany: CouponTC.getResolver("updateMany"),
-  couponRemoveById: CouponTC.getResolver("removeById"),
-  couponRemoveOne: CouponTC.getResolver("removeOne"),
-  couponRemoveMany: CouponTC.getResolver("removeMany"),
+  couponCreateOne: CouponTC.getResolver("createOne",[middleware.isAuth, middleware.isAdmin]),
+  couponCreateMany: CouponTC.getResolver("createMany",[middleware.isAuth, middleware.isAdmin]),
+  couponUpdateById: CouponTC.getResolver("updateById",[middleware.isAuth, middleware.isAdmin]),
+  couponUpdateOne: CouponTC.getResolver("updateOne",[middleware.isAuth, middleware.isAdmin]),
+  couponUpdateMany: CouponTC.getResolver("updateMany",[middleware.isAuth, middleware.isAdmin]),
+  couponRemoveById: CouponTC.getResolver("removeById",[middleware.isAuth, middleware.isAdmin]),
+  couponRemoveOne: CouponTC.getResolver("removeOne",[middleware.isAuth, middleware.isAdmin]),
+  couponRemoveMany: CouponTC.getResolver("removeMany",[middleware.isAuth, middleware.isAdmin]),
 };
 
 export {CouponQuery, CouponMutation};

@@ -39,6 +39,7 @@ const server = new ApolloServer({
       user: userService.getUser(token.replace('Bearer', '')),
       headers: req.headers,
       accessToken: req.headers.authorization,
+      phoneVerification: req.headers.phoneverification || '',
       i18n: req.headers.i18n
     };
   },

@@ -6,7 +6,8 @@ dotenv.config();
 mongoose.Promise = global.Promise;
 
 const connection = mongoose.connect(
-  process.env.MONGODB_URI,
+  // process.env.MONGODB_URI,
+  "mongodb://localhost:27017/zoritt_db",
   {
     autoIndex: true,
     reconnectTries: Number.MAX_VALUE,

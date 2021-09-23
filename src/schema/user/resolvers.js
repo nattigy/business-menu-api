@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import {UserModel, UserTC} from "../../models/user";
 import {userService} from '../../utils/userService';
+import roles from "../../utils/roles";
 // import redis from '../../config/redis-config';
 
 const addUserCoupon = {
@@ -48,8 +49,13 @@ const signIn = {
 
       const accessToken = jwt.sign(
         {
-          ...user._doc,
           _id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+          roles: user.roles,
         }, process.env.JWT_SECRET,
         {
           expiresIn: process.env.JWT_EXPIRATION
@@ -63,14 +69,18 @@ const signIn = {
   }
 };
 
-const signUp = {
-  name: 'signUp',
+const userSignUp = {
+  name: 'userSignUp',
   type: 'AccessToken!',
   args: {
     email: 'String!',
-    password: 'String!'
+    password: 'String!',
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+    phoneNumber: 'String!',
   },
-  resolve: async ({args: {email, password}, context: {i18n}}) => {
+  resolve: async ({args: {email, password, firstName, middleName, lastName,phoneNumber}, context: {i18n}}) => {
     try {
       let user = await UserModel.emailExist(email);
       if (user) {
@@ -81,21 +91,84 @@ const signUp = {
 
       user = await new UserModel({
         email,
+        firstName,
+        middleName,
+        lastName,
+        phoneNumber,
         password: hash,
         locale: i18n.language
       }).save();
 
       const accessToken = jwt.sign(
         {
-          ...user._doc,
           _id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
         }, process.env.JWT_SECRET,
         {
           expiresIn: process.env.JWT_EXPIRATION
         },
       );
 
-      // const token = await userService.verifyRequest(user);
+      await userService.verifyRequest(user);
+
+      // userMail.verifyRequest(user, token);
+
+      return {accessToken};
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+};
+
+const ownerSignUp = {
+  name: 'ownerSignUp',
+  type: 'AccessToken!',
+  args: {
+    email: 'String!',
+    password: 'String!',
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+  },
+  resolve: async ({args: {email, password, firstName, middleName, lastName}, context: {i18n, phoneNumber}}) => {
+    try {
+      let user = await UserModel.emailExist(email);
+      if (user) {
+        return Promise.reject(new Error('Email has already been taken.'));
+      }
+
+      const hash = bcrypt.hashSync(password, 10);
+
+      user = await new UserModel({
+        email,
+        firstName,
+        middleName,
+        lastName,
+        phoneNumber,
+        password: hash,
+        locale: i18n.language,
+        roles: [roles.owner]
+      }).save();
+
+      const accessToken = jwt.sign(
+        {
+          _id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+        }, process.env.JWT_SECRET,
+        {
+          expiresIn: process.env.JWT_EXPIRATION
+        },
+      );
+
+      await userService.verifyRequest(user);
 
       // userMail.verifyRequest(user, token);
 
@@ -125,7 +198,7 @@ const verifyRequest = {
   type: 'Succeed!',
   resolve: async ({context: {user}}) => {
     try {
-      const token = await userService.verifyRequest(user);
+      await userService.verifyRequest(user);
 
       // userMail.verifyRequest(user, token);
 
@@ -305,11 +378,11 @@ const updateUser = {
 
       await user.save();
 
-      // if (verifyRequest) {
-      //   const token = await userService.verifyRequest(user);
-      //
-      //   userMail.verifyRequest(user, token);
-      // }
+      if (verifyRequest) {
+        await userService.verifyRequest(user);
+
+        // userMail.verifyRequest(user, token);
+      }
 
       return user;
     } catch (error) {
@@ -339,7 +412,8 @@ export default {
   addUserCoupon,
   user,
   signIn,
-  signUp,
+  userSignUp,
+  ownerSignUp,
   // logout,
   verifyRequest,
   verify,

@@ -1,21 +1,22 @@
-import {BusinessTC} from "../../models/business";
+import {BusinessTC,BusinessModel} from "../../models/business";
 import {CategoryTC} from "../../models/category";
 import {UserTC} from "../../models/user";
 import {PostTC} from "../../models/post";
 import {EventTC} from "../../models/event";
 
 import Resolvers from "./resolvers";
+import {authMiddleware as middleware} from "../../middleware/authMiddleware";
 
 for (const resolver in Resolvers) {
   BusinessTC.addResolver(Resolvers[resolver]);
 }
 
 const BusinessQuery = {
-  businessById: BusinessTC.getResolver("findById"),
-  businessByIds: BusinessTC.getResolver("findByIds"),
-  businessOne: BusinessTC.getResolver("findOne"),
-  businessMany: BusinessTC.getResolver("findMany"),
-  getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter"),
+  businessById: BusinessTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
+  businessByIds: BusinessTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
+  businessOne: BusinessTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
+  businessMany: BusinessTC.getResolver("findMany",[middleware.isAuth, middleware.isAdmin]),
+  getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter",[middleware.isGuest]),
   businessPosts: BusinessTC.addRelation("posts", {
     resolver: () => PostTC.getResolver("findByIds"),
     prepareArgs: {
@@ -51,9 +52,9 @@ const BusinessQuery = {
     },
     isLiked: {
       type: 'Boolean',
-      resolve: (source, _, context) => {
-        // get user id => context.req.headers.authorization
-        return false;
+      resolve: (business, _, {user}) => {
+        const biz = BusinessModel.findById(business._id,{favoriteList: 1});
+        return biz.favoriteList.contains(user._id);
       },
     },
     favoriteList: {
@@ -64,18 +65,18 @@ const BusinessQuery = {
 };
 
 const BusinessMutation = {
-  businessCreateOne: BusinessTC.getResolver("createOne"),
-  businessCreateMany: BusinessTC.getResolver("createMany"),
-  businessUpdateById: BusinessTC.getResolver("updateById"),
-  businessUpdateOne: BusinessTC.getResolver("updateOne"),
-  businessUpdateMany: BusinessTC.getResolver("updateMany"),
-  businessRemoveById: BusinessTC.getResolver("removeById"),
-  businessRemoveOne: BusinessTC.getResolver("removeOne"),
-  businessRemoveMany: BusinessTC.getResolver("removeMany"),
-  businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin"),
-  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom"),
-  businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom"),
-  businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike"),
+  businessCreateOne: BusinessTC.getResolver("createOne",[middleware.isAuth, middleware.isAdmin]),
+  businessCreateMany: BusinessTC.getResolver("createMany",[middleware.isAuth, middleware.isAdmin]),
+  businessUpdateById: BusinessTC.getResolver("updateById",[middleware.isAuth, middleware.isAdmin]),
+  businessUpdateOne: BusinessTC.getResolver("updateOne",[middleware.isAuth, middleware.isAdmin]),
+  businessUpdateMany: BusinessTC.getResolver("updateMany",[middleware.isAuth, middleware.isAdmin]),
+  businessRemoveById: BusinessTC.getResolver("removeById",[middleware.isAuth, middleware.isAdmin]),
+  businessRemoveOne: BusinessTC.getResolver("removeOne",[middleware.isAuth, middleware.isAdmin]),
+  businessRemoveMany: BusinessTC.getResolver("removeMany",[middleware.isAuth, middleware.isAdmin]),
+  businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin",[middleware.isAuth, middleware.isAdmin]),
+  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom",[middleware.isAuth, middleware.isOwner]),
+  businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom",[middleware.isAuth, middleware.isAdmin]),
+  businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike",[middleware.isAuth]),
 };
 
 export {BusinessQuery, BusinessMutation};

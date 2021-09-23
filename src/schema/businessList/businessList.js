@@ -1,24 +1,22 @@
 import {BusinessListTC} from "../../models/businessList";
+import {authMiddleware as middleware} from "../../middleware/authMiddleware";
 
 const BusinessListQuery = {
-  businessListById: BusinessListTC.getResolver("findById"),
-  businessListByIds: BusinessListTC.getResolver("findByIds"),
-  businessListOne: BusinessListTC.getResolver("findOne"),
-  businessListMany: BusinessListTC.getResolver("findMany"),
-  businessListCount: BusinessListTC.getResolver("count"),
-  businessListConnection: BusinessListTC.getResolver("connection"),
-  businessListPagination: BusinessListTC.getResolver("pagination"),
+  businessListById: BusinessListTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
+  businessListByIds: BusinessListTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
+  businessListOne: BusinessListTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
+  businessListMany: BusinessListTC.getResolver("findMany",[middleware.isGuest]),
 };
 
 const BusinessListMutation = {
-  businessListCreateOne: BusinessListTC.getResolver("createOne"),
-  businessListCreateMany: BusinessListTC.getResolver("createMany"),
-  businessListUpdateById: BusinessListTC.getResolver("updateById"),
-  businessListUpdateOne: BusinessListTC.getResolver("updateOne"),
-  businessListUpdateMany: BusinessListTC.getResolver("updateMany"),
-  businessListRemoveById: BusinessListTC.getResolver("removeById"),
-  businessListRemoveOne: BusinessListTC.getResolver("removeOne"),
-  businessListRemoveMany: BusinessListTC.getResolver("removeMany"),
+  businessListCreateOne: BusinessListTC.getResolver("createOne",[middleware.isAuth, middleware.isAdmin]),
+  businessListCreateMany: BusinessListTC.getResolver("createMany",[middleware.isAuth, middleware.isAdmin]),
+  businessListUpdateById: BusinessListTC.getResolver("updateById",[middleware.isAuth, middleware.isAdmin]),
+  businessListUpdateOne: BusinessListTC.getResolver("updateOne",[middleware.isAuth, middleware.isAdmin]),
+  businessListUpdateMany: BusinessListTC.getResolver("updateMany",[middleware.isAuth, middleware.isAdmin]),
+  businessListRemoveById: BusinessListTC.getResolver("removeById",[middleware.isAuth, middleware.isAdmin]),
+  businessListRemoveOne: BusinessListTC.getResolver("removeOne",[middleware.isAuth, middleware.isAdmin]),
+  businessListRemoveMany: BusinessListTC.getResolver("removeMany",[middleware.isAuth, middleware.isAdmin]),
 };
 
 export {BusinessListQuery, BusinessListMutation};

@@ -35,7 +35,7 @@ const UserSchema = new Schema(
       default: "ACTIVE",
       enum: ["ACTIVE", "BLOCKED"],
     },
-    role: {
+    roles: {
       type: [String],
       default: "NORMAL",
       enum: ["NORMAL", "OWNER", "ADMIN", "SALES"],

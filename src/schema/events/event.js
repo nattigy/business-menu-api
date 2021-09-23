@@ -1,18 +1,19 @@
 import {BusinessTC} from "../../models/business";
-import {EventTC} from "../../models/event";
+import {EventModel, EventTC} from "../../models/event";
 
 import Resolvers from "./resolvers";
+import {authMiddleware as middleware} from "../../middleware/authMiddleware";
 
 for (const resolver in Resolvers) {
   EventTC.addResolver(Resolvers[resolver]);
 }
 
 const EventQuery = {
-  eventById: EventTC.getResolver("findById"),
-  eventByIds: EventTC.getResolver("findByIds"),
-  eventOne: EventTC.getResolver("findOne"),
-  eventMany: EventTC.getResolver("findMany"),
-  owner: EventTC.addRelation("owner", {
+  eventById: EventTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
+  eventByIds: EventTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
+  eventOne: EventTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
+  eventMany: EventTC.getResolver("findMany",[middleware.isAuth, middleware.isAdmin]),
+  eventOwner: EventTC.addRelation("owner", {
     resolver: () => BusinessTC.getResolver("findById"),
     prepareArgs: {
       _id: (source) => source.owner,
@@ -26,9 +27,9 @@ const EventQuery = {
     },
     isInterested: {
       type: 'Boolean',
-      resolve: (source, _, context) => {
-        // get user id => context.req.headers.authorization
-        return false;
+      resolve: (event, _, {user}) => {
+        const ev = EventModel.findById(event._id,{interestedUsers: 1});
+        return ev.favoriteList.contains(user._id);
       },
     },
     interestedUsers: {
@@ -39,16 +40,16 @@ const EventQuery = {
 };
 
 const EventMutation = {
-  eventCreateOne: EventTC.getResolver("createOne"),
-  eventCreateMany: EventTC.getResolver("createMany"),
-  eventUpdateById: EventTC.getResolver("updateById"),
-  eventUpdateOne: EventTC.getResolver("updateOne"),
-  eventUpdateMany: EventTC.getResolver("updateMany"),
-  eventRemoveById: EventTC.getResolver("removeById"),
-  eventRemoveOne: EventTC.getResolver("removeOne"),
-  eventRemoveMany: EventTC.getResolver("removeMany"),
-  eventDeleteById: EventTC.getResolver("eventDeleteById"),
-  eventLikeUnLike: EventTC.getResolver("eventLikeUnLike"),
+  eventCreateOne: EventTC.getResolver("createOne",[middleware.isAuth, middleware.isAdmin]),
+  eventCreateMany: EventTC.getResolver("createMany",[middleware.isAuth, middleware.isAdmin]),
+  eventUpdateById: EventTC.getResolver("updateById",[middleware.isAuth, middleware.isAdmin]),
+  eventUpdateOne: EventTC.getResolver("updateOne",[middleware.isAuth, middleware.isAdmin]),
+  eventUpdateMany: EventTC.getResolver("updateMany",[middleware.isAuth, middleware.isAdmin]),
+  eventRemoveById: EventTC.getResolver("removeById",[middleware.isAuth, middleware.isAdmin]),
+  eventRemoveOne: EventTC.getResolver("removeOne",[middleware.isAuth, middleware.isAdmin]),
+  eventRemoveMany: EventTC.getResolver("removeMany",[middleware.isAuth, middleware.isAdmin]),
+  eventDeleteById: EventTC.getResolver("eventDeleteById",[middleware.isAuth, middleware.isAdmin]),
+  eventLikeUnLike: EventTC.getResolver("eventLikeUnLike",[middleware.isAuth, middleware.isAdmin]),
 };
 
 export {EventQuery, EventMutation};
