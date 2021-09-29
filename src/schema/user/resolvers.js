@@ -62,7 +62,7 @@ const signIn = {
         },
       );
 
-      return {accessToken};
+      return {accessToken, roles: user.roles};
     } catch (error) {
       return Promise.reject(error);
     }
@@ -80,7 +80,7 @@ const userSignUp = {
     lastName: 'String!',
     phoneNumber: 'String!',
   },
-  resolve: async ({args: {email, password, firstName, middleName, lastName,phoneNumber}, context: {i18n}}) => {
+  resolve: async ({args: {email, password, firstName, middleName, lastName,phoneNumber}}) => {
     try {
       let user = await UserModel.emailExist(email);
       if (user) {
@@ -96,7 +96,6 @@ const userSignUp = {
         lastName,
         phoneNumber,
         password: hash,
-        locale: i18n.language
       }).save();
 
       const accessToken = jwt.sign(
@@ -134,7 +133,7 @@ const ownerSignUp = {
     middleName: 'String!',
     lastName: 'String!',
   },
-  resolve: async ({args: {email, password, firstName, middleName, lastName}, context: {i18n, phoneNumber}}) => {
+  resolve: async ({args: {email, password, firstName, middleName, lastName}, context: {phoneNumber}}) => {
     try {
       let user = await UserModel.emailExist(email);
       if (user) {
@@ -150,7 +149,6 @@ const ownerSignUp = {
         lastName,
         phoneNumber,
         password: hash,
-        locale: i18n.language,
         roles: [roles.owner]
       }).save();
 
@@ -391,22 +389,22 @@ const updateUser = {
   }
 };
 
-const switchLocale = {
-  name: 'switchLocale',
-  type: 'User!',
-  args: {locale: 'Locale!'},
-  resolve: async ({args: {locale}, context: {user}}) => {
-    try {
-      user.set({locale});
-
-      await user.save();
-
-      return user;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-};
+// const switchLocale = {
+//   name: 'switchLocale',
+//   type: 'User!',
+//   args: {locale: 'Locale!'},
+//   resolve: async ({args: {locale}, context: {user}}) => {
+//     try {
+//       user.set({locale});
+//
+//       await user.save();
+//
+//       return user;
+//     } catch (error) {
+//       return Promise.reject(error);
+//     }
+//   }
+// };
 
 export default {
   addUserCoupon,
@@ -421,5 +419,5 @@ export default {
   newPassword,
   changePassword,
   updateUser,
-  switchLocale,
+  // switchLocale,
 };

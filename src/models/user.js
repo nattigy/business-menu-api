@@ -40,7 +40,7 @@ const UserSchema = new Schema(
       default: "NORMAL",
       enum: ["NORMAL", "OWNER", "ADMIN", "SALES"],
     },
-    locale: String,
+    // locale: String,
     account: {
       verification: {
         verified: {
@@ -128,7 +128,10 @@ UserAccountTC.removeField('resetPassword');
 
 schemaComposer.createObjectTC({
   name: 'AccessToken',
-  fields: {accessToken: 'String!'}
+  fields: {
+    accessToken: 'String!',
+    roles: '[String]'
+  }
 });
 
 schemaComposer.createObjectTC({
@@ -136,12 +139,12 @@ schemaComposer.createObjectTC({
   fields: {succeed: 'Boolean!'}
 });
 
-schemaComposer.createEnumTC({
-  name: 'Locale',
-  values: {
-    en: {value: 'en'},
-    am: {value: 'am'}
-  }
-});
+// schemaComposer.createEnumTC({
+//   name: 'Locale',
+//   values: {
+//     en: {value: 'en'},
+//     am: {value: 'am'}
+//   }
+// });
 
 export {UserModel, UserTC, UserSchema};

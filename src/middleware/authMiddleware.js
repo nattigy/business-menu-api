@@ -49,7 +49,7 @@ const authMiddleware = {
       })
       .catch(() => Promise.reject(new Error('Error happened!')));
     if (phoneNumber === "") {
-      return Promise.reject(new Error('Error happened!'));
+      return Promise.reject(new Error('Phone number not detected!'));
     }
     context.phoneNumber = phoneNumber;
     return resolve(source, args, context, info);

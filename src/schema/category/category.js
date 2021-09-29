@@ -2,10 +2,10 @@ import {CategoryTC} from "../../models/category";
 import {authMiddleware as middleware} from "../../middleware/authMiddleware";
 
 const CategoryQuery = {
-  categoryById: CategoryTC.getResolver("findById",[middleware.isGuest]),
-  categoryByIds: CategoryTC.getResolver("findByIds",[middleware.isGuest]),
-  categoryOne: CategoryTC.getResolver("findOne",[middleware.isGuest]),
-  categoryMany: CategoryTC.getResolver("findMany",[middleware.isGuest]),
+  categoryById: CategoryTC.getResolver("findById"),
+  categoryByIds: CategoryTC.getResolver("findByIds"),
+  categoryOne: CategoryTC.getResolver("findOne"),
+  categoryMany: CategoryTC.getResolver("findMany"),
 };
 
 const CategoryMutation = {

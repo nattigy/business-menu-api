@@ -9,7 +9,7 @@ import {ApolloServer} from "apollo-server-express";
 import schema from "./schema";
 import {userService} from "./utils/userService";
 import {authentication} from "./middleware/authentication";
-import { i18next, i18nextMiddleware } from './i18next/index';
+// import { i18next, i18nextMiddleware } from './i18next/index';
 
 // import "./config/redis-config";
 import "./config/mongodb-config";
@@ -36,11 +36,11 @@ const server = new ApolloServer({
   context: ({req}) => {
     const token = req.headers.authorization || '';
     return {
-      user: userService.getUser(token.replace('Bearer', '')),
+      user: userService.getUser(token.replace("Bearer","")),
       headers: req.headers,
       accessToken: req.headers.authorization,
       phoneVerification: req.headers.phoneverification || '',
-      i18n: req.headers.i18n
+      // i18n: req.headers.i18n
     };
   },
 });
@@ -50,7 +50,7 @@ server.applyMiddleware({
   path: "/",
   cors: "no-cors",
   authentication,
-  language: i18nextMiddleware.handle(i18next),
+  // language: i18nextMiddleware.handle(i18next),
 });
 
 app.listen({port: process.env.PORT}, () => {

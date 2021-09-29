@@ -76,7 +76,7 @@ const UserMutation = {
   newPassword: UserTC.getResolver('newPassword', [middleware.isGuest, validator.newPassword]),
   changePassword: UserTC.getResolver('changePassword', [middleware.isAuth, validator.changePassword]),
   updateUser: UserTC.getResolver('updateUser', [middleware.isAuth, validator.updateUser]),
-  switchLocale: UserTC.getResolver('switchLocale', [middleware.isAuth])
+  // switchLocale: UserTC.getResolver('switchLocale', [middleware.isAuth])
 };
 
 export {UserQuery, UserMutation};
