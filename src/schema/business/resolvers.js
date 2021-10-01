@@ -74,7 +74,7 @@ const businessCreateOneCustomAdmin = {
   type: BusinessTC,
   args: {
     businessName: "String!",
-    phoneNumber: "String!",
+    phoneNumbers: "String!",
     location: "String!",
     locationDescription: "String",
     pictures: ["String!"],
@@ -87,7 +87,7 @@ const businessCreateOneCustomAdmin = {
   },
   resolve: async ({args: {
     businessName,
-    phoneNumber,
+    phoneNumbers,
     claimed,
     location,
     locationDescription,
@@ -102,7 +102,7 @@ const businessCreateOneCustomAdmin = {
     await BusinessModel.create(
       {
         businessName,
-        phoneNumber,
+        phoneNumbers,
         claimed,
         location,
         locationDescription,
@@ -115,7 +115,7 @@ const businessCreateOneCustomAdmin = {
         owner: user._id,
         branches: [
           {
-            phoneNumber,
+            phoneNumbers,
             location,
             locationDescription,
             lng,
@@ -148,7 +148,7 @@ const InputTC = schemaComposer.createObjectTC({
   name: 'BusinessCreateManyCustomInput',
   fields: {
     businessName: "String!",
-    phoneNumber: ["String!"],
+    phoneNumbers: ["String!"],
     location: "String!",
     locationDescription: "String!",
     pictures: ["String!"],
@@ -177,7 +177,7 @@ const businessCreateManyCustom = {
       await BusinessModel.create(
         {
           businessName: businesses[i].businessName,
-          phoneNumber: businesses[i].phoneNumber,
+          phoneNumbers: businesses[i].phoneNumbers,
           claimed: businesses[i].claimed,
           location: businesses[i].location,
           locationDescription: businesses[i].locationDescription,
@@ -190,7 +190,7 @@ const businessCreateManyCustom = {
           owner: user._id,
           branches: [
             {
-              phoneNumber: businesses[i].phoneNumber,
+              phoneNumbers: businesses[i].phoneNumbers,
               location: businesses[i].location,
               locationDescription: businesses[i].locationDescription,
               lng: businesses[i].lng,

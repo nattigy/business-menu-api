@@ -38,7 +38,10 @@ const subscriptionSchema = new Schema({
 });
 
 const branchesSchema = new Schema({
-  phoneNumber: {
+  branchName: {
+    type: String
+  },
+  phoneNumbers: {
     type: [String],
     default: [],
   },
@@ -67,6 +70,11 @@ const branchesSchema = new Schema({
     type: String,
     default: "",
   },
+  status: {
+    type: String,
+    enum: ["OPEN", "CLOSED", "OPENING"],
+    default: "OPEN",
+  },
 });
 
 const menuListSchema = new Schema({
@@ -87,7 +95,7 @@ const menuListSchema = new Schema({
   },
 });
 
-const restaurantMenuSchema = new Schema({
+const menuSchema = new Schema({
   category: {
     type: String,
   },
@@ -109,9 +117,10 @@ const BusinessSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    phoneNumber: {
+    phoneNumbers: {
       type: [String],
       default: [],
+      index: true
     },
     emails: {
       type: [String],
@@ -190,8 +199,8 @@ const BusinessSchema = new Schema(
       type: [openHoursSchema],
       default: [],
     },
-    restaurantMenu: {
-      type: [restaurantMenuSchema],
+    menu: {
+      type: [menuSchema],
       default: [],
     },
     searchAutocomplete: {

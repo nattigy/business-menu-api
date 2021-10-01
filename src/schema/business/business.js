@@ -16,6 +16,7 @@ const BusinessQuery = {
   businessByIds: BusinessTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
   businessOne: BusinessTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
   businessMany: BusinessTC.getResolver("findMany",[middleware.isAuth, middleware.isAdmin]),
+  businessPagination: BusinessTC.getResolver("pagination",[middleware.isAuth, middleware.isAdmin]),
   getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter",[middleware.isGuest]),
   businessPosts: BusinessTC.addRelation("posts", {
     resolver: () => PostTC.getResolver("findByIds"),
@@ -74,7 +75,7 @@ const BusinessMutation = {
   businessRemoveOne: BusinessTC.getResolver("removeOne",[middleware.isAuth, middleware.isAdmin]),
   businessRemoveMany: BusinessTC.getResolver("removeMany",[middleware.isAuth, middleware.isAdmin]),
   businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin",[middleware.isAuth, middleware.isAdmin]),
-  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom",[middleware.isAuth, middleware.isOwner]),
+  businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom",[middleware.isAuth, middleware.isAdmin]),
   businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom",[middleware.isAuth, middleware.isAdmin]),
   businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike",[middleware.isAuth]),
 };
