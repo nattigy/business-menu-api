@@ -85,19 +85,21 @@ const businessCreateOneCustomAdmin = {
     lng: "Float!",
     lat: "Float!",
   },
-  resolve: async ({args: {
-    businessName,
-    phoneNumbers,
-    claimed,
-    location,
-    locationDescription,
-    pictures,
-    categories,
-    searchIndex,
-    categoryIndex,
-    lng,
-    lat,
-  }, context: {user}}) => {
+  resolve: async ({
+                    args: {
+                      businessName,
+                      phoneNumbers,
+                      claimed,
+                      location,
+                      locationDescription,
+                      pictures,
+                      categories,
+                      searchIndex,
+                      categoryIndex,
+                      lng,
+                      lat,
+                    }, context: {user}
+                  }) => {
     let bizId = "";
     await BusinessModel.create(
       {
@@ -113,8 +115,23 @@ const businessCreateOneCustomAdmin = {
         lng,
         lat,
         owner: user._id,
+        openHours: [
+          ...["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(d => ({
+            day: d,
+            opens: "8:00 AM",
+            closes: "5:00 PM",
+            isOpen: true,
+          })),
+          {
+            day: "Sunday",
+            opens: "",
+            closes: "",
+            isOpen: false,
+          },
+        ],
         branches: [
           {
+            branchName: businessName,
             phoneNumbers,
             location,
             locationDescription,
@@ -188,8 +205,23 @@ const businessCreateManyCustom = {
           lng: businesses[i].lng,
           lat: businesses[i].lat,
           owner: user._id,
+          openHours: [
+            ...["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(d => ({
+              day: d,
+              opens: "8:00 AM",
+              closes: "5:00 PM",
+              isOpen: true,
+            })),
+            {
+              day: "Sunday",
+              opens: "",
+              closes: "",
+              isOpen: false,
+            },
+          ],
           branches: [
             {
+              branchName: businesses[i].businessName,
               phoneNumbers: businesses[i].phoneNumbers,
               location: businesses[i].location,
               locationDescription: businesses[i].locationDescription,
@@ -247,6 +279,7 @@ const removeByIdCustom = {
     await UserModel.findByIdAndUpdate(business.owner, {
       $pull: {businesses: args.id}
     });
+    await BusinessListModel.findOneAndDelete({autocompleteTerm: business.businessName.toLowerCase()});
   },
 };
 
