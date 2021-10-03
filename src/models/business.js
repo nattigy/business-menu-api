@@ -117,6 +117,11 @@ const BusinessSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    phoneNumber: {
+      type: [String],
+      default: [],
+      index: true
+    },
     phoneNumbers: {
       type: [String],
       default: [],

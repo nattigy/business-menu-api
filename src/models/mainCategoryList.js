@@ -10,6 +10,9 @@ const MainCategoryListSchema = new Schema(
       index: true,
     },
     image: String,
+    sub_categories: {
+      type: [String],
+    },
     subCategories: {
       type: [
         {
