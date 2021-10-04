@@ -77,6 +77,8 @@ const BusinessMutation = {
   businessCreateOneCustomAdmin: BusinessTC.getResolver("businessCreateOneCustomAdmin",[middleware.isAuth, middleware.isAdmin]),
   businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom",[middleware.isAuth, middleware.isAdmin]),
   businessRemoveByIdCustom: BusinessTC.getResolver("removeByIdCustom",[middleware.isAuth, middleware.isAdmin]),
+  businessCreateBranch: BusinessTC.getResolver("businessCreateBranch",[middleware.isAuth, middleware.isAdmin]),
+  businessDeleteBranch: BusinessTC.getResolver("businessDeleteBranch",[middleware.isAuth, middleware.isAdmin]),
   businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike",[middleware.isAuth]),
 };
 

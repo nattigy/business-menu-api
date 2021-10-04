@@ -1,4 +1,3 @@
-import {schemaComposer, toInputObjectType} from "graphql-compose";
 import mongoose from "mongoose";
 
 import {BusinessModel, BusinessTC} from "../../models/business";
@@ -7,6 +6,7 @@ import {BusinessListModel} from "../../models/businessList";
 import {EventModel} from "../../models/event";
 import {PostModel} from "../../models/post";
 import {calculateDistance} from "../../utils/utils";
+import {BusinessCreateBranchInput, BusinessCreateManyCustomInput} from "./input-types";
 
 // Queries
 
@@ -161,25 +161,6 @@ const businessCreateOneCustomAdmin = {
   },
 };
 
-const InputTC = schemaComposer.createObjectTC({
-  name: 'BusinessCreateManyCustomInput',
-  fields: {
-    businessName: "String!",
-    phoneNumbers: ["String!"],
-    location: "String!",
-    locationDescription: "String!",
-    pictures: ["String!"],
-    categories: ["String!"],
-    searchIndex: ["String!"],
-    categoryIndex: ["String!"],
-    claimed: "Boolean!",
-    lng: "Float!",
-    lat: "Float!",
-  }
-});
-
-const BusinessCreateManyCustomInput = toInputObjectType(InputTC);
-
 const businessCreateManyCustom = {
   name: "businessCreateManyCustom",
   kind: "mutation",
@@ -283,10 +264,53 @@ const removeByIdCustom = {
   },
 };
 
+const businessCreateBranch = {
+  name: "businessCreateBranch",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    branch: BusinessCreateBranchInput
+  },
+  resolve: async ({args: {branch}}) => {
+    await BusinessModel.findByIdAndUpdate(branch.id, {
+      $addToSet: {
+        branches: {
+          branchName: branch.branchName,
+          phoneNumbers: branch.phoneNumbers,
+          location: branch.location,
+          locationDescription: branch.locationDescription,
+          lng: branch.lng,
+          lat: branch.lat,
+          pictures: branch.pictures
+        }
+      }
+    });
+    return {recordId: branch.id};
+  },
+};
+
+const businessDeleteBranch = {
+  name: "businessDeleteBranch",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    branchId: "String",
+  },
+  resolve: async ({args: {branchId, businessId}}) => {
+    await BusinessModel.findByIdAndUpdate(businessId, {
+      $pull: {branches: {_id: branchId}}
+    });
+    return {recordId: branchId};
+  },
+};
+
 export default {
   getBusinessesByFilter,
   businessLikeUnLike,
   businessCreateOneCustomAdmin,
   businessCreateManyCustom,
   removeByIdCustom,
+  businessCreateBranch,
+  businessDeleteBranch,
 };
