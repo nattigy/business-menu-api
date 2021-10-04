@@ -85,21 +85,22 @@ const businessCreateOneCustomAdmin = {
     lng: "Float!",
     lat: "Float!",
   },
-  resolve: async ({
-                    args: {
-                      businessName,
-                      phoneNumbers,
-                      claimed,
-                      location,
-                      locationDescription,
-                      pictures,
-                      categories,
-                      searchIndex,
-                      categoryIndex,
-                      lng,
-                      lat,
-                    }, context: {user}
-                  }) => {
+  resolve: async (
+    {
+      args: {
+        businessName,
+        phoneNumbers,
+        claimed,
+        location,
+        locationDescription,
+        pictures,
+        categories,
+        searchIndex,
+        categoryIndex,
+        lng,
+        lat,
+      }, context: {user}
+    }) => {
     let bizId = "";
     await BusinessModel.create(
       {
@@ -305,6 +306,70 @@ const businessDeleteBranch = {
   },
 };
 
+const businessAddPost = {
+  name: "businessAddPost",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    postId: "String",
+  },
+  resolve: async ({args: {postId, businessId}}) => {
+    await BusinessModel.findByIdAndUpdate(businessId, {
+      $addToSet: {posts: postId}
+    });
+    return {recordId: businessId};
+  },
+};
+
+const businessRemovePost = {
+  name: "businessRemovePost",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    postId: "String",
+  },
+  resolve: async ({args: {postId, businessId}}) => {
+    await BusinessModel.findByIdAndUpdate(businessId, {
+      $pull: {posts: postId}
+    });
+    return {recordId: businessId};
+  },
+};
+
+const businessAddEvent = {
+  name: "businessAddEvent",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    eventId: "String",
+  },
+  resolve: async ({args: {eventId, businessId}}) => {
+    await BusinessModel.findByIdAndUpdate(businessId, {
+      $addToSet: {events: eventId}
+    });
+    return {recordId: businessId};
+  },
+};
+
+const businessRemoveEvent = {
+  name: "businessRemoveEvent",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    eventId: "String",
+  },
+  resolve: async ({args: {eventId, businessId}}) => {
+    await BusinessModel.findByIdAndUpdate(businessId, {
+      $pull: {events: eventId}
+    });
+    return {recordId: businessId};
+  },
+};
+
 export default {
   getBusinessesByFilter,
   businessLikeUnLike,
@@ -313,4 +378,8 @@ export default {
   removeByIdCustom,
   businessCreateBranch,
   businessDeleteBranch,
+  businessAddPost,
+  businessRemovePost,
+  businessAddEvent,
+  businessRemoveEvent,
 };
