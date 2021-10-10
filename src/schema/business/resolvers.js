@@ -106,6 +106,7 @@ const businessCreateOneCustomAdmin = {
       {
         businessName,
         phoneNumbers,
+        phoneNumber: phoneNumbers,
         claimed,
         location,
         locationDescription,
@@ -177,6 +178,7 @@ const businessCreateManyCustom = {
         {
           businessName: businesses[i].businessName,
           phoneNumbers: businesses[i].phoneNumbers,
+          phoneNumber: businesses[i].phoneNumbers,
           claimed: businesses[i].claimed,
           location: businesses[i].location,
           locationDescription: businesses[i].locationDescription,
@@ -370,6 +372,28 @@ const businessRemoveEvent = {
   },
 };
 
+const businessReset = {
+  name: "businessReset",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {},
+  resolve: async () => {
+    const bizs = await BusinessModel.find();
+    for(let i = 0; i < bizs.length; i++){
+      for(let j = 0; j < bizs[i].phoneNumbers.length; j++){
+        if( bizs[i].phoneNumber.indexOf(bizs[i].phoneNumbers[j]) < 0){
+          await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
+            $addToSet: {
+              phoneNumber: bizs[i].phoneNumbers[j]
+            }
+          });
+        }
+      }
+      console.log(i+1);
+    }
+  },
+};
+
 export default {
   getBusinessesByFilter,
   businessLikeUnLike,
@@ -382,4 +406,5 @@ export default {
   businessRemovePost,
   businessAddEvent,
   businessRemoveEvent,
+  businessReset,
 };

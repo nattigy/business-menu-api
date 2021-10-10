@@ -4,7 +4,7 @@ import {authMiddleware as middleware} from "../../middleware/authMiddleware";
 const ZorittQuery = {
   zorittById: ZorittTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
   zorittByIds: ZorittTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
-  zorittOne: ZorittTC.getResolver("findOne",[middleware.isGuest]),
+  zorittOne: ZorittTC.getResolver("findOne"),
 };
 
 const ZorittMutation = {

@@ -1,5 +1,5 @@
 import {BusinessTC} from "../../models/business";
-import {EventModel, EventTC} from "../../models/event";
+import {EventTC} from "../../models/event";
 
 import Resolvers from "./resolvers";
 import {authMiddleware as middleware} from "../../middleware/authMiddleware";
@@ -9,10 +9,11 @@ for (const resolver in Resolvers) {
 }
 
 const EventQuery = {
-  eventById: EventTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
+  eventById: EventTC.getResolver("findById"),
   eventByIds: EventTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
-  eventOne: EventTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
-  eventMany: EventTC.getResolver("findMany",[middleware.isAuth, middleware.isAdmin]),
+  eventOne: EventTC.getResolver("findOne"),
+  eventMany: EventTC.getResolver("findMany"),
+  eventPagination: EventTC.getResolver("pagination"),
   eventOwner: EventTC.addRelation("owner", {
     resolver: () => BusinessTC.getResolver("findById"),
     prepareArgs: {
@@ -23,14 +24,11 @@ const EventQuery = {
   eventIsLiked: EventTC.addFields({
     likeCount: {
       type: 'Int',
-      resolve: (event) => event ? event.interestedUsers ? event.interestedUsers.length : 0 : 0,
+      resolve: (event) => event?.interestedUsers ? event.interestedUsers.length : 0,
     },
     isInterested: {
       type: 'Boolean',
-      resolve: (event, _, {user}) => {
-        const ev = EventModel.findById(event._id,{interestedUsers: 1});
-        return ev.favoriteList.contains(user._id);
-      },
+      resolve: (event, _, {user}) => event?.interestedUsers.indexOf(user?._id) >= 0,
     },
     interestedUsers: {
       type: '[MongoID]',

@@ -1,5 +1,5 @@
 import {BusinessTC} from "../../models/business";
-import {PostModel, PostTC} from "../../models/post";
+import {PostTC} from "../../models/post";
 
 import Resolvers from "./resolvers";
 import {authMiddleware as middleware} from "../../middleware/authMiddleware";
@@ -9,10 +9,11 @@ for (const resolver in Resolvers) {
 }
 
 const PostQuery = {
-  postById: PostTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
+  postById: PostTC.getResolver("findById"),
   postByIds: PostTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
-  postOne: PostTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
-  postMany: PostTC.getResolver("findMany",[middleware.isAuth, middleware.isAdmin]),
+  postOne: PostTC.getResolver("findOne"),
+  postMany: PostTC.getResolver("findMany"),
+  postPagination: PostTC.getResolver("pagination"),
   owner: PostTC.addRelation("owner", {
     resolver: () => BusinessTC.getResolver("findById"),
     prepareArgs: {
@@ -23,14 +24,11 @@ const PostQuery = {
   postIsLiked: PostTC.addFields({
     likeCount: {
       type: 'Int',
-      resolve: (post) => post ? post.likeList ? post.likeList.length : 0 : 0,
+      resolve: (post) => post?.likeList ? post.likeList.length : 0,
     },
     isLiked: {
       type: 'Boolean',
-      resolve: (post, _, {user}) => {
-        const po = PostModel.findById(post._id,{likeList: 1});
-        return po.likeList.contains(user._id);
-      },
+      resolve: (post, _, {user}) => post.likeList.indexOf(user?._id) >= 0,
     },
     likeList: {
       type: '[MongoID]',
