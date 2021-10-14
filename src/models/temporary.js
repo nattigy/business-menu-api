@@ -5,19 +5,15 @@ import {composeWithMongoose} from "graphql-compose-mongoose";
 const openHoursSchema = new Schema({
   day: {
     type: String,
-    index: true
   },
   opens: {
     type: String,
-    index: true
   },
   closes: {
     type: String,
-    index: true
   },
   isOpen: {
     type: Boolean,
-    index: true
   }
 });
 
@@ -109,7 +105,7 @@ const menuSchema = new Schema({
   },
 });
 
-const BusinessSchema = new Schema(
+const TemporarySchema = new Schema(
   {
     businessName: {
       type: String,
@@ -271,14 +267,14 @@ const BusinessSchema = new Schema(
     },
   },
   {
-    collection: "businesses",
+    collection: "temporaries",
   }
 );
 
-BusinessSchema.plugin(timestamps);
-BusinessSchema.index({createdAt: 1, updatedAt: 1});
+TemporarySchema.plugin(timestamps);
+TemporarySchema.index({createdAt: 1, updatedAt: 1});
 
-const BusinessModel = mongoose.model("Business", BusinessSchema);
-const BusinessTC = composeWithMongoose(BusinessModel);
+const TemporaryModel = mongoose.model("Temporary", TemporarySchema);
+const TemporaryTC = composeWithMongoose(TemporaryModel);
 
-export {BusinessModel, BusinessTC, BusinessSchema};
+export {TemporaryModel, TemporaryTC, TemporarySchema};

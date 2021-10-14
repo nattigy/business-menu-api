@@ -17,6 +17,7 @@ const BusinessQuery = {
   businessOne: BusinessTC.getResolver("findOne", [middleware.isAuth, middleware.isAdmin]),
   businessMany: BusinessTC.getResolver("findMany", [middleware.isAuth, middleware.isAdmin]),
   businessPagination: BusinessTC.getResolver("pagination", [middleware.isAuth, middleware.isAdmin]),
+  businessByCategory: BusinessTC.getResolver("businessByCategory"),
   getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter", [middleware.isGuest]),
   businessPosts: BusinessTC.addRelation("posts", {
     resolver: () => PostTC.getResolver("findByIds"),
@@ -49,14 +50,11 @@ const BusinessQuery = {
   businessIsLiked: BusinessTC.addFields({
     likeCount: {
       type: 'Int',
-      resolve: (business) => business ? business.favoriteList ? business.favoriteList.length : 0 : 0,
+      resolve: (business) => business?.favoriteList ? business.favoriteList.length : 0,
     },
     isLiked: {
       type: 'Boolean',
-      resolve: (business, _, {user}) => {
-        const biz = BusinessModel.findById(business._id, {favoriteList: 1});
-        return biz.favoriteList.contains(user._id);
-      },
+      resolve: (business, _, {user}) => business?.favoriteList.indexOf(user?._id) >= 0,
     },
     favoriteList: {
       type: '[MongoID]',

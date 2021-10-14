@@ -2,6 +2,8 @@ import {SchemaComposer} from "graphql-compose";
 
 import {UserMutation, UserQuery} from "./user/user";
 import {BusinessMutation, BusinessQuery} from "./business/business";
+import {SponsoredMutation, SponsoredQuery} from "./sponsored/sponsored";
+import {TemporaryQuery, TemporaryMutation} from "./temporary/temporary";
 import {CategoryMutation, CategoryQuery} from "./category/category";
 import {BusinessListMutation, BusinessListQuery} from "./businessList/businessList";
 import {PostMutation, PostQuery} from "./post/post";
@@ -16,6 +18,8 @@ const schemaComposer = new SchemaComposer();
 schemaComposer.Query.addFields({
   ...UserQuery,
   ...BusinessQuery,
+  ...SponsoredQuery,
+  ...TemporaryQuery,
   ...CategoryQuery,
   ...PostQuery,
   ...EventQuery,
@@ -29,6 +33,8 @@ schemaComposer.Query.addFields({
 schemaComposer.Mutation.addFields({
   ...UserMutation,
   ...BusinessMutation,
+  ...SponsoredMutation,
+  ...TemporaryMutation,
   ...CategoryMutation,
   ...PostMutation,
   ...EventMutation,

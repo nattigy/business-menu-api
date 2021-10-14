@@ -30,6 +30,28 @@ const getBusinessesByFilter = {
   },
 };
 
+const businessByCategory = {
+  name: "businessByCategory",
+  kind: "query",
+  type: BusinessTC.getResolver("findMany").getType(),
+  args: {searchIndex: "[String]"},
+  resolve: async ({args}) => {
+    let businesses = await BusinessModel.aggregate(
+      [
+        {$sample: {size: 5}},
+        {$match: {searchIndex: {$in: ["Promotion & Advertising"]}}}
+      ]
+    );
+    // businesses = businesses.filter((biz) => {
+    //   const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
+    //   biz.distance = distance;
+    //   return distance <= args.distance && biz;
+    // });
+    console.log(businesses)
+    return businesses;
+  },
+};
+
 // Mutations
 
 const businessLikeUnLike = {
@@ -117,20 +139,6 @@ const businessCreateOneCustomAdmin = {
         lng,
         lat,
         owner: user._id,
-        openHours: [
-          ...["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(d => ({
-            day: d,
-            opens: "8:00 AM",
-            closes: "5:00 PM",
-            isOpen: true,
-          })),
-          {
-            day: "Sunday",
-            opens: "",
-            closes: "",
-            isOpen: false,
-          },
-        ],
         branches: [
           {
             branchName: businessName,
@@ -189,20 +197,6 @@ const businessCreateManyCustom = {
           lng: businesses[i].lng,
           lat: businesses[i].lat,
           owner: user._id,
-          openHours: [
-            ...["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(d => ({
-              day: d,
-              opens: "8:00 AM",
-              closes: "5:00 PM",
-              isOpen: true,
-            })),
-            {
-              day: "Sunday",
-              opens: "",
-              closes: "",
-              isOpen: false,
-            },
-          ],
           branches: [
             {
               branchName: businesses[i].businessName,
@@ -379,23 +373,18 @@ const businessReset = {
   args: {},
   resolve: async () => {
     const bizs = await BusinessModel.find();
-    for(let i = 0; i < bizs.length; i++){
-      for(let j = 0; j < bizs[i].phoneNumbers.length; j++){
-        if( bizs[i].phoneNumber.indexOf(bizs[i].phoneNumbers[j]) < 0){
-          await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
-            $addToSet: {
-              phoneNumber: bizs[i].phoneNumbers[j]
-            }
-          });
-        }
-      }
-      console.log(i+1);
+    for (let i = 0; i < bizs.length; i++) {
+      // await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
+      //   openHours: []
+      // });
+      // console.log(i+1);
     }
   },
 };
 
 export default {
   getBusinessesByFilter,
+  businessByCategory,
   businessLikeUnLike,
   businessCreateOneCustomAdmin,
   businessCreateManyCustom,
