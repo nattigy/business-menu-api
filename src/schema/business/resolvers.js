@@ -5,7 +5,6 @@ import {UserModel} from "../../models/user";
 import {BusinessListModel} from "../../models/businessList";
 import {EventModel} from "../../models/event";
 import {PostModel} from "../../models/post";
-import {calculateDistance} from "../../utils/utils";
 import {BusinessCreateBranchInput, BusinessCreateManyCustomInput} from "./input-types";
 
 // Queries
@@ -13,42 +12,63 @@ import {BusinessCreateBranchInput, BusinessCreateManyCustomInput} from "./input-
 const getBusinessesByFilter = {
   name: "getBusinessesByFilter",
   kind: "query",
-  type: BusinessTC.getResolver("findMany").getType(),
-  args: {lat: "Float", lng: "Float", query: "[String]", distance: "Int"},
-  resolve: async ({args}) => {
-    let businesses = await BusinessModel.find({
-      searchIndex: {
-        $in: args.query
-      }
-    }).sort({"subscription": "desc"});
-    businesses = businesses.filter((biz) => {
-      const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
-      biz.distance = distance;
-      return distance <= args.distance && biz;
-    });
-    return businesses;
+  type: "Pagination",
+  args: {
+    category: "[String]",
+    query: "[String]",
+    distance: "Int",
+    openNow: "Boolean",
+    page: "Int!",
+    perPage: "Int!",
+    lat: "Float",
+    lng: "Float",
   },
-};
+  resolve: async ({args: {category, query, distance, openNow, page, perPage, lat, lng}}) => {
+    let geoNear = {};
+    const pipeline = [];
+    if (distance > 0) {
+      geoNear = {
+        $geoNear: {
+          near: {type: "Point", coordinates: [lng, lat]},
+          distanceField: "distance",
+          maxDistance: distance,
+          includeLocs: "lngLat",
+          distanceMultiplier: 0.001,
+          spherical: true
+        }
+      };
+      pipeline.push(geoNear);
+    }
+    if (category !== []) {
+      pipeline.push({$match: {searchIndex: {$in: category}}});
+    }
+    if (query !== []) {
+      pipeline.push({$match: {searchIndex: {$in: query}}});
+    }
+    if (openNow) {
+      pipeline.push({$match: {openHours: {$elemMatch: {day: "Monday"}}}});
+      pipeline.push({$match: {openHours: {$elemMatch: {opens: {$gte: "8:00 AM"}}}}});
+      pipeline.push({$match: {openHours: {$elemMatch: {closes: {$lte: "5:00 PM"}}}}});
+    }
 
-const businessByCategory = {
-  name: "businessByCategory",
-  kind: "query",
-  type: BusinessTC.getResolver("findMany").getType(),
-  args: {searchIndex: "[String]"},
-  resolve: async ({args}) => {
-    let businesses = await BusinessModel.aggregate(
-      [
-        {$sample: {size: 5}},
-        {$match: {searchIndex: {$in: ["Promotion & Advertising"]}}}
-      ]
-    );
-    // businesses = businesses.filter((biz) => {
-    //   const distance = calculateDistance({lat: args.lat, lng: args.lng, bizLat: biz.lat, bizLng: biz.lng});
-    //   biz.distance = distance;
-    //   return distance <= args.distance && biz;
-    // });
-    console.log(businesses)
-    return businesses;
+    const businesses = await BusinessModel.aggregate([
+      ...pipeline,
+      {$sort: {createdAt: -1}},
+      {$sort: {updatedAt: -1}},
+      {
+        $facet: {
+          metadata: [{$count: 'total'}],
+          items: [{$skip: (page - 1) * perPage}, {$limit: perPage}]
+        }
+      },
+      {
+        $project: {
+          items: 1,
+          total: {$arrayElemAt: ['$metadata.total', 0]}
+        }
+      },
+    ]);
+    return {items: businesses[0].items, total: businesses[0].total};
   },
 };
 
@@ -138,18 +158,12 @@ const businessCreateOneCustomAdmin = {
         categoryIndex,
         lng,
         lat,
+        lngLat: {
+          type: "Point",
+          coordinates: [lng, lat]
+        },
+        branch: "MAIN",
         owner: user._id,
-        branches: [
-          {
-            branchName: businessName,
-            phoneNumbers,
-            location,
-            locationDescription,
-            lng,
-            lat,
-            pictures: pictures[0],
-          }
-        ]
       }
     )
       .then(async (res) => {
@@ -196,18 +210,12 @@ const businessCreateManyCustom = {
           categoryIndex: businesses[i].categoryIndex,
           lng: businesses[i].lng,
           lat: businesses[i].lat,
+          lngLat: {
+            type: "Point",
+            coordinates: [businesses[i].lng, businesses[i].lat]
+          },
+          branch: "MAIN",
           owner: user._id,
-          branches: [
-            {
-              branchName: businesses[i].businessName,
-              phoneNumbers: businesses[i].phoneNumbers,
-              location: businesses[i].location,
-              locationDescription: businesses[i].locationDescription,
-              lng: businesses[i].lng,
-              lat: businesses[i].lat,
-              pictures: businesses[i].pictures[0],
-            }
-          ]
         }
       )
         .then(async (res) => {
@@ -374,17 +382,22 @@ const businessReset = {
   resolve: async () => {
     const bizs = await BusinessModel.find();
     for (let i = 0; i < bizs.length; i++) {
-      // await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
-      //   openHours: []
-      // });
-      // console.log(i+1);
+      const nb = await BusinessModel.findById(bizs[i]._id, {
+        lat: 1, lng: 1, businessName: 1
+      });
+      await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
+        lngLat: {
+          type: "Point",
+          coordinates: [nb.lng, nb.lat]
+        }
+      });
+      console.log(i + 1, nb.businessName);
     }
   },
 };
 
 export default {
   getBusinessesByFilter,
-  businessByCategory,
   businessLikeUnLike,
   businessCreateOneCustomAdmin,
   businessCreateManyCustom,

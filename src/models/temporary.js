@@ -57,6 +57,13 @@ const branchesSchema = new Schema({
     type: String,
     default: "",
   },
+  lngLat: {
+    type: {
+      type: String,
+      enum: ['Point']
+    },
+    coordinates: [Number],
+  },
   lat: {
     type: Number,
   },
@@ -110,7 +117,6 @@ const TemporarySchema = new Schema(
     businessName: {
       type: String,
       trim: true,
-      index: true,
       default: "",
     },
     claimed: {
@@ -119,13 +125,11 @@ const TemporarySchema = new Schema(
     },
     phoneNumber: {
       type: [String],
-      default: [],
-      index: true
+      default: []
     },
     phoneNumbers: {
       type: [String],
       default: [],
-      index: true
     },
     emails: {
       type: [String],
@@ -142,25 +146,14 @@ const TemporarySchema = new Schema(
     },
     location: {
       type: String,
-      index: true,
       default: "",
     },
     locationDescription: {
       type: String,
-      index: true,
       default: "",
-    },
-    lat: {
-      type: Number,
-      index: true,
-    },
-    lng: {
-      type: Number,
-      index: true,
     },
     distance: {
       type: Number,
-      index: true,
     },
     slogan: {
       type: String,
@@ -194,7 +187,6 @@ const TemporarySchema = new Schema(
       type: String,
       enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4", "SPONSORED"],
       default: "FEATHER_0",
-      index: true,
     },
     branches: {
       type: [branchesSchema],

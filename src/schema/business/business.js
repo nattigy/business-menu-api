@@ -1,4 +1,4 @@
-import {BusinessModel, BusinessTC} from "../../models/business";
+import {BusinessTC} from "../../models/business";
 import {CategoryTC} from "../../models/category";
 import {UserTC} from "../../models/user";
 import {PostTC} from "../../models/post";
@@ -17,8 +17,7 @@ const BusinessQuery = {
   businessOne: BusinessTC.getResolver("findOne", [middleware.isAuth, middleware.isAdmin]),
   businessMany: BusinessTC.getResolver("findMany", [middleware.isAuth, middleware.isAdmin]),
   businessPagination: BusinessTC.getResolver("pagination", [middleware.isAuth, middleware.isAdmin]),
-  businessByCategory: BusinessTC.getResolver("businessByCategory"),
-  getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter", [middleware.isGuest]),
+  getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter"),
   businessPosts: BusinessTC.addRelation("posts", {
     resolver: () => PostTC.getResolver("findByIds"),
     prepareArgs: {

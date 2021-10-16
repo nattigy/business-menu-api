@@ -7,13 +7,11 @@ const SponsoredSchema = new Schema(
     businessName: {
       type: String,
       trim: true,
-      index: true,
       default: "",
     },
     phoneNumbers: {
       type: [String],
       default: [],
-      index: true
     },
     emails: {
       type: [String],
@@ -30,25 +28,27 @@ const SponsoredSchema = new Schema(
     },
     location: {
       type: String,
-      index: true,
       default: "",
     },
     locationDescription: {
       type: String,
-      index: true,
       default: "",
+    },
+    lngLat: {
+      type: {
+        type: String,
+        enum: ['Point']
+      },
+      coordinates: [Number],
     },
     lat: {
       type: Number,
-      index: true,
     },
     lng: {
       type: Number,
-      index: true,
     },
     distance: {
       type: Number,
-      index: true,
     },
     slogan: {
       type: String,

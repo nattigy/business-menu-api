@@ -1,6 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import timestamps from "mongoose-timestamp";
 import {composeWithMongoose} from "graphql-compose-mongoose";
+import {schemaComposer} from "graphql-compose";
 
 const openHoursSchema = new Schema({
   day: {
@@ -117,6 +118,14 @@ const BusinessSchema = new Schema(
       index: true,
       default: "",
     },
+    branch: {
+      type: String,
+      enum: ["MAIN", "BRANCH"],
+      main: {
+        type: Schema.Types.ObjectId,
+        ref: "Business",
+      },
+    },
     claimed: {
       type: Boolean,
       default: true,
@@ -153,6 +162,13 @@ const BusinessSchema = new Schema(
       type: String,
       index: true,
       default: "",
+    },
+    lngLat: {
+      type: {
+        type: String,
+        enum: ['Point']
+      },
+      coordinates: [Number],
     },
     lat: {
       type: Number,
@@ -270,15 +286,23 @@ const BusinessSchema = new Schema(
       ref: "User",
     },
   },
-  {
-    collection: "businesses",
-  }
+  {collection: "businesses"}
 );
 
 BusinessSchema.plugin(timestamps);
-BusinessSchema.index({createdAt: 1, updatedAt: 1});
+
+BusinessSchema.index({createdAt: 1, updatedAt: 1}, {background: false});
+BusinessSchema.index({lngLat: "2dsphere"}, {background: false});
 
 const BusinessModel = mongoose.model("Business", BusinessSchema);
 const BusinessTC = composeWithMongoose(BusinessModel);
+
+schemaComposer.createObjectTC({
+  name: 'Pagination',
+  fields: {
+    items: [BusinessTC],
+    total: 'Int'
+  }
+});
 
 export {BusinessModel, BusinessTC, BusinessSchema};
