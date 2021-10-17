@@ -5,7 +5,7 @@ const BusinessListQuery = {
   businessListById: BusinessListTC.getResolver("findById",[middleware.isAuth, middleware.isAdmin]),
   businessListByIds: BusinessListTC.getResolver("findByIds",[middleware.isAuth, middleware.isAdmin]),
   businessListOne: BusinessListTC.getResolver("findOne",[middleware.isAuth, middleware.isAdmin]),
-  businessListMany: BusinessListTC.getResolver("findMany",[middleware.isGuest]),
+  businessListMany: BusinessListTC.getResolver("findMany"),
 };
 
 const BusinessListMutation = {

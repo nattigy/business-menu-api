@@ -11,6 +11,7 @@ import {EventMutation, EventQuery} from "./events/event";
 import {CouponMutation, CouponQuery} from "./coupon/coupon";
 import {RequestMutation, RequestQuery} from "./request/request";
 import {ZorittMutation, ZorittQuery} from "./zoritt/zoritt";
+import {PopUpMutation, PopUpQuery} from "./pop-up/pop-up";
 import {MainCategoryListTCMutation, MainCategoryListTCQuery} from "./mainCategoryList/mainCategoryList";
 
 const schemaComposer = new SchemaComposer();
@@ -27,6 +28,7 @@ schemaComposer.Query.addFields({
   ...CouponQuery,
   ...RequestQuery,
   ...ZorittQuery,
+  ...PopUpQuery,
   ...MainCategoryListTCQuery,
 });
 
@@ -42,6 +44,7 @@ schemaComposer.Mutation.addFields({
   ...CouponMutation,
   ...RequestMutation,
   ...ZorittMutation,
+  ...PopUpMutation,
   ...MainCategoryListTCMutation,
 });
 
