@@ -39,10 +39,10 @@ const getBusinessesByFilter = {
       };
       pipeline.push(geoNear);
     }
-    if (category !== []) {
+    if (category.length > 0) {
       pipeline.push({$match: {searchIndex: {$in: category}}});
     }
-    if (query !== []) {
+    if (query.length > 0) {
       pipeline.push({$match: {searchIndex: {$in: query}}});
     }
     if (openNow) {
@@ -53,6 +53,7 @@ const getBusinessesByFilter = {
 
     const businesses = await BusinessModel.aggregate([
       ...pipeline,
+      {$match: {state: "ACTIVE"}},
       {$sort: {createdAt: -1}},
       {$sort: {updatedAt: -1}},
       {
