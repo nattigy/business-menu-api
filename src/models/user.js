@@ -130,7 +130,8 @@ schemaComposer.createObjectTC({
   name: 'AccessToken',
   fields: {
     accessToken: 'String!',
-    roles: '[String]'
+    roles: '[String]',
+    user: UserTC,
   }
 });
 

@@ -25,7 +25,7 @@ const addUserCoupon = {
 const user = {
   name: 'user',
   type: 'User!',
-  resolve: ({context: {user}}) => user
+  resolve: async ({context: {accessToken}}) => await userService.getUser(accessToken.replace("Bearer ", ""))
 };
 
 const signIn = {
@@ -62,7 +62,7 @@ const signIn = {
         },
       );
 
-      return {accessToken, roles: user.roles};
+      return {accessToken, roles: user.roles, user};
     } catch (error) {
       return Promise.reject(error);
     }
@@ -80,7 +80,7 @@ const userSignUp = {
     lastName: 'String!',
     phoneNumber: 'String!',
   },
-  resolve: async ({args: {email, password, firstName, middleName, lastName,phoneNumber}}) => {
+  resolve: async ({args: {email, password, firstName, middleName, lastName, phoneNumber}}) => {
     try {
       let user = await UserModel.emailExist(email);
       if (user) {
@@ -116,7 +116,7 @@ const userSignUp = {
 
       // userMail.verifyRequest(user, token);
 
-      return {accessToken};
+      return {accessToken, roles: user.roles, user};
     } catch (error) {
       return Promise.reject(error);
     }

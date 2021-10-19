@@ -6,6 +6,7 @@ import {BusinessListModel} from "../../models/businessList";
 import {EventModel} from "../../models/event";
 import {PostModel} from "../../models/post";
 import {BusinessCreateBranchInput, BusinessCreateManyCustomInput} from "./input-types";
+import {userService} from "../../utils/userService";
 
 // Queries
 
@@ -80,13 +81,14 @@ const businessLikeUnLike = {
   kind: "mutation",
   type: BusinessTC,
   args: {businessId: "String!"},
-  resolve: async ({args: {businessId}, context: {user}}) => {
+  resolve: async ({args: {businessId}, context: {accessToken}}) => {
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
     const userId = user._id;
     const {favoriteList} = await BusinessModel.findById(
       businessId, {favoriteList: 1},
     );
 
-    if (favoriteList.contains(userId)) {
+    if (favoriteList.indexOf(userId) >= 0) {
       await BusinessModel.updateOne(
         {_id: businessId},
         {$pull: {favoriteList: userId}}
@@ -148,8 +150,8 @@ const businessCreateOneCustomAdmin = {
     await BusinessModel.create(
       {
         businessName,
-        phoneNumbers,
-        phoneNumber: phoneNumbers,
+        phoneNumbers: phoneNumbers.split(',').filter(e => e !== ""),
+        phoneNumber: phoneNumbers.split(',').filter(e => e !== ""),
         claimed,
         location,
         locationDescription,
@@ -200,8 +202,8 @@ const businessCreateManyCustom = {
       await BusinessModel.create(
         {
           businessName: businesses[i].businessName,
-          phoneNumbers: businesses[i].phoneNumbers,
-          phoneNumber: businesses[i].phoneNumbers,
+          phoneNumbers: businesses[i].phoneNumbers.split(',').filter(e => e !== ""),
+          phoneNumber: businesses[i].phoneNumbers.split(',').filter(e => e !== ""),
           claimed: businesses[i].claimed,
           location: businesses[i].location,
           locationDescription: businesses[i].locationDescription,
@@ -384,15 +386,13 @@ const businessReset = {
     const bizs = await BusinessModel.find();
     for (let i = 0; i < bizs.length; i++) {
       const nb = await BusinessModel.findById(bizs[i]._id, {
-        lat: 1, lng: 1, businessName: 1
+        phoneNumber: 1, phoneNumbers: 1, businessName: 1
       });
-      await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
-        lngLat: {
-          type: "Point",
-          coordinates: [nb.lng, nb.lat]
-        }
-      });
-      console.log(i + 1, nb.businessName);
+      // await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
+      //   phoneNumber: nb.phoneNumber.split(',').filter(e => e !== ""),
+      //   phoneNumbers: nb.phoneNumbers.split(',').filter(e => e !== "")
+      // });
+      console.log(i + 1, nb.businessName, nb.phoneNumbers, nb.phoneNumber);
     }
   },
 };

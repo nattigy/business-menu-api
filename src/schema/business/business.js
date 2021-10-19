@@ -12,7 +12,7 @@ for (const resolver in Resolvers) {
 }
 
 const BusinessQuery = {
-  businessById: BusinessTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
+  businessById: BusinessTC.getResolver("findById"),
   businessByIds: BusinessTC.getResolver("findByIds", [middleware.isAuth, middleware.isAdmin]),
   businessOne: BusinessTC.getResolver("findOne", [middleware.isAuth, middleware.isAdmin]),
   businessMany: BusinessTC.getResolver("findMany", [middleware.isAuth, middleware.isAdmin]),
@@ -81,7 +81,7 @@ const BusinessMutation = {
   businessAddEvent: BusinessTC.getResolver("businessAddEvent", [middleware.isAuth, middleware.isAdmin]),
   businessRemoveEvent: BusinessTC.getResolver("businessRemoveEvent", [middleware.isAuth, middleware.isAdmin]),
   businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike", [middleware.isAuth]),
-  // businessReset: BusinessTC.getResolver("businessReset"),
+  businessReset: BusinessTC.getResolver("businessReset"),
 };
 
 export {BusinessQuery, BusinessMutation};

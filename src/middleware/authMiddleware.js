@@ -1,9 +1,12 @@
 import admin from "../config/firebase-config";
 import role from "../utils/roles";
+import {userService} from "../utils/userService";
 
 const authMiddleware = {
-  isAuth: (resolve, source, args, context, info) => {
-    const {user} = context;
+  isAuth: async (resolve, source, args, context, info) => {
+    const {accessToken} = context;
+
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
 
     if (!user) {
       return Promise.reject(new Error('You must be authorized.'));

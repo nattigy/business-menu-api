@@ -1,6 +1,7 @@
 import {EventModel, EventTC} from "../../models/event";
 import {BusinessModel} from "../../models/business";
 import {UserModel} from "../../models/user";
+import {userService} from "../../utils/userService";
 
 // Mutations
 
@@ -8,34 +9,36 @@ const eventLikeUnLike = {
   name: "eventLikeUnLike",
   kind: "mutation",
   type: EventTC,
-  args: {user_id: "String", event_id: "String"},
-  resolve: async ({args: {user_id, event_id}}) => {
+  args: {eventId: "String"},
+  resolve: async ({args: {eventId}, context: {accessToken}}) => {
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
+    const userId = user._id;
     const {interestedUsers} = await EventModel.findById(
-      event_id, {interestedUsers: 1},
+      eventId, {interestedUsers: 1},
     );
 
-    if (interestedUsers.contains(user_id)) {
+    if (interestedUsers.indexOf(userId) >= 0) {
       await EventModel.updateOne(
-        {_id: event_id},
-        {$pull: {interestedUsers: user_id}}
+        {_id: eventId},
+        {$pull: {interestedUsers: userId}}
       ).then(async () => {
         await UserModel.updateOne(
-          {_id: user_id},
-          {$pull: {interestedInEvents: event_id}}
+          {_id: userId},
+          {$pull: {interestedInEvents: eventId}}
         );
       }).catch((error) => error);
     } else {
       await EventModel.updateOne(
-        {_id: event_id},
-        {$addToSet: {interestedUsers: user_id}}
+        {_id: eventId},
+        {$addToSet: {interestedUsers: userId}}
       ).then(async () => {
         await UserModel.updateOne(
-          {_id: user_id},
-          {$addToSet: {interestedInEvents: event_id}}
+          {_id: userId},
+          {$addToSet: {interestedInEvents: eventId}}
         );
       }).catch((error) => error);
     }
-    return EventModel.findById(event_id);
+    return EventModel.findById(eventId);
   },
 };
 

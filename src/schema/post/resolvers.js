@@ -1,39 +1,42 @@
 import {PostModel, PostTC} from "../../models/post";
 import {UserModel} from "../../models/user";
 import {BusinessModel} from "../../models/business";
+import {userService} from "../../utils/userService";
 
 const postLikeUnLike = {
   name: "postLikeUnLike",
   kind: "mutation",
   type: PostTC,
-  args: {user_id: "String", post_id: "String"},
-  resolve: async ({args: {user_id, post_id}}) => {
+  args: {postId: "String"},
+  resolve: async ({args: {postId}, context: {accessToken}}) => {
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
+    const userId = user._id;
     const {likeList} = await PostModel.findById(
-      post_id, {likeList: 1},
+      postId, {likeList: 1},
     );
 
-    if (likeList.contains(user_id)) {
+    if (likeList.indexOf(userId) >= 0) {
       await PostModel.updateOne(
-        {_id: post_id},
-        {$pull: {likeList: user_id}}
+        {_id: postId},
+        {$pull: {likeList: userId}}
       ).then(async () => {
         await UserModel.updateOne(
-          {_id: user_id},
-          {$pull: {likedPosts: post_id}}
+          {_id: userId},
+          {$pull: {likedPosts: postId}}
         );
       }).catch((error) => error);
     } else {
       await PostModel.updateOne(
-        {_id: post_id},
-        {$addToSet: {likeList: user_id}}
+        {_id: postId},
+        {$addToSet: {likeList: userId}}
       ).then(async () => {
         await UserModel.updateOne(
-          {_id: user_id},
-          {$addToSet: {likedPosts: post_id}}
+          {_id: userId},
+          {$addToSet: {likedPosts: postId}}
         );
       }).catch((error) => error);
     }
-    return PostModel.findById(post_id);
+    return PostModel.findById(postId);
   },
 };
 
