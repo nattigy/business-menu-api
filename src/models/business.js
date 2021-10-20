@@ -42,46 +42,6 @@ const subscriptionSchema = new Schema({
   }
 });
 
-const branchesSchema = new Schema({
-  branchName: {
-    type: String
-  },
-  phoneNumbers: {
-    type: [String],
-    default: [],
-  },
-  emails: {
-    type: [String],
-    default: [],
-  },
-  location: {
-    type: String,
-    default: "",
-  },
-  locationDescription: {
-    type: String,
-    default: "",
-  },
-  lat: {
-    type: Number,
-  },
-  lng: {
-    type: Number,
-  },
-  distance: {
-    type: Number,
-  },
-  pictures: {
-    type: String,
-    default: "",
-  },
-  status: {
-    type: String,
-    enum: ["OPEN", "CLOSED", "OPENING"],
-    default: "OPEN",
-  },
-});
-
 const menuListSchema = new Schema({
   image: {
     type: String,
@@ -117,15 +77,6 @@ const BusinessSchema = new Schema(
       trim: true,
       index: true,
       default: "",
-    },
-    branch: {
-      type: String,
-      enum: ["MAIN", "BRANCH"],
-      main: {
-        type: Schema.Types.ObjectId,
-        ref: "Business",
-      },
-      default: "MAIN",
     },
     claimed: {
       type: Boolean,
@@ -217,10 +168,6 @@ const BusinessSchema = new Schema(
       default: "FEATHER_0",
       index: true,
     },
-    branches: {
-      type: [branchesSchema],
-      default: [],
-    },
     openHours: {
       type: [openHoursSchema],
       default: [],
@@ -278,6 +225,15 @@ const BusinessSchema = new Schema(
         {
           type: Schema.Types.ObjectId,
           ref: "Category",
+        },
+      ],
+      default: [],
+    },
+    branches: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Business",
         },
       ],
       default: [],

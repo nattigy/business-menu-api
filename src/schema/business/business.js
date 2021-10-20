@@ -39,6 +39,13 @@ const BusinessQuery = {
     },
     projection: {categories: 1},
   }),
+  businessBranches: BusinessTC.addRelation("branches", {
+    resolver: () => BusinessTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.branches,
+    },
+    projection: {branches: 1},
+  }),
   businessOwner: BusinessTC.addRelation("owner", {
     resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
     prepareArgs: {
