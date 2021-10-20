@@ -81,7 +81,7 @@ const BusinessMutation = {
   businessAddEvent: BusinessTC.getResolver("businessAddEvent", [middleware.isAuth, middleware.isAdmin]),
   businessRemoveEvent: BusinessTC.getResolver("businessRemoveEvent", [middleware.isAuth, middleware.isAdmin]),
   businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike", [middleware.isAuth]),
-  businessReset: BusinessTC.getResolver("businessReset"),
+  // businessReset: BusinessTC.getResolver("businessReset"),
 };
 
 export {BusinessQuery, BusinessMutation};
