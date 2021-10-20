@@ -119,7 +119,7 @@ const businessCreateOneCustomAdmin = {
   type: BusinessTC,
   args: {
     businessName: "String!",
-    phoneNumbers: "String!",
+    phoneNumbers: "[String!]!",
     location: "String!",
     locationDescription: "String",
     pictures: ["String!"],
@@ -150,8 +150,8 @@ const businessCreateOneCustomAdmin = {
     await BusinessModel.create(
       {
         businessName,
-        phoneNumbers: phoneNumbers.split(',').filter(e => e !== ""),
-        phoneNumber: phoneNumbers.split(',').filter(e => e !== ""),
+        phoneNumbers,
+        phoneNumber: phoneNumbers,
         claimed,
         location,
         locationDescription,
@@ -202,8 +202,8 @@ const businessCreateManyCustom = {
       await BusinessModel.create(
         {
           businessName: businesses[i].businessName,
-          phoneNumbers: businesses[i].phoneNumbers.split(',').filter(e => e !== ""),
-          phoneNumber: businesses[i].phoneNumbers.split(',').filter(e => e !== ""),
+          phoneNumbers: businesses[i].phoneNumbers,
+          phoneNumber: businesses[i].phoneNumbers,
           claimed: businesses[i].claimed,
           location: businesses[i].location,
           locationDescription: businesses[i].locationDescription,
