@@ -24,8 +24,11 @@ const addUserCoupon = {
 
 const user = {
   name: 'user',
-  type: 'User!',
-  resolve: async ({context: {accessToken}}) => await userService.getUser(accessToken.replace("Bearer ", ""))
+  type: UserTC,
+  resolve: async ({context: {accessToken}}) => {
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
+    return UserModel.findById(user._id);
+  }
 };
 
 const signIn = {

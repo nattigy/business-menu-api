@@ -7,25 +7,25 @@ import {EventTC} from "../../models/event";
 import {authMiddleware as middleware} from "../../middleware/authMiddleware";
 
 const SponsoredQuery = {
-  sponsoredById: SponsoredTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
+  sponsoredById: SponsoredTC.getResolver("findById"),
   sponsoredByIds: SponsoredTC.getResolver("findByIds", [middleware.isAuth, middleware.isAdmin]),
   sponsoredOne: SponsoredTC.getResolver("findOne", [middleware.isAuth, middleware.isAdmin]),
-  sponsoredMany: SponsoredTC.getResolver("findMany", [middleware.isAuth, middleware.isAdmin]),
+  sponsoredMany: SponsoredTC.getResolver("findMany"),
   sponsoredPagination: SponsoredTC.getResolver("pagination", [middleware.isAuth, middleware.isAdmin]),
-  sponsoredPosts: SponsoredTC.addRelation("posts", {
-    resolver: () => PostTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.posts,
-    },
-    projection: {posts: 1},
-  }),
-  sponsoredEvents: SponsoredTC.addRelation("events", {
-    resolver: () => EventTC.getResolver("findByIds"),
-    prepareArgs: {
-      _ids: (source) => source.events,
-    },
-    projection: {events: 1},
-  }),
+  // sponsoredPosts: SponsoredTC.addRelation("posts", {
+  //   resolver: () => PostTC.getResolver("findByIds"),
+  //   prepareArgs: {
+  //     _ids: (source) => source.posts,
+  //   },
+  //   projection: {posts: 1},
+  // }),
+  // sponsoredEvents: SponsoredTC.addRelation("events", {
+  //   resolver: () => EventTC.getResolver("findByIds"),
+  //   prepareArgs: {
+  //     _ids: (source) => source.events,
+  //   },
+  //   projection: {events: 1},
+  // }),
   sponsoredCategories: SponsoredTC.addRelation("categories", {
     resolver: () => CategoryTC.getResolver("findByIds"),
     prepareArgs: {
@@ -33,30 +33,30 @@ const SponsoredQuery = {
     },
     projection: {categories: 1},
   }),
-  sponsoredOwner: SponsoredTC.addRelation("owner", {
-    resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
-    prepareArgs: {
-      _id: (source) => source.owner,
-    },
-    projection: {owner: 1},
-  }),
-  sponsoredIsLiked: SponsoredTC.addFields({
-    likeCount: {
-      type: 'Int',
-      resolve: (Sponsored) => Sponsored ? Sponsored.favoriteList ? Sponsored.favoriteList.length : 0 : 0,
-    },
-    isLiked: {
-      type: 'Boolean',
-      resolve: (Sponsored, _, {user}) => {
-        const biz = SponsoredModel.findById(Sponsored._id, {favoriteList: 1});
-        return biz.favoriteList.contains(user._id);
-      },
-    },
-    favoriteList: {
-      type: '[MongoID]',
-      resolve: () => []
-    }
-  }),
+  // sponsoredOwner: SponsoredTC.addRelation("owner", {
+  //   resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
+  //   prepareArgs: {
+  //     _id: (source) => source.owner,
+  //   },
+  //   projection: {owner: 1},
+  // }),
+  // sponsoredIsLiked: SponsoredTC.addFields({
+  //   likeCount: {
+  //     type: 'Int',
+  //     resolve: (Sponsored) => Sponsored ? Sponsored.favoriteList ? Sponsored.favoriteList.length : 0 : 0,
+  //   },
+  //   isLiked: {
+  //     type: 'Boolean',
+  //     resolve: (Sponsored, _, {user}) => {
+  //       const biz = SponsoredModel.findById(Sponsored._id, {favoriteList: 1});
+  //       return biz.favoriteList.contains(user._id);
+  //     },
+  //   },
+  //   favoriteList: {
+  //     type: '[MongoID]',
+  //     resolve: () => []
+  //   }
+  // }),
 };
 
 const SponsoredMutation = {

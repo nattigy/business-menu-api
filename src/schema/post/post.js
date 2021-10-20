@@ -47,7 +47,7 @@ const PostMutation = {
   postRemoveOne: PostTC.getResolver("removeOne",[middleware.isAuth, middleware.isAdmin]),
   postRemoveMany: PostTC.getResolver("removeMany",[middleware.isAuth, middleware.isAdmin]),
   postDeleteById: PostTC.getResolver("postDeleteById",[middleware.isAuth, middleware.isAdmin]),
-  postLikeUnLike: PostTC.getResolver("postLikeUnLike",[middleware.isAuth, middleware.isAdmin]),
+  postLikeUnLike: PostTC.getResolver("postLikeUnLike",[middleware.isAuth]),
 };
 
 export {PostQuery, PostMutation};

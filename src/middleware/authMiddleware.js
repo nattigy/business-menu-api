@@ -14,7 +14,7 @@ const authMiddleware = {
 
     return resolve(source, args, context, info);
   },
-  isGuest: (resolve, source, args, context, info) => {
+  isGuest: async (resolve, source, args, context, info) => {
     const {user} = context;
 
     if (user) {
@@ -23,8 +23,10 @@ const authMiddleware = {
 
     return resolve(source, args, context, info);
   },
-  isAdmin: (resolve, source, args, context, info) => {
-    const {user} = context;
+  isAdmin: async (resolve, source, args, context, info) => {
+    const {accessToken} = context;
+
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
 
     if (!user.roles.includes(role.ADMIN)) {
       return Promise.reject(new Error('Access denied.'));
@@ -32,8 +34,10 @@ const authMiddleware = {
 
     return resolve(source, args, context, info);
   },
-  isOwner: (resolve, source, args, context, info) => {
-    const {user} = context;
+  isOwner: async (resolve, source, args, context, info) => {
+    const {accessToken} = context;
+
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
 
     if (!user.roles.includes(role.OWNER) || !user.roles.includes(role.ADMIN)) {
       return Promise.reject(new Error('Access denied.'));
@@ -57,10 +61,15 @@ const authMiddleware = {
     context.phoneNumber = phoneNumber;
     return resolve(source, args, context, info);
   },
-  isValidated: (resolve, source, args, context, info) => {
-    const {user} = context;
+  isValidated: async (resolve, source, args, context, info) => {
+    const {accessToken} = context;
+
+    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
 
     if (user._id.toString() !== args._id.toString()) {
+      if (user.roles.includes(role.ADMIN)) {
+        return resolve(source, args, context, info);
+      }
       return Promise.reject(new Error('Access denied.'));
     }
 

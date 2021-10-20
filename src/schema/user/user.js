@@ -58,7 +58,7 @@ const UserQuery = {
 const UserMutation = {
   userCreateOne: UserTC.getResolver("createOne", [middleware.isAuth, middleware.isAdmin]),
   userCreateMany: UserTC.getResolver("createMany",[middleware.isAuth, middleware.isAdmin]),
-  userUpdateById: UserTC.getResolver("updateById",[middleware.isAuth, middleware.isAdmin]),
+  userUpdateById: UserTC.getResolver("updateById",[middleware.isAuth, middleware.isValidated]),
   userUpdateOne: UserTC.getResolver("updateOne",[middleware.isAuth, middleware.isAdmin]),
   userUpdateMany: UserTC.getResolver("updateMany",[middleware.isAuth, middleware.isAdmin]),
   userRemoveById: UserTC.getResolver("removeById",[middleware.isAuth, middleware.isAdmin]),
