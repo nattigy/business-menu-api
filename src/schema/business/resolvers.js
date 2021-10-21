@@ -165,7 +165,6 @@ const businessCreateOneCustomAdmin = {
           type: "Point",
           coordinates: [lng, lat]
         },
-        branch: "MAIN",
         owner: user._id,
       }
     )
@@ -217,7 +216,6 @@ const businessCreateManyCustom = {
             type: "Point",
             coordinates: [businesses[i].lng, businesses[i].lat]
           },
-          branch: "MAIN",
           owner: user._id,
         }
       )
@@ -269,47 +267,6 @@ const removeByIdCustom = {
       $pull: {businesses: args.id}
     });
     await BusinessListModel.findOneAndDelete({autocompleteTerm: business.businessName.toLowerCase()});
-  },
-};
-
-const businessCreateBranch = {
-  name: "businessCreateBranch",
-  kind: "mutation",
-  type: BusinessTC.getResolver("updateById").getType(),
-  args: {
-    branch: BusinessCreateBranchInput
-  },
-  resolve: async ({args: {branch}}) => {
-    await BusinessModel.findByIdAndUpdate(branch.id, {
-      $addToSet: {
-        branches: {
-          branchName: branch.branchName,
-          phoneNumbers: branch.phoneNumbers,
-          location: branch.location,
-          locationDescription: branch.locationDescription,
-          lng: branch.lng,
-          lat: branch.lat,
-          pictures: branch.pictures
-        }
-      }
-    });
-    return {recordId: branch.id};
-  },
-};
-
-const businessDeleteBranch = {
-  name: "businessDeleteBranch",
-  kind: "mutation",
-  type: BusinessTC.getResolver("updateById").getType(),
-  args: {
-    businessId: "String",
-    branchId: "String",
-  },
-  resolve: async ({args: {branchId, businessId}}) => {
-    await BusinessModel.findByIdAndUpdate(businessId, {
-      $pull: {branches: {_id: branchId}}
-    });
-    return {recordId: branchId};
   },
 };
 
@@ -403,8 +360,6 @@ export default {
   businessCreateOneCustomAdmin,
   businessCreateManyCustom,
   removeByIdCustom,
-  businessCreateBranch,
-  businessDeleteBranch,
   businessAddPost,
   businessRemovePost,
   businessAddEvent,
