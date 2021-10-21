@@ -18,19 +18,3 @@ const BusinessCreateInputTC = schemaComposer.createObjectTC({
 });
 
 export const BusinessCreateManyCustomInput = toInputObjectType(BusinessCreateInputTC);
-
-const BusinessCreateBranchInputTC = schemaComposer.createObjectTC({
-  name: 'BusinessCreateBranchInput',
-  fields: {
-    id: "String!",
-    branchName: "String!",
-    phoneNumbers: "[String!]!",
-    location: "String!",
-    locationDescription: "String",
-    lng: "Float!",
-    lat: "Float!",
-    pictures: "[String]",
-  }
-});
-
-export const BusinessCreateBranchInput = toInputObjectType(BusinessCreateBranchInputTC);

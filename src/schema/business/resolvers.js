@@ -5,7 +5,7 @@ import {UserModel} from "../../models/user";
 import {BusinessListModel} from "../../models/businessList";
 import {EventModel} from "../../models/event";
 import {PostModel} from "../../models/post";
-import {BusinessCreateBranchInput, BusinessCreateManyCustomInput} from "./input-types";
+import {BusinessCreateManyCustomInput} from "./input-types";
 import {userService} from "../../utils/userService";
 
 // Queries
