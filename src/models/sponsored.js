@@ -41,12 +41,6 @@ const SponsoredSchema = new Schema(
       },
       coordinates: [Number],
     },
-    lat: {
-      type: Number,
-    },
-    lng: {
-      type: Number,
-    },
     distance: {
       type: Number,
     },
@@ -76,24 +70,6 @@ const SponsoredSchema = new Schema(
         {
           type: Schema.Types.ObjectId,
           ref: "User",
-        },
-      ],
-      default: [],
-    },
-    posts: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Post",
-        },
-      ],
-      default: [],
-    },
-    events: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Event",
         },
       ],
       default: [],
