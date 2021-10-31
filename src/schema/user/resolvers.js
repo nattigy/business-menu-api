@@ -99,6 +99,7 @@ const userSignUp = {
         lastName,
         phoneNumber,
         password: hash,
+        roles: [roles.NORMAL]
       }).save();
 
       const accessToken = jwt.sign(
@@ -152,7 +153,61 @@ const ownerSignUp = {
         lastName,
         phoneNumber,
         password: hash,
-        roles: [roles.owner]
+        roles: [roles.OWNER]
+      }).save();
+
+      const accessToken = jwt.sign(
+        {
+          _id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+        }, process.env.JWT_SECRET,
+        {
+          expiresIn: process.env.JWT_EXPIRATION
+        },
+      );
+
+      await userService.verifyRequest(user);
+
+      // userMail.verifyRequest(user, token);
+
+      return {accessToken};
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+};
+
+const adminSignUp = {
+  name: 'adminSignUp',
+  type: 'AccessToken!',
+  args: {
+    email: 'String!',
+    password: 'String!',
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+  },
+  resolve: async ({args: {email, password, firstName, middleName, lastName}, context: {phoneNumber}}) => {
+    try {
+      let user = await UserModel.emailExist(email);
+      if (user) {
+        return Promise.reject(new Error('Email has already been taken.'));
+      }
+
+      const hash = bcrypt.hashSync(password, 10);
+
+      user = await new UserModel({
+        email,
+        firstName,
+        middleName,
+        lastName,
+        phoneNumber,
+        password: hash,
+        roles: [roles.ADMIN]
       }).save();
 
       const accessToken = jwt.sign(
@@ -415,6 +470,7 @@ export default {
   signIn,
   userSignUp,
   ownerSignUp,
+  adminSignUp,
   // logout,
   verifyRequest,
   verify,

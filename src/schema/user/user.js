@@ -69,6 +69,7 @@ const UserMutation = {
   signIn: UserTC.getResolver('signIn', [middleware.isGuest, validator.signIn]),
   userSignUp: UserTC.getResolver('userSignUp', [middleware.isGuest, validator.signUp]),
   ownerSignUp: UserTC.getResolver('ownerSignUp', [middleware.isPhoneVerified, middleware.isGuest, validator.signUp]),
+  // adminSignUp: UserTC.getResolver('adminSignUp', [validator.signUp]),
   // logout: UserTC.getResolver('logout', [middleware.isAuth]),
   verifyRequest: UserTC.getResolver('verifyRequest', [middleware.isAuth, middleware.isUnverified]),
   verify: UserTC.getResolver('verify'),

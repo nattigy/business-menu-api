@@ -343,12 +343,12 @@ const businessReset = {
     const bizs = await BusinessModel.find();
     for (let i = 0; i < bizs.length; i++) {
       const nb = await BusinessModel.findById(bizs[i]._id, {
-        phoneNumber: 1, phoneNumbers: 1, businessName: 1
+        branches: 1, businessName: 1
       });
-      // await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
-      //   phoneNumber: nb.phoneNumber.split(',').filter(e => e !== ""),
-      //   phoneNumbers: nb.phoneNumbers.split(',').filter(e => e !== "")
-      // });
+      await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
+        branches: [],
+        branch: null
+      });
       console.log(i + 1, nb.businessName, nb.phoneNumbers, nb.phoneNumber);
     }
   },
