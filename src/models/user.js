@@ -50,6 +50,22 @@ const UserSchema = new Schema(
         token: String,
         expiresIn: Date
       },
+      emailVerification: {
+        verified: {
+          type: Boolean,
+          default: false
+        },
+        token: String,
+        expiresIn: Date
+      },
+      phoneVerification: {
+        verified: {
+          type: Boolean,
+          default: false
+        },
+        token: String,
+        expiresIn: Date
+      },
       resetPassword: {
         token: String,
         expiresIn: Date
@@ -111,6 +127,10 @@ UserSchema.index({createdAt: 1, updatedAt: 1});
 
 UserSchema.statics.emailExist = function (email) {
   return this.findOne({email});
+};
+
+UserSchema.statics.phoneNumberExist = function (phoneNumber) {
+  return this.findOne({phoneNumber});
 };
 
 UserSchema.methods.comparePassword = function (password) {

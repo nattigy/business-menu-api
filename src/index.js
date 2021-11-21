@@ -4,26 +4,10 @@ import {ApolloServer} from "apollo-server-express";
 import schema from "./schema";
 import {userService} from "./utils/userService";
 import {authentication} from "./middleware/authentication";
-// import "./config/redis-config";
 import "./config/mongodb-config";
-
-// import cookieParser from "cookie-parser";
-// import csrf from "csurf";
-// import bodyParser from "body-parser";
-// import { i18next, i18nextMiddleware } from './i18next/index';
-
-// const csrfMiddleware = csrf({ cookie: true });
 
 dotenv.config();
 const app = express();
-
-// app.use(cookieParser());
-// app.use(csrfMiddleware);
-
-// app.all("*", (req, res, next) => {
-//   res.cookie("XSRF-TOKEN", req.csrfToken());
-//   next();
-// });
 
 const server = new ApolloServer({
   schema,

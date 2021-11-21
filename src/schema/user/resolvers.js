@@ -72,6 +72,47 @@ const signIn = {
   }
 };
 
+const ownerSignIn = {
+  name: 'ownerSignIn',
+  type: 'AccessToken!',
+  args: {
+    phoneNumber: 'String!',
+    password: 'String!'
+  },
+  resolve: async ({args: {phoneNumber, password}}) => {
+    try {
+      const user = await UserModel.phoneNumberExist(phoneNumber);
+      if (!user) {
+        return Promise.reject(new Error('User not found.'));
+      }
+
+      const comparePassword = await user.comparePassword(password);
+      if (!comparePassword) {
+        return Promise.reject(new Error('Password is incorrect.'));
+      }
+
+      const accessToken = jwt.sign(
+        {
+          _id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+          roles: user.roles,
+        }, process.env.JWT_SECRET,
+        {
+          expiresIn: process.env.JWT_EXPIRATION
+        },
+      );
+
+      return {accessToken, roles: user.roles, user};
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+};
+
 const userSignUp = {
   name: 'userSignUp',
   type: 'AccessToken!',
@@ -137,8 +178,13 @@ const ownerSignUp = {
     middleName: 'String!',
     lastName: 'String!',
   },
-  resolve: async ({args: {email, password, firstName, middleName, lastName}, context: {phoneNumber}}) => {
+  resolve: async ({args: {email, password, firstName, middleName, lastName}, context: {phoneNumber, phoneVerification}}) => {
     try {
+      let _ = await UserModel.phoneNumberExist(phoneNumber);
+      if (user) {
+        return Promise.reject(new Error('Phone Number has already been taken.'));
+      }
+
       let user = await UserModel.emailExist(email);
       if (user) {
         return Promise.reject(new Error('Email has already been taken.'));
@@ -153,7 +199,13 @@ const ownerSignUp = {
         lastName,
         phoneNumber,
         password: hash,
-        roles: [roles.OWNER]
+        roles: [roles.OWNER],
+        account: {
+          phoneVerification: {
+            verified: true,
+            token: phoneVerification,
+          },
+        },
       }).save();
 
       const accessToken = jwt.sign(
@@ -468,6 +520,7 @@ export default {
   addUserCoupon,
   user,
   signIn,
+  ownerSignIn,
   userSignUp,
   ownerSignUp,
   adminSignUp,

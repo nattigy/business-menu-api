@@ -39,7 +39,7 @@ const authMiddleware = {
 
     const user = await userService.getUser(accessToken.replace("Bearer ", ""));
 
-    if (!user.roles.includes(role.OWNER) || !user.roles.includes(role.ADMIN)) {
+    if (!user.roles.includes(role.OWNER) && !user.roles.includes(role.ADMIN)) {
       return Promise.reject(new Error('Access denied.'));
     }
 

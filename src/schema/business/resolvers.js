@@ -113,8 +113,8 @@ const businessLikeUnLike = {
   },
 };
 
-const businessCreateOneCustomAdmin = {
-  name: "businessCreateOneCustomAdmin",
+const businessCreateOneCustom = {
+  name: "businessCreateOneCustom",
   kind: "mutation",
   type: BusinessTC,
   args: {
@@ -357,7 +357,7 @@ const businessReset = {
 export default {
   getBusinessesByFilter,
   businessLikeUnLike,
-  businessCreateOneCustomAdmin,
+  businessCreateOneCustom,
   businessCreateManyCustom,
   removeByIdCustom,
   businessAddPost,
