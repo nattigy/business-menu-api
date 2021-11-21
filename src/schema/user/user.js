@@ -67,7 +67,7 @@ const UserMutation = {
   userAddCoupon: UserTC.getResolver("userAddCoupon",[middleware.isAuth, middleware.isAdmin]),
 
   signIn: UserTC.getResolver('signIn', [middleware.isGuest, validator.signIn]),
-  ownerSignIn: UserTC.getResolver('ownerSignIn', [middleware.isGuest, validator.signIn]),
+  ownerSignIn: UserTC.getResolver('ownerSignIn', [middleware.isGuest]),
   userSignUp: UserTC.getResolver('userSignUp', [middleware.isGuest, validator.signUp]),
   ownerSignUp: UserTC.getResolver('ownerSignUp', [middleware.isPhoneVerified, middleware.isGuest, validator.signUp]),
   // adminSignUp: UserTC.getResolver('adminSignUp', [validator.signUp]),

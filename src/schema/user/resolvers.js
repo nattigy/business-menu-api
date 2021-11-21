@@ -50,14 +50,14 @@ const signIn = {
         return Promise.reject(new Error('Password is incorrect.'));
       }
 
-      const accessToken = jwt.sign(
+      const accessToken = await jwt.sign(
         {
           _id: user._id,
           email: user.email,
           firstName: user.firstName,
           middleName: user.middleName,
           lastName: user.lastName,
-          phoneNumber: user.phoneNumber,
+          // phoneNumber: user.phoneNumber,
           roles: user.roles,
         }, process.env.JWT_SECRET,
         {
@@ -86,12 +86,12 @@ const ownerSignIn = {
         return Promise.reject(new Error('User not found.'));
       }
 
-      const comparePassword = await user.comparePassword(password);
+      const comparePassword = await user.comparePassword(password.toString());
       if (!comparePassword) {
         return Promise.reject(new Error('Password is incorrect.'));
       }
 
-      const accessToken = jwt.sign(
+      const accessToken = await jwt.sign(
         {
           _id: user._id,
           email: user.email,
@@ -138,19 +138,19 @@ const userSignUp = {
         firstName,
         middleName,
         lastName,
-        phoneNumber,
+        // phoneNumber,
         password: hash,
         roles: [roles.NORMAL]
       }).save();
 
-      const accessToken = jwt.sign(
+      const accessToken = await jwt.sign(
         {
           _id: user._id,
           email: user.email,
           firstName: user.firstName,
           middleName: user.middleName,
           lastName: user.lastName,
-          phoneNumber: user.phoneNumber,
+          // phoneNumber: user.phoneNumber,
         }, process.env.JWT_SECRET,
         {
           expiresIn: process.env.JWT_EXPIRATION
@@ -180,12 +180,13 @@ const ownerSignUp = {
   },
   resolve: async ({args: {email, password, firstName, middleName, lastName}, context: {phoneNumber, phoneVerification}}) => {
     try {
-      let _ = await UserModel.phoneNumberExist(phoneNumber);
+      let user = await UserModel.phoneNumberExist(phoneNumber);
+
       if (user) {
         return Promise.reject(new Error('Phone Number has already been taken.'));
       }
 
-      let user = await UserModel.emailExist(email);
+      user = await UserModel.emailExist(email);
       if (user) {
         return Promise.reject(new Error('Email has already been taken.'));
       }
@@ -208,7 +209,7 @@ const ownerSignUp = {
         },
       }).save();
 
-      const accessToken = jwt.sign(
+      const accessToken = await jwt.sign(
         {
           _id: user._id,
           email: user.email,
@@ -226,7 +227,7 @@ const ownerSignUp = {
 
       // userMail.verifyRequest(user, token);
 
-      return {accessToken};
+      return {accessToken, roles: user.roles, user};
     } catch (error) {
       return Promise.reject(error);
     }
@@ -262,7 +263,7 @@ const adminSignUp = {
         roles: [roles.ADMIN]
       }).save();
 
-      const accessToken = jwt.sign(
+      const accessToken = await jwt.sign(
         {
           _id: user._id,
           email: user.email,
@@ -416,7 +417,7 @@ const newPassword = {
 
       await user.save();
 
-      const accessToken = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
+      const accessToken = await jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRATION
       });
 

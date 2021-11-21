@@ -32,7 +32,7 @@ const userValidator = {
   signIn: async (resolve, source, args, context, info) => {
     let {email} = args;
 
-    email = validator.normalizeEmail(email);
+    email = email.toString().toLowerCase();
     email = validator.trim(email);
 
     Object.assign(args, {email});
@@ -42,7 +42,7 @@ const userValidator = {
   signUp: async (resolve, source, args, context, info) => {
     let {email} = args;
 
-    email = validator.normalizeEmail(email);
+    email = email.toString().toLowerCase();
     email = validator.trim(email);
 
     Object.assign(args, {email});

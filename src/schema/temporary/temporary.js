@@ -5,6 +5,11 @@ import {PostTC} from "../../models/post";
 import {EventTC} from "../../models/event";
 
 import {authMiddleware as middleware} from "../../middleware/authMiddleware";
+import Resolvers from "./resolvers";
+
+for (const resolver in Resolvers) {
+  TemporaryTC.addResolver(Resolvers[resolver]);
+}
 
 const TemporaryQuery = {
   temporaryById: TemporaryTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
@@ -61,6 +66,7 @@ const TemporaryQuery = {
 
 const TemporaryMutation = {
   temporaryCreateOne: TemporaryTC.getResolver("createOne", [middleware.isAuth, middleware.isAdmin]),
+  temporaryCreateOneCustom: TemporaryTC.getResolver("temporaryCreateOneCustom", [middleware.isAuth, middleware.isOwner]),
   temporaryCreateMany: TemporaryTC.getResolver("createMany", [middleware.isAuth, middleware.isAdmin]),
   temporaryUpdateById: TemporaryTC.getResolver("updateById", [middleware.isAuth, middleware.isAdmin]),
   temporaryUpdateOne: TemporaryTC.getResolver("updateOne", [middleware.isAuth, middleware.isAdmin]),

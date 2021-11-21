@@ -138,13 +138,14 @@ UserSchema.methods.comparePassword = function (password) {
 };
 
 const UserModel = mongoose.model("User", UserSchema);
-const UserTC = composeWithMongoose(UserModel).removeField('password');
+const UserTC = composeWithMongoose(UserModel);
+// const UserTC = composeWithMongoose(UserModel).removeField('password');
 
 const UserAccountTC = UserTC.getFieldTC('account');
 
 UserAccountTC.getFieldTC('verification').removeField(['token', 'expiresIn']);
 
-UserAccountTC.removeField('resetPassword');
+// UserAccountTC.removeField('resetPassword');
 
 schemaComposer.createObjectTC({
   name: 'AccessToken',

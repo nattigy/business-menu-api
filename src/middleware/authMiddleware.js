@@ -6,7 +6,7 @@ const authMiddleware = {
   isAuth: async (resolve, source, args, context, info) => {
     const {accessToken} = context;
 
-    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
+    const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
     if (!user) {
       return Promise.reject(new Error('You must be authorized.'));
@@ -26,7 +26,7 @@ const authMiddleware = {
   isAdmin: async (resolve, source, args, context, info) => {
     const {accessToken} = context;
 
-    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
+    const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
     if (!user.roles.includes(role.ADMIN)) {
       return Promise.reject(new Error('Access denied.'));
@@ -37,7 +37,7 @@ const authMiddleware = {
   isOwner: async (resolve, source, args, context, info) => {
     const {accessToken} = context;
 
-    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
+    const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
     if (!user.roles.includes(role.OWNER) && !user.roles.includes(role.ADMIN)) {
       return Promise.reject(new Error('Access denied.'));
@@ -45,14 +45,15 @@ const authMiddleware = {
 
     return resolve(source, args, context, info);
   },
-  isPhoneVerified: (resolve, source, args, context, info) => {
+  isPhoneVerified: async (resolve, source, args, context, info) => {
     const {phoneVerification} = context;
     let phoneNumber = "";
-    admin
+
+    await admin
       .auth()
       .verifyIdToken(phoneVerification)
       .then((decodedToken) => {
-        phoneNumber = decodedToken.phoneNumber;
+        phoneNumber = decodedToken.phone_number;
       })
       .catch(() => Promise.reject(new Error('Error happened!')));
     if (phoneNumber === "") {
@@ -64,7 +65,7 @@ const authMiddleware = {
   isValidated: async (resolve, source, args, context, info) => {
     const {accessToken} = context;
 
-    const user = await userService.getUser(accessToken.replace("Bearer ", ""));
+    const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
     if (user._id.toString() !== args._id.toString()) {
       if (user.roles.includes(role.ADMIN)) {

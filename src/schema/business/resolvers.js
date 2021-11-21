@@ -187,6 +187,41 @@ const businessCreateOneCustom = {
   },
 };
 
+const businessCreateOneTemp = {
+  name: "businessCreateOneTemp",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    businessName: "String!",
+    location: "String!",
+  },
+  resolve: async (
+    {
+      args: {
+        businessName,
+        location,
+      }, context: {user}
+    }) => {
+    let bizId = "";
+    await BusinessModel.create(
+      {
+        businessName,
+        location,
+        owner: user._id,
+        state: "NOT_VERIFIED"
+      }
+    )
+      .then(async (res) => {
+        bizId = res._id;
+        await UserModel.updateOne(
+          {_id: user._id},
+          {$addToSet: {businesses: bizId}}
+        );
+      }).catch((error) => error);
+    return BusinessModel.findById(bizId);
+  },
+};
+
 const businessCreateManyCustom = {
   name: "businessCreateManyCustom",
   kind: "mutation",
@@ -358,6 +393,7 @@ export default {
   getBusinessesByFilter,
   businessLikeUnLike,
   businessCreateOneCustom,
+  businessCreateOneTemp,
   businessCreateManyCustom,
   removeByIdCustom,
   businessAddPost,

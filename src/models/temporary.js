@@ -41,6 +41,9 @@ const branchesSchema = new Schema({
   branchName: {
     type: String
   },
+  businessId: {
+    type: String
+  },
   phoneNumbers: {
     type: [String],
     default: [],
