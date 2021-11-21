@@ -67,6 +67,7 @@ const TemporaryQuery = {
 const TemporaryMutation = {
   temporaryCreateOne: TemporaryTC.getResolver("createOne", [middleware.isAuth, middleware.isAdmin]),
   temporaryCreateOneCustom: TemporaryTC.getResolver("temporaryCreateOneCustom", [middleware.isAuth, middleware.isOwner]),
+  temporaryVerifyById: TemporaryTC.getResolver("temporaryVerifyById", [middleware.isAuth, middleware.isOwner]),
   temporaryCreateMany: TemporaryTC.getResolver("createMany", [middleware.isAuth, middleware.isAdmin]),
   temporaryUpdateById: TemporaryTC.getResolver("updateById", [middleware.isAuth, middleware.isAdmin]),
   temporaryUpdateOne: TemporaryTC.getResolver("updateOne", [middleware.isAuth, middleware.isAdmin]),
@@ -74,6 +75,7 @@ const TemporaryMutation = {
   temporaryRemoveById: TemporaryTC.getResolver("removeById", [middleware.isAuth, middleware.isAdmin]),
   temporaryRemoveOne: TemporaryTC.getResolver("removeOne", [middleware.isAuth, middleware.isAdmin]),
   temporaryRemoveMany: TemporaryTC.getResolver("removeMany", [middleware.isAuth, middleware.isAdmin]),
+  // temporaryRemoveByIdCustom: TemporaryTC.getResolver("temporaryRemoveByIdCustom", [middleware.isAuth, middleware.isAdmin]),
 };
 
 export {TemporaryQuery, TemporaryMutation};

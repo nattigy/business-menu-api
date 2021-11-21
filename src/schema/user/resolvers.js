@@ -41,11 +41,12 @@ const signIn = {
   resolve: async ({args: {email, password}}) => {
     try {
       const user = await UserModel.emailExist(email);
+
       if (!user) {
         return Promise.reject(new Error('User not found.'));
       }
 
-      const comparePassword = await user.comparePassword(password);
+      const comparePassword = await user.comparePassword(password.toString());
       if (!comparePassword) {
         return Promise.reject(new Error('Password is incorrect.'));
       }

@@ -1,4 +1,7 @@
 import {TemporaryModel, TemporaryTC} from "../../models/temporary";
+import {BusinessModel} from "../../models/business";
+import {BusinessListModel} from "../../models/businessList";
+import {UserModel} from "../../models/user";
 
 const temporaryCreateOneCustom = {
   name: "temporaryCreateOneCustom",
@@ -66,4 +69,73 @@ const temporaryCreateOneCustom = {
   },
 };
 
-export default {temporaryCreateOneCustom};
+const temporaryVerifyById = {
+  name: "temporaryVerifyById",
+  kind: "mutation",
+  type: TemporaryTC,
+  args: {
+    id: "String!",
+  },
+  resolve: async (
+    {
+      args: {id}
+    }) => {
+    const temp = await TemporaryModel.findById(id);
+    await BusinessModel.findByIdAndUpdate(
+      temp.businessId,
+      {
+        businessName: temp.businessName,
+        phoneNumbers: temp.phoneNumbers,
+        phoneNumber: temp.phoneNumbers,
+        claimed: true,
+        status: "ACTIVE",
+        location: temp.location,
+        locationDescription: temp.locationDescription,
+        pictures: temp.pictures,
+        categories: temp.categories,
+        searchIndex: temp.searchIndex,
+        categoryIndex: temp.categoryIndex,
+        lng: temp.lng,
+        lat: temp.lat,
+        lngLat: {
+          type: "Point",
+          coordinates: [temp.lng, temp.lat]
+        },
+        owner: temp.owner,
+      }
+    )
+      .then(async () => {
+        await BusinessListModel.create(
+          {
+            autocompleteTerm: temp.businessName.toLowerCase()
+          }
+        );
+      }).catch((error) => error);
+    await TemporaryModel.findByIdAndDelete(id);
+    return BusinessModel.findById(temp.businessId);
+  },
+};
+
+const temporaryRemoveByIdCustom = {
+  name: "temporaryRemoveByIdCustom",
+  kind: "mutation",
+  type: TemporaryTC,
+  args: {
+    id: "String!",
+  },
+  resolve: async (
+    {
+      args: {
+        id
+      }, context: {user}
+    }) => {
+
+    return TemporaryModel.findById("bizId");
+  },
+};
+
+export default {
+  temporaryCreateOneCustom,
+  temporaryRemoveByIdCustom,
+  temporaryVerifyById,
+};
