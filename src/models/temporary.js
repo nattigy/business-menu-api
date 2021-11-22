@@ -9,59 +9,22 @@ const TemporarySchema = new Schema(
       trim: true,
       default: "",
     },
+    businessId: {
+      type: String,
+    },
     claimed: {
       type: Boolean,
       default: true,
     },
-    phoneNumber: {
-      type: [String],
-      default: []
-    },
     phoneNumbers: {
       type: [String],
       default: [],
-    },
-    emails: {
-      type: [String],
-      trim: true,
-      default: [],
-    },
-    website: {
-      type: String,
-      default: "",
-    },
-    logoPics: {
-      type: String,
-      default: "",
     },
     location: {
       type: String,
       default: "",
     },
     locationDescription: {
-      type: String,
-      default: "",
-    },
-    distance: {
-      type: Number,
-    },
-    slogan: {
-      type: String,
-      default: "",
-    },
-    description: {
-      type: String,
-      default: "",
-    },
-    specialization: {
-      type: String,
-      default: "",
-    },
-    history: {
-      type: String,
-      default: "",
-    },
-    establishedIn: {
       type: String,
       default: "",
     },

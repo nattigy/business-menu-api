@@ -1,7 +1,6 @@
 import {TemporaryModel, TemporaryTC} from "../../models/temporary";
 import {BusinessModel} from "../../models/business";
 import {BusinessListModel} from "../../models/businessList";
-import {UserModel} from "../../models/user";
 
 const temporaryCreateOneCustom = {
   name: "temporaryCreateOneCustom",
@@ -81,6 +80,8 @@ const temporaryVerifyById = {
       args: {id}
     }) => {
     const temp = await TemporaryModel.findById(id);
+    const tt = await BusinessModel.findById(temp.businessId);
+
     await BusinessModel.findByIdAndUpdate(
       temp.businessId,
       {
@@ -88,7 +89,7 @@ const temporaryVerifyById = {
         phoneNumbers: temp.phoneNumbers,
         phoneNumber: temp.phoneNumbers,
         claimed: true,
-        status: "ACTIVE",
+        state: "ACTIVE",
         location: temp.location,
         locationDescription: temp.locationDescription,
         pictures: temp.pictures,
@@ -97,10 +98,7 @@ const temporaryVerifyById = {
         categoryIndex: temp.categoryIndex,
         lng: temp.lng,
         lat: temp.lat,
-        lngLat: {
-          type: "Point",
-          coordinates: [temp.lng, temp.lat]
-        },
+        lngLat: temp.lngLat,
         owner: temp.owner,
       }
     )
