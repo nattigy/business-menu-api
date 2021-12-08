@@ -80,8 +80,6 @@ const temporaryVerifyById = {
       args: {id}
     }) => {
     const temp = await TemporaryModel.findById(id);
-    const tt = await BusinessModel.findById(temp.businessId);
-
     await BusinessModel.findByIdAndUpdate(
       temp.businessId,
       {
