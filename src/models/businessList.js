@@ -1,6 +1,6 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 const BusinessListSchema = new Schema(
   {
@@ -15,9 +15,9 @@ const BusinessListSchema = new Schema(
 );
 
 BusinessListSchema.plugin(timestamps);
-BusinessListSchema.index({createdAt: 1, updatedAt: 1});
+BusinessListSchema.index({ createdAt: 1, updatedAt: 1 });
 
 const BusinessListModel = mongoose.model("BusinessList", BusinessListSchema);
 const BusinessListTC = composeWithMongoose(BusinessListModel);
 
-export {BusinessListModel, BusinessListTC, BusinessListSchema};
+export { BusinessListModel, BusinessListTC, BusinessListSchema };

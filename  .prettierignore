@@ -1,0 +1,6 @@
+# Ignore artifacts:
+.idea
+noded_modules
+**.log
+**.lock
+src/config.firebase.config.js

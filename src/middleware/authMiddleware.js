@@ -1,52 +1,52 @@
 import admin from "../config/firebase-config";
 import role from "../utils/roles";
-import {userService} from "../utils/userService";
+import { userService } from "../utils/userService";
 
 const authMiddleware = {
   isAuth: async (resolve, source, args, context, info) => {
-    const {accessToken} = context;
+    const { accessToken } = context;
 
     const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
     if (!user) {
-      return Promise.reject(new Error('You must be authorized.'));
+      return Promise.reject(new Error("You must be authorized."));
     }
 
     return resolve(source, args, context, info);
   },
   isGuest: async (resolve, source, args, context, info) => {
-    const {user} = context;
+    const { user } = context;
 
     if (user) {
-      return Promise.reject(new Error('You have already authorized.'));
+      return Promise.reject(new Error("You have already authorized."));
     }
 
     return resolve(source, args, context, info);
   },
   isAdmin: async (resolve, source, args, context, info) => {
-    const {accessToken} = context;
+    const { accessToken } = context;
 
     const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
     if (!user.roles.includes(role.ADMIN)) {
-      return Promise.reject(new Error('Access denied.'));
+      return Promise.reject(new Error("Access denied."));
     }
 
     return resolve(source, args, context, info);
   },
   isOwner: async (resolve, source, args, context, info) => {
-    const {accessToken} = context;
+    const { accessToken } = context;
 
     const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
     if (!user.roles.includes(role.OWNER) && !user.roles.includes(role.ADMIN)) {
-      return Promise.reject(new Error('Access denied.'));
+      return Promise.reject(new Error("Access denied."));
     }
 
     return resolve(source, args, context, info);
   },
   isPhoneVerified: async (resolve, source, args, context, info) => {
-    const {phoneVerification} = context;
+    const { phoneVerification } = context;
     let phoneNumber = "";
 
     await admin
@@ -55,15 +55,15 @@ const authMiddleware = {
       .then((decodedToken) => {
         phoneNumber = decodedToken.phone_number;
       })
-      .catch(() => Promise.reject(new Error('Error happened!')));
+      .catch(() => Promise.reject(new Error("Error happened!")));
     if (phoneNumber === "") {
-      return Promise.reject(new Error('Phone number not detected!'));
+      return Promise.reject(new Error("Phone number not detected!"));
     }
     context.phoneNumber = phoneNumber;
     return resolve(source, args, context, info);
   },
   isValidated: async (resolve, source, args, context, info) => {
-    const {accessToken} = context;
+    const { accessToken } = context;
 
     const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
 
@@ -71,7 +71,7 @@ const authMiddleware = {
       if (user.roles.includes(role.ADMIN)) {
         return resolve(source, args, context, info);
       }
-      return Promise.reject(new Error('Access denied.'));
+      return Promise.reject(new Error("Access denied."));
     }
 
     return resolve(source, args, context, info);
@@ -80,13 +80,13 @@ const authMiddleware = {
     const {
       user: {
         account: {
-          verification: {verified}
-        }
-      }
+          verification: { verified },
+        },
+      },
     } = context;
 
     if (!verified) {
-      return Promise.reject(new Error('You must be verified.'));
+      return Promise.reject(new Error("You must be verified."));
     }
     return resolve(source, args, context, info);
   },
@@ -94,16 +94,16 @@ const authMiddleware = {
     const {
       user: {
         account: {
-          verification: {verified}
-        }
-      }
+          verification: { verified },
+        },
+      },
     } = context;
 
     if (verified) {
-      return Promise.reject(new Error('You have already verified.'));
+      return Promise.reject(new Error("You have already verified."));
     }
     return resolve(source, args, context, info);
-  }
+  },
 };
 
-export {authMiddleware};
+export { authMiddleware };

@@ -1,12 +1,12 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 const ZorittSchema = new Schema(
   {
     userAppHomePageImages: {
       type: [String],
-    }
+    },
   },
   {
     collection: "zoritt",
@@ -14,9 +14,9 @@ const ZorittSchema = new Schema(
 );
 
 ZorittSchema.plugin(timestamps);
-ZorittSchema.index({createdAt: 1, updatedAt: 1});
+ZorittSchema.index({ createdAt: 1, updatedAt: 1 });
 
 const ZorittModel = mongoose.model("Zoritt", ZorittSchema);
 const ZorittTC = composeWithMongoose(ZorittModel);
 
-export {ZorittModel, ZorittTC, ZorittSchema};
+export { ZorittModel, ZorittTC, ZorittSchema };

@@ -1,25 +1,25 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
-import {schemaComposer} from "graphql-compose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
+import { schemaComposer } from "graphql-compose";
 
 const openHoursSchema = new Schema({
   day: {
     type: String,
-    index: true
+    index: true,
   },
   opens: {
     type: String,
-    index: true
+    index: true,
   },
   closes: {
     type: String,
-    index: true
+    index: true,
   },
   isOpen: {
     type: Boolean,
-    index: true
-  }
+    index: true,
+  },
 });
 
 const subscriptionSchema = new Schema({
@@ -39,7 +39,7 @@ const subscriptionSchema = new Schema({
   },
   isExpired: {
     type: Boolean,
-  }
+  },
 });
 
 const menuListSchema = new Schema({
@@ -85,12 +85,12 @@ const BusinessSchema = new Schema(
     phoneNumber: {
       type: [String],
       default: [],
-      index: true
+      index: true,
     },
     phoneNumbers: {
       type: [String],
       default: [],
-      index: true
+      index: true,
     },
     emails: {
       type: [String],
@@ -118,7 +118,7 @@ const BusinessSchema = new Schema(
     lngLat: {
       type: {
         type: String,
-        enum: ['Point']
+        enum: ["Point"],
       },
       coordinates: [Number],
     },
@@ -164,7 +164,14 @@ const BusinessSchema = new Schema(
     },
     subscription: {
       type: String,
-      enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4", "SPONSORED"],
+      enum: [
+        "FEATHER_0",
+        "FEATHER_1",
+        "FEATHER_2",
+        "FEATHER_3",
+        "FEATHER_4",
+        "SPONSORED",
+      ],
       default: "FEATHER_0",
       index: true,
     },
@@ -243,23 +250,23 @@ const BusinessSchema = new Schema(
       ref: "User",
     },
   },
-  {collection: "businesses"}
+  { collection: "businesses" }
 );
 
 BusinessSchema.plugin(timestamps);
 
-BusinessSchema.index({createdAt: 1, updatedAt: 1}, {background: false});
-BusinessSchema.index({lngLat: "2dsphere"}, {background: false});
+BusinessSchema.index({ createdAt: 1, updatedAt: 1 }, { background: false });
+BusinessSchema.index({ lngLat: "2dsphere" }, { background: false });
 
 const BusinessModel = mongoose.model("Business", BusinessSchema);
 const BusinessTC = composeWithMongoose(BusinessModel);
 
 schemaComposer.createObjectTC({
-  name: 'Pagination',
+  name: "Pagination",
   fields: {
     items: [BusinessTC],
-    total: 'Int'
-  }
+    total: "Int",
+  },
 });
 
-export {BusinessModel, BusinessTC, BusinessSchema};
+export { BusinessModel, BusinessTC, BusinessSchema };

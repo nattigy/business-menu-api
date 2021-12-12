@@ -1,6 +1,6 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 const SponsoredSchema = new Schema(
   {
@@ -37,7 +37,7 @@ const SponsoredSchema = new Schema(
     lngLat: {
       type: {
         type: String,
-        enum: ['Point']
+        enum: ["Point"],
       },
       coordinates: [Number],
     },
@@ -94,9 +94,9 @@ const SponsoredSchema = new Schema(
 );
 
 SponsoredSchema.plugin(timestamps);
-SponsoredSchema.index({createdAt: 1, updatedAt: 1});
+SponsoredSchema.index({ createdAt: 1, updatedAt: 1 });
 
 const SponsoredModel = mongoose.model("Sponsored", SponsoredSchema);
 const SponsoredTC = composeWithMongoose(SponsoredModel);
 
-export {SponsoredModel, SponsoredTC, SponsoredSchema};
+export { SponsoredModel, SponsoredTC, SponsoredSchema };

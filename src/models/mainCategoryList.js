@@ -1,6 +1,6 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 const MainCategoryListSchema = new Schema(
   {
@@ -29,9 +29,12 @@ const MainCategoryListSchema = new Schema(
 );
 
 MainCategoryListSchema.plugin(timestamps);
-MainCategoryListSchema.index({createdAt: 1, updatedAt: 1});
+MainCategoryListSchema.index({ createdAt: 1, updatedAt: 1 });
 
-const MainCategoryListModel = mongoose.model("MainCategoryList", MainCategoryListSchema);
+const MainCategoryListModel = mongoose.model(
+  "MainCategoryList",
+  MainCategoryListSchema
+);
 const MainCategoryListTC = composeWithMongoose(MainCategoryListModel);
 
-export {MainCategoryListModel, MainCategoryListTC, MainCategoryListSchema};
+export { MainCategoryListModel, MainCategoryListTC, MainCategoryListSchema };

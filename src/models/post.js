@@ -1,6 +1,6 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 const descriptionListSchema = new Schema({
   field: {
@@ -8,7 +8,7 @@ const descriptionListSchema = new Schema({
   },
   value: {
     type: String,
-  }
+  },
 });
 
 const PostSchema = new Schema({
@@ -45,9 +45,9 @@ const PostSchema = new Schema({
 });
 
 PostSchema.plugin(timestamps);
-PostSchema.index({createdAt: 1, updatedAt: 1});
+PostSchema.index({ createdAt: 1, updatedAt: 1 });
 
 const PostModel = mongoose.model("Post", PostSchema);
 const PostTC = composeWithMongoose(PostModel);
 
-export {PostModel, PostTC, PostSchema};
+export { PostModel, PostTC, PostSchema };

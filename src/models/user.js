@@ -1,28 +1,28 @@
-import mongoose, {Schema} from "mongoose";
-import {schemaComposer} from "graphql-compose";
+import mongoose, { Schema } from "mongoose";
+import { schemaComposer } from "graphql-compose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
-import bcrypt from 'bcryptjs';
+import { composeWithMongoose } from "graphql-compose-mongoose";
+import bcrypt from "bcryptjs";
 
 const UserSchema = new Schema(
   {
     firstName: {
-      type: String
+      type: String,
     },
     middleName: {
-      type: String
+      type: String,
     },
     lastName: {
-      type: String
+      type: String,
     },
     email: {
       type: String,
     },
     phoneNumber: {
-      type: String
+      type: String,
     },
     image: {
-      type: String
+      type: String,
     },
     firebaseId: {
       type: String,
@@ -45,31 +45,31 @@ const UserSchema = new Schema(
       verification: {
         verified: {
           type: Boolean,
-          default: false
+          default: false,
         },
         token: String,
-        expiresIn: Date
+        expiresIn: Date,
       },
       emailVerification: {
         verified: {
           type: Boolean,
-          default: false
+          default: false,
         },
         token: String,
-        expiresIn: Date
+        expiresIn: Date,
       },
       phoneVerification: {
         verified: {
           type: Boolean,
-          default: false
+          default: false,
         },
         token: String,
-        expiresIn: Date
+        expiresIn: Date,
       },
       resetPassword: {
         token: String,
-        expiresIn: Date
-      }
+        expiresIn: Date,
+      },
     },
     interestedInEvents: {
       type: [
@@ -107,6 +107,15 @@ const UserSchema = new Schema(
       ],
       default: [],
     },
+    unverifiedBusinesses: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "temporaries",
+        },
+      ],
+      default: [],
+    },
     coupons: {
       type: [
         {
@@ -123,14 +132,14 @@ const UserSchema = new Schema(
 );
 
 UserSchema.plugin(timestamps);
-UserSchema.index({createdAt: 1, updatedAt: 1});
+UserSchema.index({ createdAt: 1, updatedAt: 1 });
 
 UserSchema.statics.emailExist = function (email) {
-  return this.findOne({email});
+  return this.findOne({ email });
 };
 
 UserSchema.statics.phoneNumberExist = function (phoneNumber) {
-  return this.findOne({phoneNumber});
+  return this.findOne({ phoneNumber });
 };
 
 UserSchema.methods.comparePassword = function (password) {
@@ -141,24 +150,24 @@ const UserModel = mongoose.model("User", UserSchema);
 const UserTC = composeWithMongoose(UserModel);
 // const UserTC = composeWithMongoose(UserModel).removeField('password');
 
-const UserAccountTC = UserTC.getFieldTC('account');
+const UserAccountTC = UserTC.getFieldTC("account");
 
-UserAccountTC.getFieldTC('verification').removeField(['token', 'expiresIn']);
+UserAccountTC.getFieldTC("verification").removeField(["token", "expiresIn"]);
 
 // UserAccountTC.removeField('resetPassword');
 
 schemaComposer.createObjectTC({
-  name: 'AccessToken',
+  name: "AccessToken",
   fields: {
-    accessToken: 'String!',
-    roles: '[String]',
+    accessToken: "String!",
+    roles: "[String]",
     user: UserTC,
-  }
+  },
 });
 
 schemaComposer.createObjectTC({
-  name: 'Succeed',
-  fields: {succeed: 'Boolean!'}
+  name: "Succeed",
+  fields: { succeed: "Boolean!" },
 });
 
 // schemaComposer.createEnumTC({
@@ -169,4 +178,4 @@ schemaComposer.createObjectTC({
 //   }
 // });
 
-export {UserModel, UserTC, UserSchema};
+export { UserModel, UserTC, UserSchema };

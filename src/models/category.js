@@ -1,27 +1,27 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 const CategorySchema = new Schema(
   {
     name: {
       type: String,
       trim: true,
-      index: true
+      index: true,
     },
     image: String,
     parent: {
       type: String,
-      index: true
+      index: true,
     },
     autocompleteTerm: {
       type: String,
-      index: true
+      index: true,
     },
     categoryIndex: {
       type: [String],
-      index: true
-    }
+      index: true,
+    },
   },
   {
     collection: "categories",
@@ -29,9 +29,9 @@ const CategorySchema = new Schema(
 );
 
 CategorySchema.plugin(timestamps);
-CategorySchema.index({createdAt: 1, updatedAt: 1});
+CategorySchema.index({ createdAt: 1, updatedAt: 1 });
 
 const CategoryModel = mongoose.model("Category", CategorySchema);
 const CategoryTC = composeWithMongoose(CategoryModel);
 
-export {CategoryModel, CategoryTC, CategorySchema};
+export { CategoryModel, CategoryTC, CategorySchema };

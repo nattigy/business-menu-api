@@ -1,18 +1,18 @@
 import jwt from "jsonwebtoken";
 
 // import redis from "../config/redis-config";
-import {UserModel} from "../models/user";
+import { UserModel } from "../models/user";
 
 const authentication = async (req, res, next) => {
   try {
     const {
-      headers: {authorization}
+      headers: { authorization },
     } = req;
     if (!authorization) {
       return next();
     }
 
-    const accessToken = authorization.split(' ')[1];
+    const accessToken = authorization.split(" ")[1];
 
     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
     if (!decoded) {
@@ -35,7 +35,7 @@ const authentication = async (req, res, next) => {
 
     Object.assign(req, {
       user,
-      accessToken
+      accessToken,
     });
 
     return next();
@@ -44,4 +44,4 @@ const authentication = async (req, res, next) => {
   }
 };
 
-export {authentication};
+export { authentication };

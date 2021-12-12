@@ -1,6 +1,6 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
 const TemporarySchema = new Schema(
   {
@@ -40,7 +40,7 @@ const TemporarySchema = new Schema(
     lngLat: {
       type: {
         type: String,
-        enum: ['Point']
+        enum: ["Point"],
       },
       coordinates: [Number],
     },
@@ -73,9 +73,9 @@ const TemporarySchema = new Schema(
 );
 
 TemporarySchema.plugin(timestamps);
-TemporarySchema.index({createdAt: 1, updatedAt: 1});
+TemporarySchema.index({ createdAt: 1, updatedAt: 1 });
 
 const TemporaryModel = mongoose.model("Temporary", TemporarySchema);
 const TemporaryTC = composeWithMongoose(TemporaryModel);
 
-export {TemporaryModel, TemporaryTC, TemporarySchema};
+export { TemporaryModel, TemporaryTC, TemporarySchema };
