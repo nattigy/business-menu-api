@@ -9,9 +9,6 @@ const TemporarySchema = new Schema(
       trim: true,
       default: "",
     },
-    businessId: {
-      type: String,
-    },
     claimed: {
       type: Boolean,
       default: true,

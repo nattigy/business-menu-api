@@ -9,7 +9,7 @@ const temporaryCreateOneCustom = {
   type: TemporaryTC,
   args: {
     businessName: "String!",
-    phoneNumbers: "[String!]!",
+    phoneNumbers: ["String!"],
     location: "String!",
     locationDescription: "String",
     pictures: ["String!"],
@@ -120,9 +120,9 @@ const temporaryRemoveByIdCustom = {
   args: {
     id: "String!",
   },
-  resolve: async ({ args: { id }, context: { user } }) => {
-    return TemporaryModel.findById("bizId");
-  },
+  // resolve: async ({ args: { id }, context: { user } }) => {
+  //   return TemporaryModel.findById("bizId");
+  // },
 };
 
 export default {
