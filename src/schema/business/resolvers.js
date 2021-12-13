@@ -168,6 +168,7 @@ const businessCreateOneCustom = {
       locationDescription,
       pictures,
       categories,
+      branchType: "MAIN",
       searchIndex,
       categoryIndex,
       lng,
@@ -193,6 +194,82 @@ const businessCreateOneCustom = {
       })
       .catch((error) => error);
     return BusinessModel.findById(bizId);
+  },
+};
+
+const businessAddBranch = {
+  name: "businessAddBranch",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    id: "String!",
+    phoneNumbers: "[String!]!",
+    location: "String!",
+    locationDescription: "String!",
+    pictures: ["String!"],
+    lng: "Float!",
+    lat: "Float!",
+    listOfBranches: ["String"],
+  },
+  resolve: async ({
+    args: {
+      id,
+      phoneNumbers,
+      location,
+      locationDescription,
+      pictures,
+      lng,
+      lat,
+      listOfBranches,
+    },
+  }) => {
+    let bizId = "";
+    const mainBiz = await BusinessModel.findById(id);
+    await BusinessModel.create({
+      businessName: mainBiz.businessName,
+      phoneNumbers,
+      phoneNumber: phoneNumbers,
+      claimed: mainBiz.claimed,
+      location,
+      locationDescription,
+      branchType: "SUB",
+      pictures,
+      categories: mainBiz.categories,
+      searchIndex: mainBiz.searchIndex,
+      categoryIndex: mainBiz.categoryIndex,
+      lng,
+      lat,
+      lngLat: {
+        type: "Point",
+        coordinates: [lng, lat],
+      },
+      owner: mainBiz.owner,
+      branches: [...listOfBranches, id],
+    })
+      .then((res) => (bizId = res._id))
+      .catch((error) => error);
+    await BusinessModel.findByIdAndUpdate(id, {
+      $addToSet: { branches: bizId },
+    });
+    return BusinessModel.findById(bizId);
+  },
+};
+
+const businessDeleteBranch = {
+  name: "businessDeleteBranch",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    id: "String!",
+  },
+  resolve: async ({ args: { id } }) => {
+    const mainBiz = await BusinessModel.findById(id);
+    for (let i = 0; i < mainBiz.branches.length; i++) {
+      await BusinessModel.findByIdAndUpdate(mainBiz.branches[i], {
+        $pull: { branches: id },
+      });
+    }
+    return mainBiz;
   },
 };
 
@@ -367,6 +444,8 @@ export default {
   getBusinessesByFilter,
   businessLikeUnLike,
   businessCreateOneCustom,
+  businessAddBranch,
+  businessDeleteBranch,
   businessCreateManyCustom,
   removeByIdCustom,
   businessAddPost,

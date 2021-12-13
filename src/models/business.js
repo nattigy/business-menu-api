@@ -200,6 +200,11 @@ const BusinessSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    branchType: {
+      type: String,
+      enum: ["MAIN", "SUB"],
+      default: "MAIN",
+    },
     favoriteList: {
       type: [
         {

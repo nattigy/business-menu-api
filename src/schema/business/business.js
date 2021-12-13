@@ -121,6 +121,14 @@ const BusinessMutation = {
     middleware.isAuth,
     middleware.isOwner,
   ]),
+  businessAddBranch: BusinessTC.getResolver("businessAddBranch", [
+    middleware.isAuth,
+    middleware.isOwner,
+  ]),
+  businessDeleteBranch: BusinessTC.getResolver("businessDeleteBranch", [
+    middleware.isAuth,
+    middleware.isOwner,
+  ]),
   businessCreateManyCustom: BusinessTC.getResolver("businessCreateManyCustom", [
     middleware.isAuth,
     middleware.isAdmin,
