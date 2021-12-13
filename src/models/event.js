@@ -1,8 +1,8 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
-export const eventSchema = new Schema({
+const EventSchema = new Schema({
   title: {
     type: String,
   },
@@ -54,9 +54,10 @@ export const eventSchema = new Schema({
   },
 });
 
-eventSchema.plugin(timestamps);
+EventSchema.plugin(timestamps);
+EventSchema.index({ createdAt: 1, updatedAt: 1 });
 
-eventSchema.index({createdAt: 1, updatedAt: 1});
+const EventModel = mongoose.model("Event", EventSchema);
+const EventTC = composeWithMongoose(EventModel);
 
-export const Event = mongoose.model("Event", eventSchema);
-export const EventTC = composeWithMongoose(Event);
+export { EventModel, EventTC, EventSchema };

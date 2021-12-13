@@ -1,10 +1,23 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 
-export const postSchema = new Schema({
+const descriptionListSchema = new Schema({
+  field: {
+    type: String,
+  },
+  value: {
+    type: String,
+  },
+});
+
+const PostSchema = new Schema({
   description: {
     type: String,
+  },
+  descriptionList: {
+    type: [descriptionListSchema],
+    default: [],
   },
   videos: {
     type: [String],
@@ -31,9 +44,10 @@ export const postSchema = new Schema({
   },
 });
 
-postSchema.plugin(timestamps);
+PostSchema.plugin(timestamps);
+PostSchema.index({ createdAt: 1, updatedAt: 1 });
 
-postSchema.index({createdAt: 1, updatedAt: 1});
+const PostModel = mongoose.model("Post", PostSchema);
+const PostTC = composeWithMongoose(PostModel);
 
-export const Post = mongoose.model("Post", postSchema);
-export const PostTC = composeWithMongoose(Post);
+export { PostModel, PostTC, PostSchema };

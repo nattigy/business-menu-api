@@ -1,22 +1,26 @@
 import {SchemaComposer} from "graphql-compose";
-import {UserMutation, UserQuery} from "./user";
-import {BusinessMutation, BusinessQuery} from "./business";
-import {CategoryMutation, CategoryQuery} from "./category";
-import {BusinessListMutation, BusinessListQuery} from "./businessList";
-import {PostMutation, PostQuery} from "./post";
-import {EventMutation, EventQuery} from "./event";
-import {CouponMutation, CouponQuery} from "./coupon";
-import {RequestMutation, RequestQuery} from "./request";
-import {ZorittQuery, ZorittMutation} from "./zoritt";
-import {MainCategoryListTCQuery, MainCategoryListTCMutation} from "./mainCategoryList";
-import {BranchQuery, BranchMutation} from "./branch";
-import {TempBusinessQuery, TempBusinessMutation} from "./tempBusiness";
+
+import {UserMutation, UserQuery} from "./user/user";
+import {BusinessMutation, BusinessQuery} from "./business/business";
+import {SponsoredMutation, SponsoredQuery} from "./sponsored/sponsored";
+import {TemporaryQuery, TemporaryMutation} from "./temporary/temporary";
+import {CategoryMutation, CategoryQuery} from "./category/category";
+import {BusinessListMutation, BusinessListQuery} from "./businessList/businessList";
+import {PostMutation, PostQuery} from "./post/post";
+import {EventMutation, EventQuery} from "./events/event";
+import {CouponMutation, CouponQuery} from "./coupon/coupon";
+import {RequestMutation, RequestQuery} from "./request/request";
+import {ZorittMutation, ZorittQuery} from "./zoritt/zoritt";
+import {PopUpMutation, PopUpQuery} from "./pop-up/pop-up";
+import {MainCategoryListTCMutation, MainCategoryListTCQuery} from "./mainCategoryList/mainCategoryList";
 
 const schemaComposer = new SchemaComposer();
 
 schemaComposer.Query.addFields({
   ...UserQuery,
   ...BusinessQuery,
+  ...SponsoredQuery,
+  ...TemporaryQuery,
   ...CategoryQuery,
   ...PostQuery,
   ...EventQuery,
@@ -24,14 +28,15 @@ schemaComposer.Query.addFields({
   ...CouponQuery,
   ...RequestQuery,
   ...ZorittQuery,
+  ...PopUpQuery,
   ...MainCategoryListTCQuery,
-  ...BranchQuery,
-  ...TempBusinessQuery,
 });
 
 schemaComposer.Mutation.addFields({
   ...UserMutation,
   ...BusinessMutation,
+  ...SponsoredMutation,
+  ...TemporaryMutation,
   ...CategoryMutation,
   ...PostMutation,
   ...EventMutation,
@@ -39,9 +44,8 @@ schemaComposer.Mutation.addFields({
   ...CouponMutation,
   ...RequestMutation,
   ...ZorittMutation,
+  ...PopUpMutation,
   ...MainCategoryListTCMutation,
-  ...BranchMutation,
-  ...TempBusinessMutation,
 });
 
 export default schemaComposer.buildSchema();

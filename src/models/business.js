@@ -1,20 +1,45 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
-import {composeWithMongoose} from "graphql-compose-mongoose";
+import { composeWithMongoose } from "graphql-compose-mongoose";
+import { schemaComposer } from "graphql-compose";
 
 const openHoursSchema = new Schema({
   day: {
     type: String,
+    index: true,
   },
   opens: {
     type: String,
+    index: true,
   },
   closes: {
     type: String,
+    index: true,
   },
   isOpen: {
     type: Boolean,
-  }
+    index: true,
+  },
+});
+
+const subscriptionSchema = new Schema({
+  type: {
+    type: String,
+    default: "FREE",
+    enum: ["FREE", "PAID"],
+  },
+  duration: {
+    type: Number,
+  },
+  expiryDate: {
+    type: Date,
+  },
+  subscription: {
+    type: String,
+  },
+  isExpired: {
+    type: Boolean,
+  },
 });
 
 const menuListSchema = new Schema({
@@ -27,9 +52,15 @@ const menuListSchema = new Schema({
   price: {
     type: String,
   },
+  discount: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
 });
 
-const restaurantMenuSchema = new Schema({
+const menuSchema = new Schema({
   category: {
     type: String,
   },
@@ -39,7 +70,7 @@ const restaurantMenuSchema = new Schema({
   },
 });
 
-export const BusinessSchema = new Schema(
+const BusinessSchema = new Schema(
   {
     businessName: {
       type: String,
@@ -54,36 +85,11 @@ export const BusinessSchema = new Schema(
     phoneNumber: {
       type: [String],
       default: [],
-    },
-    location: {
-      type: String,
-      index: true,
-      default: "",
-    },
-    locationDescription: {
-      type: String,
-      index: true,
-      default: "",
-    },
-    branches: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Branch",
-        },
-      ],
-      default: []
-    },
-    lat: {
-      type: Number,
       index: true,
     },
-    lng: {
-      type: Number,
-      index: true,
-    },
-    distance: {
-      type: Number,
+    phoneNumbers: {
+      type: [String],
+      default: [],
       index: true,
     },
     emails: {
@@ -98,6 +104,35 @@ export const BusinessSchema = new Schema(
     logoPics: {
       type: String,
       default: "",
+    },
+    location: {
+      type: String,
+      index: true,
+      default: "",
+    },
+    locationDescription: {
+      type: String,
+      index: true,
+      default: "",
+    },
+    lngLat: {
+      type: {
+        type: String,
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+    },
+    lat: {
+      type: Number,
+      index: true,
+    },
+    lng: {
+      type: Number,
+      index: true,
+    },
+    distance: {
+      type: Number,
+      index: true,
     },
     slogan: {
       type: String,
@@ -119,23 +154,33 @@ export const BusinessSchema = new Schema(
       type: String,
       default: "",
     },
-    subscription: {
-      type: String,
-      enum: ["FEATHER_0", "FEATHER_1", "FEATHER_2", "FEATHER_3", "FEATHER_4", "SPONSORED"],
-      default: "FEATHER_0",
-      index: true
-    },
     state: {
       type: String,
-      enum: ["ACTIVE", "BLOCKED"],
+      enum: ["ACTIVE", "BLOCKED", "NOT_VERIFIED"],
       default: "ACTIVE",
+    },
+    currentSubscription: {
+      type: subscriptionSchema,
+    },
+    subscription: {
+      type: String,
+      enum: [
+        "FEATHER_0",
+        "FEATHER_1",
+        "FEATHER_2",
+        "FEATHER_3",
+        "FEATHER_4",
+        "SPONSORED",
+      ],
+      default: "FEATHER_0",
+      index: true,
     },
     openHours: {
       type: [openHoursSchema],
       default: [],
     },
-    restaurantMenu: {
-      type: [restaurantMenuSchema],
+    menu: {
+      type: [menuSchema],
       default: [],
     },
     searchAutocomplete: {
@@ -147,11 +192,6 @@ export const BusinessSchema = new Schema(
       index: true,
       default: [],
     },
-    categoryIndex: {
-      type: [String],
-      index: true,
-      default: [],
-    },
     pictures: {
       type: [String],
       default: [],
@@ -159,6 +199,11 @@ export const BusinessSchema = new Schema(
     isLiked: {
       type: Boolean,
       default: false,
+    },
+    branchType: {
+      type: String,
+      enum: ["MAIN", "SUB"],
+      default: "MAIN",
     },
     favoriteList: {
       type: [
@@ -196,19 +241,37 @@ export const BusinessSchema = new Schema(
       ],
       default: [],
     },
+    branches: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Business",
+        },
+      ],
+      default: [],
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
   },
-  {
-    collection: "businesses",
-  }
+  { collection: "businesses" }
 );
 
 BusinessSchema.plugin(timestamps);
 
-BusinessSchema.index({createdAt: 1, updatedAt: 1});
+BusinessSchema.index({ createdAt: 1, updatedAt: 1 }, { background: false });
+BusinessSchema.index({ lngLat: "2dsphere" }, { background: false });
 
-export const Business = mongoose.model("Business", BusinessSchema);
-export const BusinessTC = composeWithMongoose(Business);
+const BusinessModel = mongoose.model("Business", BusinessSchema);
+const BusinessTC = composeWithMongoose(BusinessModel);
+
+schemaComposer.createObjectTC({
+  name: "Pagination",
+  fields: {
+    items: [BusinessTC],
+    total: "Int",
+  },
+});
+
+export { BusinessModel, BusinessTC, BusinessSchema };
