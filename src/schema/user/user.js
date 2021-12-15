@@ -1,9 +1,9 @@
-import { UserTC } from "../../models/user";
-import { BusinessTC } from "../../models/business";
-import { PostTC } from "../../models/post";
-import { EventTC } from "../../models/event";
-import { CouponTC } from "../../models/coupon";
-import { TemporaryTC } from "../../models/temporary";
+import { UserTC } from "../../models/user/user";
+import { BusinessTC } from "../../models/business/business";
+import { PostTC } from "../../models/events/post";
+import { EventTC } from "../../models/events/event";
+import { CouponTC } from "../../models/subscription/coupon";
+import { TemporaryTC } from "../../models/business/temporary";
 
 import { authMiddleware as middleware } from "../../middleware/authMiddleware";
 import { userValidator as validator } from "../../validator/userValidator";

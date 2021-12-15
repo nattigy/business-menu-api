@@ -1,6 +1,6 @@
-import { TemporaryTC } from "../../models/temporary";
-import { CategoryTC } from "../../models/category";
-import { UserTC } from "../../models/user";
+import { TemporaryTC } from "../../models/business/temporary";
+import { CategoryTC } from "../../models/category/category";
+import { UserTC } from "../../models/user/user";
 
 import { authMiddleware as middleware } from "../../middleware/authMiddleware";
 import Resolvers from "./resolvers";

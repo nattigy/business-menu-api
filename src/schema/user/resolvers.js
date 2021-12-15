@@ -3,10 +3,10 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import moment from "moment";
 
-import { UserModel, UserTC } from "../../models/user";
+import { UserModel, UserTC } from "../../models/user/user";
 import { userService } from "../../utils/userService";
 import roles from "../../utils/roles";
-// import redis from '../../config/redis-config';
+// import redis from '../../conafig/redis-config';
 
 const addUserCoupon = {
   name: "userAddCoupon",

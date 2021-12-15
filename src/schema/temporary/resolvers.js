@@ -1,7 +1,7 @@
-import { TemporaryModel, TemporaryTC } from "../../models/temporary";
-import { BusinessModel } from "../../models/business";
-import { BusinessListModel } from "../../models/businessList";
-import { UserModel } from "../../models/user";
+import { TemporaryModel, TemporaryTC } from "../../models/business/temporary";
+import { BusinessModel } from "../../models/business/business";
+import { BusinessListModel } from "../../models/business/business-list";
+import { UserModel } from "../../models/user/user";
 
 const temporaryCreateOneCustom = {
   name: "temporaryCreateOneCustom",

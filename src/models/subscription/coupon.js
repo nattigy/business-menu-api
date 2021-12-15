@@ -28,14 +28,6 @@ const CouponSchema = new Schema(
     },
     subscription: {
       type: String,
-      enum: [
-        "FEATHER_0",
-        "FEATHER_1",
-        "FEATHER_2",
-        "FEATHER_3",
-        "FEATHER_4",
-        "SPONSORED",
-      ],
     },
     owner: {
       type: Schema.Types.ObjectId,

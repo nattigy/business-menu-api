@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 // import redis from "../config/redis-config";
-import { UserModel } from "../models/user";
+import { UserModel } from "../models/user/user";
 
 const authentication = async (req, res, next) => {
   try {

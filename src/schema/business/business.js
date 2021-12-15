@@ -1,8 +1,8 @@
-import { BusinessTC } from "../../models/business";
-import { CategoryTC } from "../../models/category";
-import { UserTC } from "../../models/user";
-import { PostTC } from "../../models/post";
-import { EventTC } from "../../models/event";
+import { BusinessTC } from "../../models/business/business";
+import { CategoryTC } from "../../models/category/category";
+import { UserTC } from "../../models/user/user";
+import { PostTC } from "../../models/events/post";
+import { EventTC } from "../../models/events/event";
 
 import Resolvers from "./resolvers";
 import { authMiddleware as middleware } from "../../middleware/authMiddleware";

@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-import { BusinessModel, BusinessTC } from "../../models/business";
-import { UserModel } from "../../models/user";
-import { BusinessListModel } from "../../models/businessList";
-import { EventModel } from "../../models/event";
-import { PostModel } from "../../models/post";
+import { BusinessModel, BusinessTC } from "../../models/business/business";
+import { UserModel } from "../../models/user/user";
+import { BusinessListModel } from "../../models/business/business-list";
+import { EventModel } from "../../models/events/event";
+import { PostModel } from "../../models/events/post";
 import { BusinessCreateManyCustomInput } from "./input-types";
 import { userService } from "../../utils/userService";
 

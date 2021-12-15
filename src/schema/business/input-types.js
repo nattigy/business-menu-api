@@ -1,7 +1,7 @@
-import {schemaComposer, toInputObjectType} from "graphql-compose";
+import { schemaComposer, toInputObjectType } from "graphql-compose";
 
 const BusinessCreateInputTC = schemaComposer.createObjectTC({
-  name: 'BusinessCreateManyCustomInput',
+  name: "BusinessCreateManyCustomInput",
   fields: {
     businessName: "String!",
     phoneNumbers: ["String!"],
@@ -14,7 +14,9 @@ const BusinessCreateInputTC = schemaComposer.createObjectTC({
     claimed: "Boolean!",
     lng: "Float!",
     lat: "Float!",
-  }
+  },
 });
 
-export const BusinessCreateManyCustomInput = toInputObjectType(BusinessCreateInputTC);
+export const BusinessCreateManyCustomInput = toInputObjectType(
+  BusinessCreateInputTC
+);

@@ -3,72 +3,9 @@ import timestamps from "mongoose-timestamp";
 import { composeWithMongoose } from "graphql-compose-mongoose";
 import { schemaComposer } from "graphql-compose";
 
-const openHoursSchema = new Schema({
-  day: {
-    type: String,
-    index: true,
-  },
-  opens: {
-    type: String,
-    index: true,
-  },
-  closes: {
-    type: String,
-    index: true,
-  },
-  isOpen: {
-    type: Boolean,
-    index: true,
-  },
-});
-
-const subscriptionSchema = new Schema({
-  type: {
-    type: String,
-    default: "FREE",
-    enum: ["FREE", "PAID"],
-  },
-  duration: {
-    type: Number,
-  },
-  expiryDate: {
-    type: Date,
-  },
-  subscription: {
-    type: String,
-  },
-  isExpired: {
-    type: Boolean,
-  },
-});
-
-const menuListSchema = new Schema({
-  image: {
-    type: String,
-  },
-  name: {
-    type: String,
-  },
-  price: {
-    type: String,
-  },
-  discount: {
-    type: String,
-  },
-  description: {
-    type: String,
-  },
-});
-
-const menuSchema = new Schema({
-  category: {
-    type: String,
-  },
-  menuList: {
-    type: [menuListSchema],
-    default: [],
-  },
-});
+import { openHoursSchema } from "./open-hours";
+import { menuSchema } from "./menus";
+import { subscriptionSchema } from "./subscription";
 
 const BusinessSchema = new Schema(
   {
