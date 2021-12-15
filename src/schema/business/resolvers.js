@@ -269,6 +269,7 @@ const businessDeleteBranch = {
         $pull: { branches: id },
       });
     }
+    await BusinessModel.findByIdAndDelete(id);
     return mainBiz;
   },
 };
