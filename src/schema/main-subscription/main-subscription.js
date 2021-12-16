@@ -3,26 +3,11 @@ import { MainSubscriptionTC } from "../../models/subscription/main-subscription"
 import { authMiddleware as middleware } from "../../middleware/authMiddleware";
 
 const MainSubscriptionQuery = {
-  mainSubscriptionById: MainSubscriptionTC.getResolver("findById", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
-  mainSubscriptionByIds: MainSubscriptionTC.getResolver("findByIds", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
-  mainSubscriptionOne: MainSubscriptionTC.getResolver("findOne", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
-  mainSubscriptionMany: MainSubscriptionTC.getResolver("findMany", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
-  mainSubscriptionPagination: MainSubscriptionTC.getResolver("pagination", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
+  mainSubscriptionById: MainSubscriptionTC.getResolver("findById"),
+  mainSubscriptionByIds: MainSubscriptionTC.getResolver("findByIds"),
+  mainSubscriptionOne: MainSubscriptionTC.getResolver("findOne"),
+  mainSubscriptionMany: MainSubscriptionTC.getResolver("findMany"),
+  mainSubscriptionPagination: MainSubscriptionTC.getResolver("pagination"),
 };
 
 const MainSubscriptionMutation = {
