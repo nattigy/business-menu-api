@@ -6,6 +6,7 @@ import { schemaComposer } from "graphql-compose";
 import { openHoursSchema } from "./open-hours";
 import { menuSchema } from "./menus";
 import { subscriptionSchema } from "./subscription";
+import { PathsSchema } from "../../models/subscription/main-subscription";
 
 const BusinessSchema = new Schema(
   {
@@ -100,7 +101,7 @@ const BusinessSchema = new Schema(
       type: subscriptionSchema,
     },
     allowedPaths: {
-      type: [String],
+      type: [PathsSchema],
     },
     subscription: {
       type: String,
