@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
 import { composeWithMongoose } from "graphql-compose-mongoose";
 
-export const PathsSchema = new Schema({
+const PathsSchema = new Schema({
   name: {
     type: String,
   },
