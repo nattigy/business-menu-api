@@ -99,6 +99,9 @@ const BusinessSchema = new Schema(
     currentSubscription: {
       type: subscriptionSchema,
     },
+    allowedPaths: {
+      type: [String],
+    },
     subscription: {
       type: String,
       enum: [
