@@ -10,22 +10,10 @@ for (const resolver in Resolvers) {
 }
 
 const CouponQuery = {
-  couponById: CouponTC.getResolver("findById", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
-  couponByIds: CouponTC.getResolver("findByIds", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
-  couponOne: CouponTC.getResolver("findOne", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
-  couponMany: CouponTC.getResolver("findMany", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
+  couponById: CouponTC.getResolver("findById", [middleware.isAuth]),
+  couponByIds: CouponTC.getResolver("findByIds", [middleware.isAuth]),
+  couponOne: CouponTC.getResolver("findOne", [middleware.isAuth]),
+  couponMany: CouponTC.getResolver("findMany", [middleware.isAuth]),
   owner: CouponTC.addRelation("owner", {
     resolver: () => UserTC.getResolver("findById"),
     prepareArgs: {
@@ -51,10 +39,7 @@ const CouponMutation = {
     middleware.isAuth,
     middleware.isAdmin,
   ]),
-  couponUpdateById: CouponTC.getResolver("updateById", [
-    middleware.isAuth,
-    middleware.isAdmin,
-  ]),
+  couponUpdateById: CouponTC.getResolver("updateById", [middleware.isAuth]),
   couponUpdateOne: CouponTC.getResolver("updateOne", [
     middleware.isAuth,
     middleware.isAdmin,
