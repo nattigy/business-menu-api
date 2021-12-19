@@ -5,9 +5,7 @@ dotenv.config();
 
 mongoose.Promise = global.Promise;
 
-const connection = mongoose.connect(
-  process.env.MONGODB_URI,
-  // "mongodb://localhost:27017/zoritt_db",
+const connection = mongoose.connect(process.env.MONGODB_URI, // "mongodb://localhost:27017/zoritt_db",
   {
     autoIndex: true,
     reconnectTries: Number.MAX_VALUE,
@@ -16,8 +14,7 @@ const connection = mongoose.connect(
     bufferMaxEntries: 0,
     keepAlive: 120,
     useNewUrlParser: true,
-  }
-);
+  });
 
 mongoose.set("useCreateIndex", true);
 

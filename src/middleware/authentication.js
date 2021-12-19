@@ -34,8 +34,7 @@ const authentication = async (req, res, next) => {
     }
 
     Object.assign(req, {
-      user,
-      accessToken,
+      user, accessToken,
     });
 
     return next();

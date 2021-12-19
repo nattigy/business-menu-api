@@ -14,27 +14,15 @@ const postLikeUnLike = {
     const { likeList } = await PostModel.findById(postId, { likeList: 1 });
 
     if (likeList.indexOf(userId) >= 0) {
-      await PostModel.updateOne(
-        { _id: postId },
-        { $pull: { likeList: userId } }
-      )
+      await PostModel.updateOne({ _id: postId }, { $pull: { likeList: userId } })
         .then(async () => {
-          await UserModel.updateOne(
-            { _id: userId },
-            { $pull: { likedPosts: postId } }
-          );
+          await UserModel.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
         })
         .catch((error) => error);
     } else {
-      await PostModel.updateOne(
-        { _id: postId },
-        { $addToSet: { likeList: userId } }
-      )
+      await PostModel.updateOne({ _id: postId }, { $addToSet: { likeList: userId } })
         .then(async () => {
-          await UserModel.updateOne(
-            { _id: userId },
-            { $addToSet: { likedPosts: postId } }
-          );
+          await UserModel.updateOne({ _id: userId }, { $addToSet: { likedPosts: postId } });
         })
         .catch((error) => error);
     }
@@ -49,10 +37,7 @@ const postDeleteById = {
   args: { post_id: "String", owner: "String" },
   resolve: async ({ args: { post_id, owner } }) => {
     await PostModel.remove({ _id: post_id }, async () => {
-      await BusinessModel.updateOne(
-        { _id: owner },
-        { $pull: { posts: post_id } }
-      );
+      await BusinessModel.updateOne({ _id: owner }, { $pull: { posts: post_id } });
     }).catch((error) => error);
     return post_id;
   },

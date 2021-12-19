@@ -5,8 +5,7 @@ import { composeWithMongoose } from "graphql-compose-mongoose";
 const descriptionListSchema = new Schema({
   field: {
     type: String,
-  },
-  value: {
+  }, value: {
     type: String,
   },
 });
@@ -14,33 +13,20 @@ const descriptionListSchema = new Schema({
 const PostSchema = new Schema({
   description: {
     type: String,
-  },
-  descriptionList: {
-    type: [descriptionListSchema],
-    default: [],
-  },
-  videos: {
+  }, descriptionList: {
+    type: [descriptionListSchema], default: [],
+  }, videos: {
     type: [String],
-  },
-  photos: {
+  }, photos: {
     type: [String],
-  },
-  isLiked: {
-    type: Boolean,
-    default: false,
-  },
-  likeList: {
-    type: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    default: [],
-  },
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "Business",
+  }, isLiked: {
+    type: Boolean, default: false,
+  }, likeList: {
+    type: [{
+      type: Schema.Types.ObjectId, ref: "User",
+    }], default: [],
+  }, owner: {
+    type: Schema.Types.ObjectId, ref: "Business",
   },
 });
 

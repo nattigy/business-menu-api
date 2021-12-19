@@ -1,8 +1,7 @@
 import { schemaComposer, toInputObjectType } from "graphql-compose";
 
 const BusinessCreateInputTC = schemaComposer.createObjectTC({
-  name: "BusinessCreateManyCustomInput",
-  fields: {
+  name: "BusinessCreateManyCustomInput", fields: {
     businessName: "String!",
     phoneNumbers: ["String!"],
     location: "String!",
@@ -17,6 +16,4 @@ const BusinessCreateInputTC = schemaComposer.createObjectTC({
   },
 });
 
-export const BusinessCreateManyCustomInput = toInputObjectType(
-  BusinessCreateInputTC
-);
+export const BusinessCreateManyCustomInput = toInputObjectType(BusinessCreateInputTC);

@@ -2,20 +2,14 @@ import { Schema } from "mongoose";
 
 const subscriptionSchema = new Schema({
   type: {
-    type: String,
-    default: "FREE",
-    enum: ["FREE", "PAID"],
-  },
-  duration: {
+    type: String, default: "FREE", enum: ["FREE", "PAID"],
+  }, duration: {
     type: Number,
-  },
-  expiryDate: {
+  }, expiryDate: {
     type: Date,
-  },
-  subscription: {
+  }, subscription: {
     type: String,
-  },
-  isExpired: {
+  }, isExpired: {
     type: Boolean,
   },
 });

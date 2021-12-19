@@ -11,10 +11,7 @@ import { userService } from "../../utils/userService";
 // Queries
 
 const getBusinessesByFilter = {
-  name: "getBusinessesByFilter",
-  kind: "query",
-  type: "Pagination",
-  args: {
+  name: "getBusinessesByFilter", kind: "query", type: "Pagination", args: {
     category: "[String]",
     query: "[String]",
     distance: "Int",
@@ -23,10 +20,9 @@ const getBusinessesByFilter = {
     perPage: "Int!",
     lat: "Float",
     lng: "Float",
-  },
-  resolve: async ({
-    args: { category, query, distance, openNow, page, perPage, lat, lng },
-  }) => {
+  }, resolve: async ({
+                       args: { category, query, distance, openNow, page, perPage, lat, lng },
+                     }) => {
     let geoNear = {};
     const pipeline = [];
     if (distance > 0) {
@@ -60,24 +56,15 @@ const getBusinessesByFilter = {
       });
     }
 
-    const businesses = await BusinessModel.aggregate([
-      ...pipeline,
-      { $match: { state: "ACTIVE" } },
-      { $sort: { createdAt: -1 } },
-      { $sort: { updatedAt: -1 } },
-      {
-        $facet: {
-          metadata: [{ $count: "total" }],
-          items: [{ $skip: (page - 1) * perPage }, { $limit: perPage }],
-        },
+    const businesses = await BusinessModel.aggregate([...pipeline, { $match: { state: "ACTIVE" } }, { $sort: { createdAt: -1 } }, { $sort: { updatedAt: -1 } }, {
+      $facet: {
+        metadata: [{ $count: "total" }], items: [{ $skip: (page - 1) * perPage }, { $limit: perPage }],
       },
-      {
-        $project: {
-          items: 1,
-          total: { $arrayElemAt: ["$metadata.total", 0] },
-        },
+    }, {
+      $project: {
+        items: 1, total: { $arrayElemAt: ["$metadata.total", 0] },
       },
-    ]);
+    }]);
     return { items: businesses[0].items, total: businesses[0].total };
   },
 };
@@ -97,27 +84,15 @@ const businessLikeUnLike = {
     });
 
     if (favoriteList.indexOf(userId) >= 0) {
-      await BusinessModel.updateOne(
-        { _id: businessId },
-        { $pull: { favoriteList: userId } }
-      )
+      await BusinessModel.updateOne({ _id: businessId }, { $pull: { favoriteList: userId } })
         .then(async () => {
-          await UserModel.updateOne(
-            { _id: userId },
-            { $pull: { favorites: businessId } }
-          );
+          await UserModel.updateOne({ _id: userId }, { $pull: { favorites: businessId } });
         })
         .catch((error) => error);
     } else {
-      await BusinessModel.updateOne(
-        { _id: businessId },
-        { $addToSet: { favoriteList: userId } }
-      )
+      await BusinessModel.updateOne({ _id: businessId }, { $addToSet: { favoriteList: userId } })
         .then(async () => {
-          await UserModel.updateOne(
-            { _id: userId },
-            { $addToSet: { favorites: businessId } }
-          );
+          await UserModel.updateOne({ _id: userId }, { $addToSet: { favorites: businessId } });
         })
         .catch((error) => error);
     }
@@ -126,10 +101,7 @@ const businessLikeUnLike = {
 };
 
 const businessCreateOneCustom = {
-  name: "businessCreateOneCustom",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {
+  name: "businessCreateOneCustom", kind: "mutation", type: BusinessTC, args: {
     businessName: "String!",
     phoneNumbers: "[String!]!",
     location: "String!",
@@ -141,23 +113,21 @@ const businessCreateOneCustom = {
     claimed: "Boolean!",
     lng: "Float!",
     lat: "Float!",
-  },
-  resolve: async ({
-    args: {
-      businessName,
-      phoneNumbers,
-      claimed,
-      location,
-      locationDescription,
-      pictures,
-      categories,
-      searchIndex,
-      categoryIndex,
-      lng,
-      lat,
-    },
-    context: { user },
-  }) => {
+  }, resolve: async ({
+                       args: {
+                         businessName,
+                         phoneNumbers,
+                         claimed,
+                         location,
+                         locationDescription,
+                         pictures,
+                         categories,
+                         searchIndex,
+                         categoryIndex,
+                         lng,
+                         lat,
+                       }, context: { user },
+                     }) => {
     let bizId = "";
     await BusinessModel.create({
       businessName,
@@ -174,8 +144,7 @@ const businessCreateOneCustom = {
       lng,
       lat,
       lngLat: {
-        type: "Point",
-        coordinates: [lng, lat],
+        type: "Point", coordinates: [lng, lat],
       },
       owner: user._id,
     })
@@ -185,10 +154,7 @@ const businessCreateOneCustom = {
           autocompleteTerm: businessName.toLowerCase(),
         })
           .then(async () => {
-            await UserModel.updateOne(
-              { _id: user._id },
-              { $addToSet: { businesses: bizId } }
-            );
+            await UserModel.updateOne({ _id: user._id }, { $addToSet: { businesses: bizId } });
           })
           .catch((error) => error);
       })
@@ -198,10 +164,7 @@ const businessCreateOneCustom = {
 };
 
 const businessAddBranch = {
-  name: "businessAddBranch",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {
+  name: "businessAddBranch", kind: "mutation", type: BusinessTC, args: {
     id: "String!",
     phoneNumbers: "[String!]!",
     location: "String!",
@@ -210,19 +173,11 @@ const businessAddBranch = {
     lng: "Float!",
     lat: "Float!",
     listOfBranches: ["String"],
-  },
-  resolve: async ({
-    args: {
-      id,
-      phoneNumbers,
-      location,
-      locationDescription,
-      pictures,
-      lng,
-      lat,
-      listOfBranches,
-    },
-  }) => {
+  }, resolve: async ({
+                       args: {
+                         id, phoneNumbers, location, locationDescription, pictures, lng, lat, listOfBranches,
+                       },
+                     }) => {
     let bizId = "";
     const mainBiz = await BusinessModel.findById(id);
     await BusinessModel.create({
@@ -237,11 +192,11 @@ const businessAddBranch = {
       categories: mainBiz.categories,
       searchIndex: mainBiz.searchIndex,
       categoryIndex: mainBiz.categoryIndex,
+      subscription: mainBiz.subscription,
       lng,
       lat,
       lngLat: {
-        type: "Point",
-        coordinates: [lng, lat],
+        type: "Point", coordinates: [lng, lat],
       },
       owner: mainBiz.owner,
       branches: [...listOfBranches, id],
@@ -256,13 +211,9 @@ const businessAddBranch = {
 };
 
 const businessDeleteBranch = {
-  name: "businessDeleteBranch",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {
+  name: "businessDeleteBranch", kind: "mutation", type: BusinessTC, args: {
     id: "String!",
-  },
-  resolve: async ({ args: { id } }) => {
+  }, resolve: async ({ args: { id } }) => {
     const mainBiz = await BusinessModel.findById(id);
     for (let i = 0; i < mainBiz.branches.length; i++) {
       await BusinessModel.findByIdAndUpdate(mainBiz.branches[i], {
@@ -275,13 +226,9 @@ const businessDeleteBranch = {
 };
 
 const businessCreateManyCustom = {
-  name: "businessCreateManyCustom",
-  kind: "mutation",
-  type: BusinessTC.getResolver("createMany"),
-  args: {
+  name: "businessCreateManyCustom", kind: "mutation", type: BusinessTC.getResolver("createMany"), args: {
     businesses: [BusinessCreateManyCustomInput],
-  },
-  resolve: async ({ args: { businesses }, context: { user } }) => {
+  }, resolve: async ({ args: { businesses }, context: { user } }) => {
     const bizIds = [];
     for (let i = 0; i < businesses.length; i++) {
       let bizId = "";
@@ -299,8 +246,7 @@ const businessCreateManyCustom = {
         lng: businesses[i].lng,
         lat: businesses[i].lat,
         lngLat: {
-          type: "Point",
-          coordinates: [businesses[i].lng, businesses[i].lat],
+          type: "Point", coordinates: [businesses[i].lng, businesses[i].lat],
         },
         owner: user._id,
       })
@@ -311,10 +257,7 @@ const businessCreateManyCustom = {
             autocompleteTerm: businesses[i].businessName.toLowerCase(),
           })
             .then(async () => {
-              await UserModel.updateOne(
-                { _id: user._id },
-                { $addToSet: { businesses: bizId } }
-              );
+              await UserModel.updateOne({ _id: user._id }, { $addToSet: { businesses: bizId } });
             })
             .catch((error) => error);
         })
@@ -329,13 +272,9 @@ const businessCreateManyCustom = {
 };
 
 const removeByIdCustom = {
-  name: "removeByIdCustom",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {
+  name: "removeByIdCustom", kind: "mutation", type: BusinessTC, args: {
     id: "String",
-  },
-  resolve: async ({ args }) => {
+  }, resolve: async ({ args }) => {
     const business = await BusinessModel.findById(args.id);
     await BusinessModel.findByIdAndDelete(args.id);
     for (let i = 0; i < business.events.length; i++) {
@@ -357,14 +296,9 @@ const removeByIdCustom = {
 };
 
 const businessAddPost = {
-  name: "businessAddPost",
-  kind: "mutation",
-  type: BusinessTC.getResolver("updateById").getType(),
-  args: {
-    businessId: "String",
-    postId: "String",
-  },
-  resolve: async ({ args: { postId, businessId } }) => {
+  name: "businessAddPost", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
+    businessId: "String", postId: "String",
+  }, resolve: async ({ args: { postId, businessId } }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $addToSet: { posts: postId },
     });
@@ -373,14 +307,9 @@ const businessAddPost = {
 };
 
 const businessRemovePost = {
-  name: "businessRemovePost",
-  kind: "mutation",
-  type: BusinessTC.getResolver("updateById").getType(),
-  args: {
-    businessId: "String",
-    postId: "String",
-  },
-  resolve: async ({ args: { postId, businessId } }) => {
+  name: "businessRemovePost", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
+    businessId: "String", postId: "String",
+  }, resolve: async ({ args: { postId, businessId } }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $pull: { posts: postId },
     });
@@ -389,14 +318,9 @@ const businessRemovePost = {
 };
 
 const businessAddEvent = {
-  name: "businessAddEvent",
-  kind: "mutation",
-  type: BusinessTC.getResolver("updateById").getType(),
-  args: {
-    businessId: "String",
-    eventId: "String",
-  },
-  resolve: async ({ args: { eventId, businessId } }) => {
+  name: "businessAddEvent", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
+    businessId: "String", eventId: "String",
+  }, resolve: async ({ args: { eventId, businessId } }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $addToSet: { events: eventId },
     });
@@ -405,14 +329,9 @@ const businessAddEvent = {
 };
 
 const businessRemoveEvent = {
-  name: "businessRemoveEvent",
-  kind: "mutation",
-  type: BusinessTC.getResolver("updateById").getType(),
-  args: {
-    businessId: "String",
-    eventId: "String",
-  },
-  resolve: async ({ args: { eventId, businessId } }) => {
+  name: "businessRemoveEvent", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
+    businessId: "String", eventId: "String",
+  }, resolve: async ({ args: { eventId, businessId } }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $pull: { events: eventId },
     });
@@ -420,21 +339,31 @@ const businessRemoveEvent = {
   },
 };
 
+const businessUpdateSubScription = {
+  name: "businessUpdateSubScription", kind: "mutation", type: BusinessTC, args: {
+    businessId: "String", subscription: "String", allowedPaths: ["String"],
+  }, resolve: async ({ args: { businessId, subscription, allowedPaths } }) => {
+    const biz = await BusinessModel.findByIdAndUpdate(businessId, {
+      subscription, allowedPaths,
+    });
+    for (let i = 0; i < biz.branches.length; i++) {
+      await BusinessModel.findByIdAndUpdate(biz.branches[i], {
+        subscription,
+      });
+    }
+    return biz;
+  },
+};
+
 const businessReset = {
-  name: "businessReset",
-  kind: "mutation",
-  type: BusinessTC,
-  args: {},
-  resolve: async () => {
+  name: "businessReset", kind: "mutation", type: BusinessTC, args: {}, resolve: async () => {
     const bizs = await BusinessModel.find();
     for (let i = 0; i < bizs.length; i++) {
       const nb = await BusinessModel.findById(bizs[i]._id, {
-        branches: 1,
-        businessName: 1,
+        branches: 1, businessName: 1,
       });
       await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
-        branches: [],
-        branch: null,
+        branches: [], branch: null,
       });
       console.log(i + 1, nb.businessName, nb.phoneNumbers, nb.phoneNumber);
     }
@@ -453,5 +382,6 @@ export default {
   businessRemovePost,
   businessAddEvent,
   businessRemoveEvent,
+  businessUpdateSubScription,
   businessReset,
 };

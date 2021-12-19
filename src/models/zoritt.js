@@ -2,16 +2,13 @@ import mongoose, { Schema } from "mongoose";
 import timestamps from "mongoose-timestamp";
 import { composeWithMongoose } from "graphql-compose-mongoose";
 
-const ZorittSchema = new Schema(
-  {
-    userAppHomePageImages: {
-      type: [String],
-    },
+const ZorittSchema = new Schema({
+  userAppHomePageImages: {
+    type: [String],
   },
-  {
-    collection: "zoritt",
-  }
-);
+}, {
+  collection: "zoritt",
+});
 
 ZorittSchema.plugin(timestamps);
 ZorittSchema.index({ createdAt: 1, updatedAt: 1 });

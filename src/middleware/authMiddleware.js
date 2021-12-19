@@ -13,8 +13,7 @@ const authMiddleware = {
     }
 
     return resolve(source, args, context, info);
-  },
-  isGuest: async (resolve, source, args, context, info) => {
+  }, isGuest: async (resolve, source, args, context, info) => {
     const { user } = context;
 
     if (user) {
@@ -22,8 +21,7 @@ const authMiddleware = {
     }
 
     return resolve(source, args, context, info);
-  },
-  isAdmin: async (resolve, source, args, context, info) => {
+  }, isAdmin: async (resolve, source, args, context, info) => {
     const { accessToken } = context;
 
     const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
@@ -33,8 +31,7 @@ const authMiddleware = {
     }
 
     return resolve(source, args, context, info);
-  },
-  isOwner: async (resolve, source, args, context, info) => {
+  }, isOwner: async (resolve, source, args, context, info) => {
     const { accessToken } = context;
 
     const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
@@ -44,8 +41,7 @@ const authMiddleware = {
     }
 
     return resolve(source, args, context, info);
-  },
-  isPhoneVerified: async (resolve, source, args, context, info) => {
+  }, isPhoneVerified: async (resolve, source, args, context, info) => {
     const { phoneVerification } = context;
     let phoneNumber = "";
 
@@ -61,8 +57,7 @@ const authMiddleware = {
     }
     context.phoneNumber = phoneNumber;
     return resolve(source, args, context, info);
-  },
-  isValidated: async (resolve, source, args, context, info) => {
+  }, isValidated: async (resolve, source, args, context, info) => {
     const { accessToken } = context;
 
     const user = await userService.getUser(accessToken?.replace("Bearer ", ""));
@@ -75,8 +70,7 @@ const authMiddleware = {
     }
 
     return resolve(source, args, context, info);
-  },
-  isVerified: (resolve, source, args, context, info) => {
+  }, isVerified: (resolve, source, args, context, info) => {
     const {
       user: {
         account: {
@@ -89,8 +83,7 @@ const authMiddleware = {
       return Promise.reject(new Error("You must be verified."));
     }
     return resolve(source, args, context, info);
-  },
-  isUnverified: (resolve, source, args, context, info) => {
+  }, isUnverified: (resolve, source, args, context, info) => {
     const {
       user: {
         account: {

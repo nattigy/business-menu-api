@@ -5,52 +5,32 @@ import { composeWithMongoose } from "graphql-compose-mongoose";
 const EventSchema = new Schema({
   title: {
     type: String,
-  },
-  description: {
+  }, description: {
     type: String,
-  },
-  location: {
+  }, location: {
     type: String,
-  },
-  link: {
+  }, link: {
     type: String,
-  },
-  startDate: {
-    type: Date,
-    index: true,
-  },
-  endDate: {
-    type: Date,
-    index: true,
-  },
-  startTime: {
+  }, startDate: {
+    type: Date, index: true,
+  }, endDate: {
+    type: Date, index: true,
+  }, startTime: {
     type: String,
-  },
-  endTime: {
+  }, endTime: {
     type: String,
-  },
-  videos: {
+  }, videos: {
     type: [String],
-  },
-  photos: {
+  }, photos: {
     type: [String],
-  },
-  isInterested: {
-    type: Boolean,
-    default: false,
-  },
-  interestedUsers: {
-    type: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    default: [],
-  },
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "Business",
+  }, isInterested: {
+    type: Boolean, default: false,
+  }, interestedUsers: {
+    type: [{
+      type: Schema.Types.ObjectId, ref: "User",
+    }], default: [],
+  }, owner: {
+    type: Schema.Types.ObjectId, ref: "Business",
   },
 });
 

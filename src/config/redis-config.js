@@ -2,8 +2,7 @@ import Redis from "ioredis";
 import winston from "winston";
 
 const client = new Redis({
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT,
+  host: process.env.REDIS_HOST, port: process.env.REDIS_PORT,
 });
 
 client.on("error", (error) => {

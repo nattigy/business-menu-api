@@ -18,27 +18,15 @@ const eventLikeUnLike = {
     });
 
     if (interestedUsers.indexOf(userId) >= 0) {
-      await EventModel.updateOne(
-        { _id: eventId },
-        { $pull: { interestedUsers: userId } }
-      )
+      await EventModel.updateOne({ _id: eventId }, { $pull: { interestedUsers: userId } })
         .then(async () => {
-          await UserModel.updateOne(
-            { _id: userId },
-            { $pull: { interestedInEvents: eventId } }
-          );
+          await UserModel.updateOne({ _id: userId }, { $pull: { interestedInEvents: eventId } });
         })
         .catch((error) => error);
     } else {
-      await EventModel.updateOne(
-        { _id: eventId },
-        { $addToSet: { interestedUsers: userId } }
-      )
+      await EventModel.updateOne({ _id: eventId }, { $addToSet: { interestedUsers: userId } })
         .then(async () => {
-          await UserModel.updateOne(
-            { _id: userId },
-            { $addToSet: { interestedInEvents: eventId } }
-          );
+          await UserModel.updateOne({ _id: userId }, { $addToSet: { interestedInEvents: eventId } });
         })
         .catch((error) => error);
     }
@@ -53,10 +41,7 @@ const eventDeleteById = {
   args: { event_id: "String", owner: "String" },
   resolve: async ({ args: { event_id, owner } }) => {
     await EventModel.remove({ _id: event_id }, async () => {
-      await BusinessModel.updateOne(
-        { _id: owner },
-        { $pull: { events: event_id } }
-      );
+      await BusinessModel.updateOne({ _id: owner }, { $pull: { events: event_id } });
     }).catch((error) => error);
     return event_id;
   },
