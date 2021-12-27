@@ -72,17 +72,23 @@ const getBusinessesByFilter = {
       });
     }
 
-    const businesses = await BusinessModel.aggregate([...pipeline, { $match: { state: "ACTIVE" } }, { $sort: { createdAt: -1 } }, { $sort: { updatedAt: -1 } }, {
-      $facet: {
-        metadata: [{ $count: "total" }],
-        items: [{ $skip: (page - 1) * perPage }, { $limit: perPage }],
-      },
-    }, {
-      $project: {
-        items: 1,
-        total: { $arrayElemAt: ["$metadata.total", 0] },
-      },
-    }]);
+    const businesses = await BusinessModel
+      .aggregate([
+        ...pipeline,
+        { $match: { state: "ACTIVE" } },
+        { $sort: { createdAt: -1 } },
+        { $sort: { updatedAt: -1 } },
+        {
+          $facet: {
+            metadata: [{ $count: "total" }],
+            items: [{ $skip: (page - 1) * perPage }, { $limit: perPage }],
+          },
+        }, {
+          $project: {
+            items: 1,
+            total: { $arrayElemAt: ["$metadata.total", 0] },
+          },
+        }]);
     return {
       items: businesses[0].items,
       total: businesses[0].total,
@@ -593,15 +599,16 @@ const businessReset = {
   resolve: async () => {
     const bizs = await BusinessModel.find();
     for (let i = 0; i < bizs.length; i++) {
-      const nb = await BusinessModel.findById(bizs[i]._id, {
-        branches: 1,
-        businessName: 1,
+      // const nb = await BusinessModel.findById(bizs[i]._id, {
+      //   branches: 1,
+      //   businessName: 1,
+      // });
+      const nb = await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
+        $addToSet: {
+          searchIndex: bizs[i].businessName.toLowerCase(),
+        },
       });
-      await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
-        branches: [],
-        branch: null,
-      });
-      console.log(i + 1, nb.businessName, nb.phoneNumbers, nb.phoneNumber);
+      console.log(i + 1, nb.businessName);
     }
   },
 };

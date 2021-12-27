@@ -8,6 +8,7 @@ import { TemporaryTC } from "../../models/business/temporary";
 import { authMiddleware as middleware } from "../../middleware/authMiddleware";
 import { userValidator as validator } from "../../validator/userValidator";
 import Resolvers from "./resolvers";
+import { ClaimRequestTC } from "../../models/business/claim-request.js";
 
 for (const resolver in Resolvers) {
   UserTC.addResolver(Resolvers[resolver]);
@@ -46,6 +47,13 @@ const UserQuery = {
       _ids: (source) => source.businesses,
     },
     projection: { businesses: 1 },
+  }),
+  claimRequests: UserTC.addRelation("claimRequests", {
+    resolver: () => ClaimRequestTC.getResolver("findByIds"),
+    prepareArgs: {
+      _ids: (source) => source.claimRequests,
+    },
+    projection: { claimRequests: 1 },
   }),
   unverifiedBusinesses: UserTC.addRelation("unverifiedBusinesses", {
     resolver: () => TemporaryTC.getResolver("findByIds"),

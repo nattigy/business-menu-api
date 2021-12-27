@@ -14,15 +14,44 @@ import { ZorittMutation, ZorittQuery } from "./zoritt/zoritt";
 import { PopUpMutation, PopUpQuery } from "./pop-up/pop-up";
 import { MainSubscriptionMutation, MainSubscriptionQuery } from "./main-subscription/main-subscription";
 import { MainCategoryListTCMutation, MainCategoryListTCQuery } from "./main-category-list/main-category-list";
+import { ClaimRequestQuery, ClaimRequestMutation } from "./claim-request/claim-request.js";
 
 const schemaComposer = new SchemaComposer();
 
 schemaComposer.Query.addFields({
-  ...UserQuery, ...BusinessQuery, ...SponsoredQuery, ...TemporaryQuery, ...CategoryQuery, ...PostQuery, ...EventQuery, ...BusinessListQuery, ...CouponQuery, ...RequestQuery, ...ZorittQuery, ...PopUpQuery, ...MainSubscriptionQuery, ...MainCategoryListTCQuery,
+  ...UserQuery,
+  ...BusinessQuery,
+  ...SponsoredQuery,
+  ...TemporaryQuery,
+  ...CategoryQuery,
+  ...PostQuery,
+  ...EventQuery,
+  ...BusinessListQuery,
+  ...CouponQuery,
+  ...RequestQuery,
+  ...ZorittQuery,
+  ...PopUpQuery,
+  ...MainSubscriptionQuery,
+  ...MainCategoryListTCQuery,
+  ...ClaimRequestQuery,
 });
 
 schemaComposer.Mutation.addFields({
-  ...UserMutation, ...BusinessMutation, ...SponsoredMutation, ...TemporaryMutation, ...CategoryMutation, ...PostMutation, ...EventMutation, ...BusinessListMutation, ...CouponMutation, ...RequestMutation, ...ZorittMutation, ...PopUpMutation, ...MainSubscriptionMutation, ...MainCategoryListTCMutation,
+  ...UserMutation,
+  ...BusinessMutation,
+  ...SponsoredMutation,
+  ...TemporaryMutation,
+  ...CategoryMutation,
+  ...PostMutation,
+  ...EventMutation,
+  ...BusinessListMutation,
+  ...CouponMutation,
+  ...RequestMutation,
+  ...ZorittMutation,
+  ...PopUpMutation,
+  ...MainSubscriptionMutation,
+  ...MainCategoryListTCMutation,
+  ...ClaimRequestMutation,
 });
 
 export default schemaComposer.buildSchema();

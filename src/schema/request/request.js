@@ -1,4 +1,4 @@
-import { RequestTC } from "../../models/subscription/request";
+import { RequestTC } from "../../models/subscription/request.js";
 import { authMiddleware as middleware } from "../../middleware/authMiddleware";
 
 const RequestQuery = {

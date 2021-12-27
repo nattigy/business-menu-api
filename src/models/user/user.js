@@ -111,6 +111,13 @@ const UserSchema = new Schema({
     }],
     default: [],
   },
+  claimRequests: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: "ClaimRequest",
+    }],
+    default: [],
+  },
 }, {
   collection: "users",
 });

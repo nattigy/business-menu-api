@@ -15,7 +15,7 @@ const BusinessQuery = {
   businessById: BusinessTC.getResolver("findById"),
   businessByIds: BusinessTC.getResolver("findByIds", [middleware.isAuth, middleware.isAdmin]),
   businessOne: BusinessTC.getResolver("findOne", [middleware.isAuth, middleware.isAdmin]),
-  businessMany: BusinessTC.getResolver("findMany", [middleware.isAuth, middleware.isAdmin]),
+  businessMany: BusinessTC.getResolver("findMany", [middleware.isAuth]),
   businessPagination: BusinessTC.getResolver("pagination", [middleware.isAuth, middleware.isAdmin]),
   getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter"),
   businessPosts: BusinessTC.addRelation("posts", {
@@ -93,6 +93,7 @@ const BusinessMutation = {
   businessAddMenuToCategory: BusinessTC.getResolver("businessAddMenuToCategory", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
   businessDeleteMenuCategory: BusinessTC.getResolver("businessDeleteMenuCategory", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
   businessDeleteMenuFromCategory: BusinessTC.getResolver("businessDeleteMenuFromCategory", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
+  businessReset: BusinessTC.getResolver("businessReset", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
 };
 
 export { BusinessQuery, BusinessMutation };
