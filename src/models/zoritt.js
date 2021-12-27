@@ -11,7 +11,10 @@ const ZorittSchema = new Schema({
 });
 
 ZorittSchema.plugin(timestamps);
-ZorittSchema.index({ createdAt: 1, updatedAt: 1 });
+ZorittSchema.index({
+  createdAt: 1,
+  updatedAt: 1,
+});
 
 const ZorittModel = mongoose.model("Zoritt", ZorittSchema);
 const ZorittTC = composeWithMongoose(ZorittModel);

@@ -16,14 +16,18 @@ const TemporaryQuery = {
   temporaryMany: TemporaryTC.getResolver("findMany", [middleware.isAuth, middleware.isAdmin]),
   temporaryPagination: TemporaryTC.getResolver("pagination", [middleware.isAuth, middleware.isAdmin]),
   temporaryCategories: TemporaryTC.addRelation("categories", {
-    resolver: () => CategoryTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => CategoryTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.categories,
-    }, projection: { categories: 1 },
+    },
+    projection: { categories: 1 },
   }),
   temporaryOwner: TemporaryTC.addRelation("owner", {
-    resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]), prepareArgs: {
+    resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
+    prepareArgs: {
       _id: (source) => source.owner,
-    }, projection: { owner: 1 },
+    },
+    projection: { owner: 1 },
   }),
 };
 

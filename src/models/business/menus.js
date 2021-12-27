@@ -3,13 +3,17 @@ import { Schema } from "mongoose";
 const menuListSchema = new Schema({
   image: {
     type: String,
-  }, name: {
+  },
+  name: {
     type: String,
-  }, price: {
+  },
+  price: {
     type: String,
-  }, discount: {
+  },
+  discount: {
     type: String,
-  }, description: {
+  },
+  description: {
     type: String,
   },
 });
@@ -17,8 +21,10 @@ const menuListSchema = new Schema({
 const menuSchema = new Schema({
   category: {
     type: String,
-  }, menuList: {
-    type: [menuListSchema], default: [],
+  },
+  menuList: {
+    type: [menuListSchema],
+    default: [],
   },
 });
 

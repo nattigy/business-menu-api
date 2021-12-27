@@ -15,17 +15,24 @@ const PostQuery = {
   postMany: PostTC.getResolver("findMany"),
   postPagination: PostTC.getResolver("pagination"),
   owner: PostTC.addRelation("owner", {
-    resolver: () => BusinessTC.getResolver("findById"), prepareArgs: {
+    resolver: () => BusinessTC.getResolver("findById"),
+    prepareArgs: {
       _id: (source) => source.owner,
-    }, projection: { owner: 1 },
+    },
+    projection: { owner: 1 },
   }),
   postIsLiked: PostTC.addFields({
     likeCount: {
-      type: "Int", resolve: (post) => (post?.likeList ? post.likeList.length : 0),
-    }, isLiked: {
-      type: "Boolean", resolve: (post, _, { user }) => post.likeList.indexOf(user?._id) >= 0,
-    }, likeList: {
-      type: "[MongoID]", resolve: () => [],
+      type: "Int",
+      resolve: (post) => (post?.likeList ? post.likeList.length : 0),
+    },
+    isLiked: {
+      type: "Boolean",
+      resolve: (post, _, { user }) => post.likeList.indexOf(user?._id) >= 0,
+    },
+    likeList: {
+      type: "[MongoID]",
+      resolve: () => [],
     },
   }),
 };

@@ -8,9 +8,11 @@ const MainCategoryListTCQuery = {
   mainCategoryListOne: MainCategoryListTC.getResolver("findOne"),
   mainCategoryListMany: MainCategoryListTC.getResolver("findMany"),
   subCategories: MainCategoryListTC.addRelation("subCategories", {
-    resolver: () => CategoryTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => CategoryTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.subCategories,
-    }, projection: { subCategories: 1 },
+    },
+    projection: { subCategories: 1 },
   }),
 };
 

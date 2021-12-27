@@ -20,34 +20,46 @@ const UserQuery = {
   userMany: UserTC.getResolver("findMany", [middleware.isAuth, middleware.isAdmin]),
   user: UserTC.getResolver("user", [middleware.isAuth]),
   interestedInEvents: UserTC.addRelation("interestedInEvents", {
-    resolver: () => EventTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => EventTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.interestedInEvents,
-    }, projection: { interestedInEvents: 1 },
+    },
+    projection: { interestedInEvents: 1 },
   }),
   likedPosts: UserTC.addRelation("likedPosts", {
-    resolver: () => PostTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => PostTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.likedPosts,
-    }, projection: { likedPosts: 1 },
+    },
+    projection: { likedPosts: 1 },
   }),
   favorites: UserTC.addRelation("favorites", {
-    resolver: () => BusinessTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => BusinessTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.favorites,
-    }, projection: { favorites: 1 },
+    },
+    projection: { favorites: 1 },
   }),
   businesses: UserTC.addRelation("businesses", {
-    resolver: () => BusinessTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => BusinessTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.businesses,
-    }, projection: { businesses: 1 },
+    },
+    projection: { businesses: 1 },
   }),
   unverifiedBusinesses: UserTC.addRelation("unverifiedBusinesses", {
-    resolver: () => TemporaryTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => TemporaryTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.unverifiedBusinesses,
-    }, projection: { unverifiedBusinesses: 1 },
+    },
+    projection: { unverifiedBusinesses: 1 },
   }),
   coupons: UserTC.addRelation("coupons", {
-    resolver: () => CouponTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => CouponTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.coupons,
-    }, projection: { coupons: 1 },
+    },
+    projection: { coupons: 1 },
   }),
 };
 

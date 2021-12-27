@@ -7,72 +7,119 @@ import bcrypt from "bcryptjs";
 const UserSchema = new Schema({
   firstName: {
     type: String,
-  }, middleName: {
+  },
+  middleName: {
     type: String,
-  }, lastName: {
+  },
+  lastName: {
     type: String,
-  }, email: {
+  },
+  email: {
     type: String,
-  }, phoneNumber: {
+  },
+  phoneNumber: {
     type: String,
-  }, image: {
+  },
+  image: {
     type: String,
-  }, firebaseId: {
+  },
+  firebaseId: {
     type: String,
-  }, password: {
+  },
+  password: {
     type: String,
-  }, status: {
-    type: String, default: "ACTIVE", enum: ["ACTIVE", "BLOCKED"],
-  }, roles: {
-    type: [String], default: "NORMAL", enum: ["NORMAL", "OWNER", "ADMIN", "SALES"],
+  },
+  status: {
+    type: String,
+    default: "ACTIVE",
+    enum: ["ACTIVE", "BLOCKED"],
+  },
+  roles: {
+    type: [String],
+    default: "NORMAL",
+    enum: ["NORMAL", "OWNER", "ADMIN", "SALES"],
   }, // locale: String,
   account: {
     verification: {
       verified: {
-        type: Boolean, default: false,
-      }, token: String, expiresIn: Date,
-    }, emailVerification: {
-      verified: {
-        type: Boolean, default: false,
-      }, token: String, expiresIn: Date,
-    }, phoneVerification: {
-      verified: {
-        type: Boolean, default: false,
-      }, token: String, expiresIn: Date,
-    }, resetPassword: {
-      token: String, expiresIn: Date,
+        type: Boolean,
+        default: false,
+      },
+      token: String,
+      expiresIn: Date,
     },
-  }, interestedInEvents: {
+    emailVerification: {
+      verified: {
+        type: Boolean,
+        default: false,
+      },
+      token: String,
+      expiresIn: Date,
+    },
+    phoneVerification: {
+      verified: {
+        type: Boolean,
+        default: false,
+      },
+      token: String,
+      expiresIn: Date,
+    },
+    resetPassword: {
+      token: String,
+      expiresIn: Date,
+    },
+  },
+  interestedInEvents: {
     type: [{
-      type: Schema.Types.ObjectId, ref: "Event",
-    }], default: [],
-  }, favorites: {
+      type: Schema.Types.ObjectId,
+      ref: "Event",
+    }],
+    default: [],
+  },
+  favorites: {
     type: [{
-      type: Schema.Types.ObjectId, ref: "Business",
-    }], default: [],
-  }, likedPosts: {
+      type: Schema.Types.ObjectId,
+      ref: "Business",
+    }],
+    default: [],
+  },
+  likedPosts: {
     type: [{
-      type: Schema.Types.ObjectId, ref: "Post",
-    }], default: [],
-  }, businesses: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    }],
+    default: [],
+  },
+  businesses: {
     type: [{
-      type: Schema.Types.ObjectId, ref: "Business",
-    }], default: [],
-  }, unverifiedBusinesses: {
+      type: Schema.Types.ObjectId,
+      ref: "Business",
+    }],
+    default: [],
+  },
+  unverifiedBusinesses: {
     type: [{
-      type: Schema.Types.ObjectId, ref: "temporaries",
-    }], default: [],
-  }, coupons: {
+      type: Schema.Types.ObjectId,
+      ref: "temporaries",
+    }],
+    default: [],
+  },
+  coupons: {
     type: [{
-      type: Schema.Types.ObjectId, ref: "Coupon",
-    }], default: [],
+      type: Schema.Types.ObjectId,
+      ref: "Coupon",
+    }],
+    default: [],
   },
 }, {
   collection: "users",
 });
 
 UserSchema.plugin(timestamps);
-UserSchema.index({ createdAt: 1, updatedAt: 1 });
+UserSchema.index({
+  createdAt: 1,
+  updatedAt: 1,
+});
 
 UserSchema.statics.emailExist = function (email) {
   return this.findOne({ email });
@@ -97,13 +144,17 @@ UserAccountTC.getFieldTC("verification").removeField(["token", "expiresIn"]);
 // UserAccountTC.removeField('resetPassword');
 
 schemaComposer.createObjectTC({
-  name: "AccessToken", fields: {
-    accessToken: "String!", roles: "[String]", user: UserTC,
+  name: "AccessToken",
+  fields: {
+    accessToken: "String!",
+    roles: "[String]",
+    user: UserTC,
   },
 });
 
 schemaComposer.createObjectTC({
-  name: "Succeed", fields: { succeed: "Boolean!" },
+  name: "Succeed",
+  fields: { succeed: "Boolean!" },
 });
 
 // schemaComposer.createEnumTC({

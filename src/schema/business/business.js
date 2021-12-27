@@ -19,37 +19,52 @@ const BusinessQuery = {
   businessPagination: BusinessTC.getResolver("pagination", [middleware.isAuth, middleware.isAdmin]),
   getBusinessesByFilter: BusinessTC.getResolver("getBusinessesByFilter"),
   businessPosts: BusinessTC.addRelation("posts", {
-    resolver: () => PostTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => PostTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.posts,
-    }, projection: { posts: 1 },
+    },
+    projection: { posts: 1 },
   }),
   businessEvents: BusinessTC.addRelation("events", {
-    resolver: () => EventTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => EventTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.events,
-    }, projection: { events: 1 },
+    },
+    projection: { events: 1 },
   }),
   businessCategories: BusinessTC.addRelation("categories", {
-    resolver: () => CategoryTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => CategoryTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.categories,
-    }, projection: { categories: 1 },
+    },
+    projection: { categories: 1 },
   }),
   businessBranches: BusinessTC.addRelation("branches", {
-    resolver: () => BusinessTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => BusinessTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.branches,
-    }, projection: { branches: 1 },
+    },
+    projection: { branches: 1 },
   }),
   businessOwner: BusinessTC.addRelation("owner", {
-    resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]), prepareArgs: {
+    resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
+    prepareArgs: {
       _id: (source) => source.owner,
-    }, projection: { owner: 1 },
+    },
+    projection: { owner: 1 },
   }),
   businessIsLiked: BusinessTC.addFields({
     likeCount: {
-      type: "Int", resolve: (business) => business?.favoriteList ? business.favoriteList.length : 0,
-    }, isLiked: {
-      type: "Boolean", resolve: (business, _, { user }) => business?.favoriteList.indexOf(user?._id) >= 0,
-    }, favoriteList: {
-      type: "[MongoID]", resolve: () => [],
+      type: "Int",
+      resolve: (business) => business?.favoriteList ? business.favoriteList.length : 0,
+    },
+    isLiked: {
+      type: "Boolean",
+      resolve: (business, _, { user }) => business?.favoriteList.indexOf(user?._id) >= 0,
+    },
+    favoriteList: {
+      type: "[MongoID]",
+      resolve: () => [],
     },
   }),
 };
@@ -71,9 +86,13 @@ const BusinessMutation = {
   businessAddPost: BusinessTC.getResolver("businessAddPost", [middleware.isAuth, middleware.isOwner]),
   businessRemovePost: BusinessTC.getResolver("businessRemovePost", [middleware.isAuth, middleware.isOwner]),
   businessAddEvent: BusinessTC.getResolver("businessAddEvent", [middleware.isAuth, middleware.isOwner]),
-  businessUpdateSubScription: BusinessTC.getResolver("businessUpdateSubScription", [middleware.isAuth, middleware.isOwner]),
+  businessUpdateSubScription: BusinessTC.getResolver("businessUpdateSubSubscription", [middleware.isAuth, middleware.isOwner]),
   businessRemoveEvent: BusinessTC.getResolver("businessRemoveEvent", [middleware.isAuth, middleware.isOwner]),
   businessLikeUnLike: BusinessTC.getResolver("businessLikeUnLike", [middleware.isAuth]), // businessReset: BusinessTC.getResolver("businessReset"),
+  businessAddMenuCategory: BusinessTC.getResolver("businessAddMenuCategory", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
+  businessAddMenuToCategory: BusinessTC.getResolver("businessAddMenuToCategory", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
+  businessDeleteMenuCategory: BusinessTC.getResolver("businessDeleteMenuCategory", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
+  businessDeleteMenuFromCategory: BusinessTC.getResolver("businessDeleteMenuFromCategory", [middleware.isAuth, middleware.isOwner]), // businessReset: BusinessTC.getResolver("businessReset"),
 };
 
 export { BusinessQuery, BusinessMutation };

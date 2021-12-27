@@ -12,7 +12,10 @@ const addUserCoupon = {
   name: "userAddCoupon",
   kind: "mutation",
   type: UserTC,
-  args: { coupon: "MongoID", id: "MongoID" },
+  args: {
+    coupon: "MongoID",
+    id: "MongoID",
+  },
   resolve: async ({ args }) => {
     await UserModel.updateOne({ _id: args.id }, { $addToSet: { coupons: args.coupon } }).catch((error) => error);
     return UserModel.findById(args.id);
@@ -20,16 +23,27 @@ const addUserCoupon = {
 };
 
 const user = {
-  name: "user", type: UserTC, resolve: async ({ context: { accessToken } }) => {
+  name: "user",
+  type: UserTC,
+  resolve: async ({ context: { accessToken } }) => {
     const user = await userService.getUser(accessToken.replace("Bearer ", ""));
     return UserModel.findById(user._id);
   },
 };
 
 const signIn = {
-  name: "signIn", type: "AccessToken!", args: {
-    email: "String!", password: "String!",
-  }, resolve: async ({ args: { email, password } }) => {
+  name: "signIn",
+  type: "AccessToken!",
+  args: {
+    email: "String!",
+    password: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      email,
+                      password,
+                    },
+                  }) => {
     try {
       const user = await UserModel.emailExist(email);
 
@@ -54,7 +68,11 @@ const signIn = {
         expiresIn: process.env.JWT_EXPIRATION,
       });
 
-      return { accessToken, roles: user.roles, user };
+      return {
+        accessToken,
+        roles: user.roles,
+        user,
+      };
     } catch (error) {
       return Promise.reject(error);
     }
@@ -62,9 +80,18 @@ const signIn = {
 };
 
 const ownerSignIn = {
-  name: "ownerSignIn", type: "AccessToken!", args: {
-    phoneNumber: "String!", password: "String!",
-  }, resolve: async ({ args: { phoneNumber, password } }) => {
+  name: "ownerSignIn",
+  type: "AccessToken!",
+  args: {
+    phoneNumber: "String!",
+    password: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      phoneNumber,
+                      password,
+                    },
+                  }) => {
     try {
       const user = await UserModel.phoneNumberExist(phoneNumber);
       if (!user) {
@@ -88,7 +115,11 @@ const ownerSignIn = {
         expiresIn: process.env.JWT_EXPIRATION,
       });
 
-      return { accessToken, roles: user.roles, user };
+      return {
+        accessToken,
+        roles: user.roles,
+        user,
+      };
     } catch (error) {
       return Promise.reject(error);
     }
@@ -96,16 +127,26 @@ const ownerSignIn = {
 };
 
 const userSignUp = {
-  name: "userSignUp", type: "AccessToken!", args: {
+  name: "userSignUp",
+  type: "AccessToken!",
+  args: {
     email: "String!",
     password: "String!",
     firstName: "String!",
     middleName: "String!",
     lastName: "String!",
     phoneNumber: "String!",
-  }, resolve: async ({
-                       args: { email, password, firstName, middleName, lastName, phoneNumber },
-                     }) => {
+  },
+  resolve: async ({
+                    args: {
+                      email,
+                      password,
+                      firstName,
+                      middleName,
+                      lastName,
+                      phoneNumber,
+                    },
+                  }) => {
     try {
       let user = await UserModel.emailExist(email);
       if (user) {
@@ -115,8 +156,12 @@ const userSignUp = {
       const hash = bcrypt.hashSync(password, 10);
 
       user = await new UserModel({
-        email, firstName, middleName, lastName, // phoneNumber,
-        password: hash, roles: [roles.NORMAL],
+        email,
+        firstName,
+        middleName,
+        lastName, // phoneNumber,
+        password: hash,
+        roles: [roles.NORMAL],
       }).save();
 
       const accessToken = await jwt.sign({
@@ -134,7 +179,11 @@ const userSignUp = {
 
       // userMail.verifyRequest(user, token);
 
-      return { accessToken, roles: user.roles, user };
+      return {
+        accessToken,
+        roles: user.roles,
+        user,
+      };
     } catch (error) {
       return Promise.reject(error);
     }
@@ -142,12 +191,28 @@ const userSignUp = {
 };
 
 const ownerSignUp = {
-  name: "ownerSignUp", type: "AccessToken!", args: {
-    email: "String!", password: "String!", firstName: "String!", middleName: "String!", lastName: "String!",
-  }, resolve: async ({
-                       args: { email, password, firstName, middleName, lastName },
-                       context: { phoneNumber, phoneVerification },
-                     }) => {
+  name: "ownerSignUp",
+  type: "AccessToken!",
+  args: {
+    email: "String!",
+    password: "String!",
+    firstName: "String!",
+    middleName: "String!",
+    lastName: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      email,
+                      password,
+                      firstName,
+                      middleName,
+                      lastName,
+                    },
+                    context: {
+                      phoneNumber,
+                      phoneVerification,
+                    },
+                  }) => {
     try {
       let user = await UserModel.phoneNumberExist(phoneNumber);
 
@@ -163,9 +228,17 @@ const ownerSignUp = {
       const hash = bcrypt.hashSync(password, 10);
 
       user = await new UserModel({
-        email, firstName, middleName, lastName, phoneNumber, password: hash, roles: [roles.OWNER], account: {
+        email,
+        firstName,
+        middleName,
+        lastName,
+        phoneNumber,
+        password: hash,
+        roles: [roles.OWNER],
+        account: {
           phoneVerification: {
-            verified: true, token: phoneVerification,
+            verified: true,
+            token: phoneVerification,
           },
         },
       }).save();
@@ -186,7 +259,11 @@ const ownerSignUp = {
 
       // userMail.verifyRequest(user, token);
 
-      return { accessToken, roles: user.roles, user };
+      return {
+        accessToken,
+        roles: user.roles,
+        user,
+      };
     } catch (error) {
       return Promise.reject(error);
     }
@@ -194,11 +271,25 @@ const ownerSignUp = {
 };
 
 const adminSignUp = {
-  name: "adminSignUp", type: "AccessToken!", args: {
-    email: "String!", password: "String!", firstName: "String!", middleName: "String!", lastName: "String!",
-  }, resolve: async ({
-                       args: { email, password, firstName, middleName, lastName }, context: { phoneNumber },
-                     }) => {
+  name: "adminSignUp",
+  type: "AccessToken!",
+  args: {
+    email: "String!",
+    password: "String!",
+    firstName: "String!",
+    middleName: "String!",
+    lastName: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      email,
+                      password,
+                      firstName,
+                      middleName,
+                      lastName,
+                    },
+                    context: { phoneNumber },
+                  }) => {
     try {
       let user = await UserModel.emailExist(email);
       if (user) {
@@ -208,7 +299,13 @@ const adminSignUp = {
       const hash = bcrypt.hashSync(password, 10);
 
       user = await new UserModel({
-        email, firstName, middleName, lastName, phoneNumber, password: hash, roles: [roles.ADMIN],
+        email,
+        firstName,
+        middleName,
+        lastName,
+        phoneNumber,
+        password: hash,
+        roles: [roles.ADMIN],
       }).save();
 
       const accessToken = await jwt.sign({
@@ -249,7 +346,9 @@ const adminSignUp = {
 // };
 
 const verifyRequest = {
-  name: "verifyRequest", type: "Succeed!", resolve: async ({ context: { user } }) => {
+  name: "verifyRequest",
+  type: "Succeed!",
+  resolve: async ({ context: { user } }) => {
     try {
       await userService.verifyRequest(user);
 
@@ -263,7 +362,10 @@ const verifyRequest = {
 };
 
 const verify = {
-  name: "verify", type: "AccessToken!", args: { token: "String!" }, resolve: async ({ args: { token } }) => {
+  name: "verify",
+  type: "AccessToken!",
+  args: { token: "String!" },
+  resolve: async ({ args: { token } }) => {
     try {
       const user = await UserModel.findOne({
         "account.verification.token": token,
@@ -275,7 +377,9 @@ const verify = {
       user.set({
         account: {
           verification: {
-            verified: true, token: null, expiresIn: null,
+            verified: true,
+            token: null,
+            expiresIn: null,
           },
         },
       });
@@ -296,7 +400,10 @@ const verify = {
 };
 
 const resetPassword = {
-  name: "resetPassword", type: "Succeed!", args: { email: "String!" }, resolve: async ({ args: { email } }) => {
+  name: "resetPassword",
+  type: "Succeed!",
+  args: { email: "String!" },
+  resolve: async ({ args: { email } }) => {
     try {
       const user = await UserModel.findOne({ email });
       if (!user) {
@@ -309,7 +416,8 @@ const resetPassword = {
       user.set({
         account: {
           resetPassword: {
-            token, expiresIn,
+            token,
+            expiresIn,
           },
         },
       });
@@ -328,8 +436,16 @@ const resetPassword = {
 const newPassword = {
   name: "newPassword",
   type: "AccessToken!",
-  args: { token: "String!", newPassword: "String!" },
-  resolve: async ({ args: { token, newPassword } }) => {
+  args: {
+    token: "String!",
+    newPassword: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      token,
+                      newPassword,
+                    },
+                  }) => {
     try {
       const user = await UserModel.findOne({
         "account.resetPassword.token": token,
@@ -341,9 +457,11 @@ const newPassword = {
       const hash = bcrypt.hashSync(newPassword, 10);
 
       user.set({
-        password: hash, account: {
+        password: hash,
+        account: {
           resetPassword: {
-            token: null, expiresIn: null,
+            token: null,
+            expiresIn: null,
           },
         },
       });
@@ -364,9 +482,16 @@ const newPassword = {
 const changePassword = {
   name: "changePassword",
   type: "Succeed!",
-  args: { currentPassword: "String!", newPassword: "String!" },
+  args: {
+    currentPassword: "String!",
+    newPassword: "String!",
+  },
   resolve: async ({
-                    args: { currentPassword, newPassword }, context: { user },
+                    args: {
+                      currentPassword,
+                      newPassword,
+                    },
+                    context: { user },
                   }) => {
     try {
       const comparePassword = await user.comparePassword(currentPassword);
@@ -390,9 +515,18 @@ const changePassword = {
 const updateUser = {
   name: "updateUser",
   type: "User!",
-  args: { email: "String!", firstName: "String!", lastName: "String!" },
+  args: {
+    email: "String!",
+    firstName: "String!",
+    lastName: "String!",
+  },
   resolve: async ({
-                    args: { email, firstName, lastName }, context: { user },
+                    args: {
+                      email,
+                      firstName,
+                      lastName,
+                    },
+                    context: { user },
                   }) => {
     try {
       let {
@@ -411,7 +545,10 @@ const updateUser = {
       }
 
       user.set({
-        email, firstName, lastName, account: {
+        email,
+        firstName,
+        lastName,
+        account: {
           verification: {
             verified,
           },
@@ -451,6 +588,17 @@ const updateUser = {
 // };
 
 export default {
-  addUserCoupon, user, signIn, ownerSignIn, userSignUp, ownerSignUp, adminSignUp, // logout,
-  verifyRequest, verify, resetPassword, newPassword, changePassword, updateUser, // switchLocale,
+  addUserCoupon,
+  user,
+  signIn,
+  ownerSignIn,
+  userSignUp,
+  ownerSignUp,
+  adminSignUp, // logout,
+  verifyRequest,
+  verify,
+  resetPassword,
+  newPassword,
+  changePassword,
+  updateUser, // switchLocale,
 };

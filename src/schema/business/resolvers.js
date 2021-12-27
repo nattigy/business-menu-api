@@ -11,7 +11,10 @@ import { userService } from "../../utils/userService";
 // Queries
 
 const getBusinessesByFilter = {
-  name: "getBusinessesByFilter", kind: "query", type: "Pagination", args: {
+  name: "getBusinessesByFilter",
+  kind: "query",
+  type: "Pagination",
+  args: {
     category: "[String]",
     query: "[String]",
     distance: "Int",
@@ -20,15 +23,28 @@ const getBusinessesByFilter = {
     perPage: "Int!",
     lat: "Float",
     lng: "Float",
-  }, resolve: async ({
-                       args: { category, query, distance, openNow, page, perPage, lat, lng },
-                     }) => {
+  },
+  resolve: async ({
+                    args: {
+                      category,
+                      query,
+                      distance,
+                      openNow,
+                      page,
+                      perPage,
+                      lat,
+                      lng,
+                    },
+                  }) => {
     let geoNear = {};
     const pipeline = [];
     if (distance > 0) {
       geoNear = {
         $geoNear: {
-          near: { type: "Point", coordinates: [lng, lat] },
+          near: {
+            type: "Point",
+            coordinates: [lng, lat],
+          },
           distanceField: "distance",
           maxDistance: distance,
           includeLocs: "lngLat",
@@ -38,10 +54,10 @@ const getBusinessesByFilter = {
       };
       pipeline.push(geoNear);
     }
-    if (category.length > 0) {
+    if (category?.length > 0) {
       pipeline.push({ $match: { searchIndex: { $in: category } } });
     }
-    if (query.length > 0) {
+    if (query?.length > 0) {
       pipeline.push({ $match: { searchIndex: { $in: query } } });
     }
     if (openNow) {
@@ -58,14 +74,19 @@ const getBusinessesByFilter = {
 
     const businesses = await BusinessModel.aggregate([...pipeline, { $match: { state: "ACTIVE" } }, { $sort: { createdAt: -1 } }, { $sort: { updatedAt: -1 } }, {
       $facet: {
-        metadata: [{ $count: "total" }], items: [{ $skip: (page - 1) * perPage }, { $limit: perPage }],
+        metadata: [{ $count: "total" }],
+        items: [{ $skip: (page - 1) * perPage }, { $limit: perPage }],
       },
     }, {
       $project: {
-        items: 1, total: { $arrayElemAt: ["$metadata.total", 0] },
+        items: 1,
+        total: { $arrayElemAt: ["$metadata.total", 0] },
       },
     }]);
-    return { items: businesses[0].items, total: businesses[0].total };
+    return {
+      items: businesses[0].items,
+      total: businesses[0].total,
+    };
   },
 };
 
@@ -76,7 +97,10 @@ const businessLikeUnLike = {
   kind: "mutation",
   type: BusinessTC,
   args: { businessId: "String!" },
-  resolve: async ({ args: { businessId }, context: { accessToken } }) => {
+  resolve: async ({
+                    args: { businessId },
+                    context: { accessToken },
+                  }) => {
     const user = await userService.getUser(accessToken.replace("Bearer ", ""));
     const userId = user._id;
     const { favoriteList } = await BusinessModel.findById(businessId, {
@@ -101,7 +125,10 @@ const businessLikeUnLike = {
 };
 
 const businessCreateOneCustom = {
-  name: "businessCreateOneCustom", kind: "mutation", type: BusinessTC, args: {
+  name: "businessCreateOneCustom",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
     businessName: "String!",
     phoneNumbers: "[String!]!",
     location: "String!",
@@ -113,21 +140,23 @@ const businessCreateOneCustom = {
     claimed: "Boolean!",
     lng: "Float!",
     lat: "Float!",
-  }, resolve: async ({
-                       args: {
-                         businessName,
-                         phoneNumbers,
-                         claimed,
-                         location,
-                         locationDescription,
-                         pictures,
-                         categories,
-                         searchIndex,
-                         categoryIndex,
-                         lng,
-                         lat,
-                       }, context: { user },
-                     }) => {
+  },
+  resolve: async ({
+                    args: {
+                      businessName,
+                      phoneNumbers,
+                      claimed,
+                      location,
+                      locationDescription,
+                      pictures,
+                      categories,
+                      searchIndex,
+                      categoryIndex,
+                      lng,
+                      lat,
+                    },
+                    context: { user },
+                  }) => {
     let bizId = "";
     await BusinessModel.create({
       businessName,
@@ -144,7 +173,8 @@ const businessCreateOneCustom = {
       lng,
       lat,
       lngLat: {
-        type: "Point", coordinates: [lng, lat],
+        type: "Point",
+        coordinates: [lng, lat],
       },
       owner: user._id,
     })
@@ -164,7 +194,10 @@ const businessCreateOneCustom = {
 };
 
 const businessAddBranch = {
-  name: "businessAddBranch", kind: "mutation", type: BusinessTC, args: {
+  name: "businessAddBranch",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
     id: "String!",
     phoneNumbers: "[String!]!",
     location: "String!",
@@ -173,11 +206,19 @@ const businessAddBranch = {
     lng: "Float!",
     lat: "Float!",
     listOfBranches: ["String"],
-  }, resolve: async ({
-                       args: {
-                         id, phoneNumbers, location, locationDescription, pictures, lng, lat, listOfBranches,
-                       },
-                     }) => {
+  },
+  resolve: async ({
+                    args: {
+                      id,
+                      phoneNumbers,
+                      location,
+                      locationDescription,
+                      pictures,
+                      lng,
+                      lat,
+                      listOfBranches,
+                    },
+                  }) => {
     let bizId = "";
     const mainBiz = await BusinessModel.findById(id);
     await BusinessModel.create({
@@ -196,7 +237,8 @@ const businessAddBranch = {
       lng,
       lat,
       lngLat: {
-        type: "Point", coordinates: [lng, lat],
+        type: "Point",
+        coordinates: [lng, lat],
       },
       owner: mainBiz.owner,
       branches: [...listOfBranches, id],
@@ -211,9 +253,13 @@ const businessAddBranch = {
 };
 
 const businessDeleteBranch = {
-  name: "businessDeleteBranch", kind: "mutation", type: BusinessTC, args: {
+  name: "businessDeleteBranch",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
     id: "String!",
-  }, resolve: async ({ args: { id } }) => {
+  },
+  resolve: async ({ args: { id } }) => {
     const mainBiz = await BusinessModel.findById(id);
     for (let i = 0; i < mainBiz.branches.length; i++) {
       await BusinessModel.findByIdAndUpdate(mainBiz.branches[i], {
@@ -226,9 +272,16 @@ const businessDeleteBranch = {
 };
 
 const businessCreateManyCustom = {
-  name: "businessCreateManyCustom", kind: "mutation", type: BusinessTC.getResolver("createMany"), args: {
+  name: "businessCreateManyCustom",
+  kind: "mutation",
+  type: BusinessTC.getResolver("createMany"),
+  args: {
     businesses: [BusinessCreateManyCustomInput],
-  }, resolve: async ({ args: { businesses }, context: { user } }) => {
+  },
+  resolve: async ({
+                    args: { businesses },
+                    context: { user },
+                  }) => {
     const bizIds = [];
     for (let i = 0; i < businesses.length; i++) {
       let bizId = "";
@@ -246,7 +299,8 @@ const businessCreateManyCustom = {
         lng: businesses[i].lng,
         lat: businesses[i].lat,
         lngLat: {
-          type: "Point", coordinates: [businesses[i].lng, businesses[i].lat],
+          type: "Point",
+          coordinates: [businesses[i].lng, businesses[i].lat],
         },
         owner: user._id,
       })
@@ -272,9 +326,13 @@ const businessCreateManyCustom = {
 };
 
 const removeByIdCustom = {
-  name: "removeByIdCustom", kind: "mutation", type: BusinessTC, args: {
+  name: "removeByIdCustom",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
     id: "String",
-  }, resolve: async ({ args }) => {
+  },
+  resolve: async ({ args }) => {
     const business = await BusinessModel.findById(args.id);
     await BusinessModel.findByIdAndDelete(args.id);
     for (let i = 0; i < business.events.length; i++) {
@@ -296,9 +354,19 @@ const removeByIdCustom = {
 };
 
 const businessAddPost = {
-  name: "businessAddPost", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
-    businessId: "String", postId: "String",
-  }, resolve: async ({ args: { postId, businessId } }) => {
+  name: "businessAddPost",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    postId: "String",
+  },
+  resolve: async ({
+                    args: {
+                      postId,
+                      businessId,
+                    },
+                  }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $addToSet: { posts: postId },
     });
@@ -307,9 +375,19 @@ const businessAddPost = {
 };
 
 const businessRemovePost = {
-  name: "businessRemovePost", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
-    businessId: "String", postId: "String",
-  }, resolve: async ({ args: { postId, businessId } }) => {
+  name: "businessRemovePost",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    postId: "String",
+  },
+  resolve: async ({
+                    args: {
+                      postId,
+                      businessId,
+                    },
+                  }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $pull: { posts: postId },
     });
@@ -318,9 +396,19 @@ const businessRemovePost = {
 };
 
 const businessAddEvent = {
-  name: "businessAddEvent", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
-    businessId: "String", eventId: "String",
-  }, resolve: async ({ args: { eventId, businessId } }) => {
+  name: "businessAddEvent",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    eventId: "String",
+  },
+  resolve: async ({
+                    args: {
+                      eventId,
+                      businessId,
+                    },
+                  }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $addToSet: { events: eventId },
     });
@@ -329,9 +417,19 @@ const businessAddEvent = {
 };
 
 const businessRemoveEvent = {
-  name: "businessRemoveEvent", kind: "mutation", type: BusinessTC.getResolver("updateById").getType(), args: {
-    businessId: "String", eventId: "String",
-  }, resolve: async ({ args: { eventId, businessId } }) => {
+  name: "businessRemoveEvent",
+  kind: "mutation",
+  type: BusinessTC.getResolver("updateById").getType(),
+  args: {
+    businessId: "String",
+    eventId: "String",
+  },
+  resolve: async ({
+                    args: {
+                      eventId,
+                      businessId,
+                    },
+                  }) => {
     await BusinessModel.findByIdAndUpdate(businessId, {
       $pull: { events: eventId },
     });
@@ -339,12 +437,25 @@ const businessRemoveEvent = {
   },
 };
 
-const businessUpdateSubScription = {
-  name: "businessUpdateSubScription", kind: "mutation", type: BusinessTC, args: {
-    businessId: "String", subscription: "String", allowedPaths: ["String"],
-  }, resolve: async ({ args: { businessId, subscription, allowedPaths } }) => {
+const businessUpdateSubSubscription = {
+  name: "businessUpdateSubSubscription",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    businessId: "String",
+    subscription: "String",
+    allowedPaths: ["String"],
+  },
+  resolve: async ({
+                    args: {
+                      businessId,
+                      subscription,
+                      allowedPaths,
+                    },
+                  }) => {
     const biz = await BusinessModel.findByIdAndUpdate(businessId, {
-      subscription, allowedPaths,
+      subscription,
+      allowedPaths,
     });
     for (let i = 0; i < biz.branches.length; i++) {
       await BusinessModel.findByIdAndUpdate(biz.branches[i], {
@@ -355,15 +466,140 @@ const businessUpdateSubScription = {
   },
 };
 
+const businessAddMenuCategory = {
+  name: "businessAddMenuCategory",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    businessId: "String!",
+    categoryName: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      businessId,
+                      categoryName,
+                    },
+                  }) =>
+    await BusinessModel.findByIdAndUpdate(businessId, {
+      $addToSet: {
+        menu: {
+          category: categoryName,
+          menuList: [],
+        },
+      },
+    }),
+};
+
+const businessDeleteMenuCategory = {
+  name: "businessDeleteMenuCategory",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    businessId: "String!",
+    categoryId: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      businessId,
+                      categoryId,
+                    },
+                  }) =>
+    await BusinessModel.findByIdAndUpdate(businessId, {
+      $pull: {
+        menu: {
+          _id: categoryId,
+        },
+      },
+    }),
+};
+
+const businessDeleteMenuFromCategory = {
+  name: "businessDeleteMenuFromCategory",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    businessId: "String!",
+    categoryId: "String!",
+    listId: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      businessId,
+                      categoryId,
+                      listId,
+                    },
+                  }) => {
+    const biz = await BusinessModel.findById(businessId);
+    biz.menu.map(deleteMenuList);
+
+    function deleteMenuList(m) {
+      if (m._id.toString() === categoryId) {
+        m.menuList = m.menuList.filter(v => v._id.toString() !== listId);
+      }
+    }
+
+    await biz.save();
+    return biz;
+  },
+};
+
+const businessAddMenuToCategory = {
+  name: "businessAddMenuToCategory",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {
+    businessId: "String!",
+    categoryName: "String!",
+    name: "String!",
+    price: "String!",
+    discount: "String",
+    description: "String!",
+  },
+  resolve: async ({
+                    args: {
+                      businessId,
+                      categoryName,
+                      name,
+                      price,
+                      discount,
+                      description,
+                    },
+                  }) => {
+    const biz = await BusinessModel.findById(businessId);
+    biz.menu.map(updateMenuList);
+
+    function updateMenuList(m) {
+      if (m.category.toString() === categoryName) {
+        m.menuList.push({
+          name,
+          price,
+          discount,
+          description,
+        });
+      }
+    }
+
+    await biz.save();
+
+    return biz;
+  },
+};
+
 const businessReset = {
-  name: "businessReset", kind: "mutation", type: BusinessTC, args: {}, resolve: async () => {
+  name: "businessReset",
+  kind: "mutation",
+  type: BusinessTC,
+  args: {},
+  resolve: async () => {
     const bizs = await BusinessModel.find();
     for (let i = 0; i < bizs.length; i++) {
       const nb = await BusinessModel.findById(bizs[i]._id, {
-        branches: 1, businessName: 1,
+        branches: 1,
+        businessName: 1,
       });
       await BusinessModel.findByIdAndUpdate(bizs[i]._id, {
-        branches: [], branch: null,
+        branches: [],
+        branch: null,
       });
       console.log(i + 1, nb.businessName, nb.phoneNumbers, nb.phoneNumber);
     }
@@ -382,6 +618,10 @@ export default {
   businessRemovePost,
   businessAddEvent,
   businessRemoveEvent,
-  businessUpdateSubScription,
+  businessUpdateSubSubscription,
+  businessAddMenuCategory,
+  businessAddMenuToCategory,
+  businessDeleteMenuCategory,
+  businessDeleteMenuFromCategory,
   businessReset,
 };

@@ -8,7 +8,10 @@ const postLikeUnLike = {
   kind: "mutation",
   type: PostTC,
   args: { postId: "String" },
-  resolve: async ({ args: { postId }, context: { accessToken } }) => {
+  resolve: async ({
+                    args: { postId },
+                    context: { accessToken },
+                  }) => {
     const user = await userService.getUser(accessToken.replace("Bearer ", ""));
     const userId = user._id;
     const { likeList } = await PostModel.findById(postId, { likeList: 1 });
@@ -34,8 +37,16 @@ const postDeleteById = {
   name: "postDeleteById",
   kind: "mutation",
   type: PostTC.getResolver("removeById"),
-  args: { post_id: "String", owner: "String" },
-  resolve: async ({ args: { post_id, owner } }) => {
+  args: {
+    post_id: "String",
+    owner: "String",
+  },
+  resolve: async ({
+                    args: {
+                      post_id,
+                      owner,
+                    },
+                  }) => {
     await PostModel.remove({ _id: post_id }, async () => {
       await BusinessModel.updateOne({ _id: owner }, { $pull: { posts: post_id } });
     }).catch((error) => error);
@@ -43,4 +54,7 @@ const postDeleteById = {
   },
 };
 
-export default { postLikeUnLike, postDeleteById };
+export default {
+  postLikeUnLike,
+  postDeleteById,
+};

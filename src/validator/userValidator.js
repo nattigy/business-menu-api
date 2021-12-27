@@ -9,7 +9,8 @@ const userValidator = {
     }
 
     return resolve(source, args, context, info);
-  }, newPassword: async (resolve, source, args, context, info) => {
+  },
+  newPassword: async (resolve, source, args, context, info) => {
     const { newPassword } = args;
 
     if (!validator.isLength(newPassword, { min: 6 })) {
@@ -17,7 +18,8 @@ const userValidator = {
     }
 
     return resolve(source, args, context, info);
-  }, resetPassword: async (resolve, source, args, context, info) => {
+  },
+  resetPassword: async (resolve, source, args, context, info) => {
     let { email } = args;
 
     email = validator.normalizeEmail(email);
@@ -26,7 +28,8 @@ const userValidator = {
     Object.assign(args, { email });
 
     return resolve(source, args, context, info);
-  }, signIn: async (resolve, source, args, context, info) => {
+  },
+  signIn: async (resolve, source, args, context, info) => {
     let { email } = args;
 
     email = email.toString().toLowerCase();
@@ -35,7 +38,8 @@ const userValidator = {
     Object.assign(args, { email });
 
     return resolve(source, args, context, info);
-  }, signUp: async (resolve, source, args, context, info) => {
+  },
+  signUp: async (resolve, source, args, context, info) => {
     let { email } = args;
 
     email = email.toString().toLowerCase();
@@ -54,7 +58,8 @@ const userValidator = {
     }
 
     return resolve(source, args, context, info);
-  }, updateUser: async (resolve, source, args, context, info) => {
+  },
+  updateUser: async (resolve, source, args, context, info) => {
     let { email } = args;
 
     email = validator.normalizeEmail(email);
@@ -62,7 +67,10 @@ const userValidator = {
 
     Object.assign(args, { email });
 
-    const { firstName, lastName } = args;
+    const {
+      firstName,
+      lastName,
+    } = args;
 
     if (!validator.isEmail(email, { allow_utf8_local_part: false })) {
       return Promise.reject(new Error("Error: email"));

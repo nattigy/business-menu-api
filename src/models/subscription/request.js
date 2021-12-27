@@ -5,23 +5,34 @@ import { composeWithMongoose } from "graphql-compose-mongoose";
 const RequestSchema = new Schema({
   reference: {
     type: String,
-  }, amount: {
+  },
+  amount: {
     type: Number,
-  }, bankName: {
+  },
+  bankName: {
     type: String,
-  }, dateDeposited: {
+  },
+  dateDeposited: {
     type: Date,
-  }, status: {
-    type: String, enum: ["PENDING", "DONE", "NOT_DEPOSITED", "NOT_FOUND"], default: "PENDING",
-  }, business: {
-    type: Schema.Types.ObjectId, ref: "Business",
+  },
+  status: {
+    type: String,
+    enum: ["PENDING", "DONE", "NOT_DEPOSITED", "NOT_FOUND"],
+    default: "PENDING",
+  },
+  business: {
+    type: Schema.Types.ObjectId,
+    ref: "Business",
   },
 }, {
   collection: "requests",
 });
 
 RequestSchema.plugin(timestamps);
-RequestSchema.index({ createdAt: 1, updatedAt: 1 });
+RequestSchema.index({
+  createdAt: 1,
+  updatedAt: 1,
+});
 
 const RequestModel = mongoose.model("Request", RequestSchema);
 const RequestTC = composeWithMongoose(RequestModel);

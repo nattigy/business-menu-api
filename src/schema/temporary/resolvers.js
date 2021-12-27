@@ -4,7 +4,10 @@ import { BusinessListModel } from "../../models/business/business-list";
 import { UserModel } from "../../models/user/user";
 
 const temporaryCreateOneCustom = {
-  name: "temporaryCreateOneCustom", kind: "mutation", type: TemporaryTC, args: {
+  name: "temporaryCreateOneCustom",
+  kind: "mutation",
+  type: TemporaryTC,
+  args: {
     businessName: "String!",
     phoneNumbers: ["String!"],
     location: "String!",
@@ -16,21 +19,23 @@ const temporaryCreateOneCustom = {
     claimed: "Boolean!",
     lng: "Float!",
     lat: "Float!",
-  }, resolve: async ({
-                       args: {
-                         businessName,
-                         phoneNumbers,
-                         claimed,
-                         location,
-                         locationDescription,
-                         pictures,
-                         categories,
-                         searchIndex,
-                         categoryIndex,
-                         lng,
-                         lat,
-                       }, context: { user },
-                     }) => {
+  },
+  resolve: async ({
+                    args: {
+                      businessName,
+                      phoneNumbers,
+                      claimed,
+                      location,
+                      locationDescription,
+                      pictures,
+                      categories,
+                      searchIndex,
+                      categoryIndex,
+                      lng,
+                      lat,
+                    },
+                    context: { user },
+                  }) => {
     let bizId = "";
     await TemporaryModel.create({
       businessName,
@@ -46,7 +51,8 @@ const temporaryCreateOneCustom = {
       lng,
       lat,
       lngLat: {
-        type: "Point", coordinates: [lng, lat],
+        type: "Point",
+        coordinates: [lng, lat],
       },
       owner: user._id,
       state: "NOT_VERIFIED",
@@ -61,9 +67,13 @@ const temporaryCreateOneCustom = {
 };
 
 const temporaryVerifyById = {
-  name: "temporaryVerifyById", kind: "mutation", type: TemporaryTC, args: {
+  name: "temporaryVerifyById",
+  kind: "mutation",
+  type: TemporaryTC,
+  args: {
     id: "String!",
-  }, resolve: async ({ args: { id } }) => {
+  },
+  resolve: async ({ args: { id } }) => {
     const temp = await TemporaryModel.findById(id);
     await BusinessModel.create({
       businessName: temp.businessName,
@@ -97,7 +107,10 @@ const temporaryVerifyById = {
 };
 
 const temporaryRemoveByIdCustom = {
-  name: "temporaryRemoveByIdCustom", kind: "mutation", type: TemporaryTC, args: {
+  name: "temporaryRemoveByIdCustom",
+  kind: "mutation",
+  type: TemporaryTC,
+  args: {
     id: "String!",
   }, // resolve: async ({ args: { id }, context: { user } }) => {
   //   return TemporaryModel.findById("bizId");
@@ -105,5 +118,7 @@ const temporaryRemoveByIdCustom = {
 };
 
 export default {
-  temporaryCreateOneCustom, temporaryRemoveByIdCustom, temporaryVerifyById,
+  temporaryCreateOneCustom,
+  temporaryRemoveByIdCustom,
+  temporaryVerifyById,
 };

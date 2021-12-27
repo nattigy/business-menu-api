@@ -5,7 +5,8 @@ import { composeWithMongoose } from "graphql-compose-mongoose";
 const PopUpSchema = new Schema({
   image: {
     type: String,
-  }, category: {
+  },
+  category: {
     type: String,
   },
 }, {
@@ -13,7 +14,10 @@ const PopUpSchema = new Schema({
 });
 
 PopUpSchema.plugin(timestamps);
-PopUpSchema.index({ createdAt: 1, updatedAt: 1 });
+PopUpSchema.index({
+  createdAt: 1,
+  updatedAt: 1,
+});
 
 const PopUpModel = mongoose.model("PopUp", PopUpSchema);
 const PopUpTC = composeWithMongoose(PopUpModel);

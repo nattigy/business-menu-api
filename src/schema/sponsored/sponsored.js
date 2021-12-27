@@ -10,9 +10,11 @@ const SponsoredQuery = {
   sponsoredMany: SponsoredTC.getResolver("findMany"),
   sponsoredPagination: SponsoredTC.getResolver("pagination", [middleware.isAuth, middleware.isAdmin]),
   sponsoredCategories: SponsoredTC.addRelation("categories", {
-    resolver: () => CategoryTC.getResolver("findByIds"), prepareArgs: {
+    resolver: () => CategoryTC.getResolver("findByIds"),
+    prepareArgs: {
       _ids: (source) => source.categories,
-    }, projection: { categories: 1 },
+    },
+    projection: { categories: 1 },
   }), // sponsoredOwner: SponsoredTC.addRelation("owner", {
   //   resolver: () => UserTC.getResolver("findById", [middleware.isAuth, middleware.isAdmin]),
   //   prepareArgs: {
@@ -22,11 +24,16 @@ const SponsoredQuery = {
   // }),
   sponsoredIsLiked: SponsoredTC.addFields({
     likeCount: {
-      type: "Int", resolve: (sponsored) => sponsored?.favoriteList ? sponsored.favoriteList.length : 0,
-    }, isLiked: {
-      type: "Boolean", resolve: (sponsored, _, { user }) => sponsored?.favoriteList.indexOf(user?._id) >= 0,
-    }, favoriteList: {
-      type: "[MongoID]", resolve: () => [],
+      type: "Int",
+      resolve: (sponsored) => sponsored?.favoriteList ? sponsored.favoriteList.length : 0,
+    },
+    isLiked: {
+      type: "Boolean",
+      resolve: (sponsored, _, { user }) => sponsored?.favoriteList.indexOf(user?._id) >= 0,
+    },
+    favoriteList: {
+      type: "[MongoID]",
+      resolve: () => [],
     },
   }),
 };

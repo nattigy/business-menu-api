@@ -10,7 +10,10 @@ const eventLikeUnLike = {
   kind: "mutation",
   type: EventTC,
   args: { eventId: "String" },
-  resolve: async ({ args: { eventId }, context: { accessToken } }) => {
+  resolve: async ({
+                    args: { eventId },
+                    context: { accessToken },
+                  }) => {
     const user = await userService.getUser(accessToken.replace("Bearer ", ""));
     const userId = user._id;
     const { interestedUsers } = await EventModel.findById(eventId, {
@@ -38,8 +41,16 @@ const eventDeleteById = {
   name: "eventDeleteById",
   kind: "mutation",
   type: EventTC.getResolver("removeById"),
-  args: { event_id: "String", owner: "String" },
-  resolve: async ({ args: { event_id, owner } }) => {
+  args: {
+    event_id: "String",
+    owner: "String",
+  },
+  resolve: async ({
+                    args: {
+                      event_id,
+                      owner,
+                    },
+                  }) => {
     await EventModel.remove({ _id: event_id }, async () => {
       await BusinessModel.updateOne({ _id: owner }, { $pull: { events: event_id } });
     }).catch((error) => error);
@@ -47,4 +58,7 @@ const eventDeleteById = {
   },
 };
 
-export default { eventLikeUnLike, eventDeleteById };
+export default {
+  eventLikeUnLike,
+  eventDeleteById,
+};

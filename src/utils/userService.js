@@ -9,13 +9,15 @@ const userService = {
     user.set({
       account: {
         verification: {
-          token, expiresIn,
+          token,
+          expiresIn,
         },
       },
     });
     await user.save();
     return token;
-  }, getUser: token => {
+  },
+  getUser: token => {
     try {
       if (token) {
         return jwt.verify(token, process.env.JWT_SECRET);

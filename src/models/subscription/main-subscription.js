@@ -5,9 +5,11 @@ import { composeWithMongoose } from "graphql-compose-mongoose";
 const PathsSchema = new Schema({
   name: {
     type: String,
-  }, path: {
+  },
+  path: {
     type: String,
-  }, color: {
+  },
+  color: {
     type: Boolean,
   },
 });
@@ -15,16 +17,21 @@ const PathsSchema = new Schema({
 const MainSubscriptionSchema = new Schema({
   subscription: {
     type: String,
-  }, price: {
+  },
+  price: {
     type: Number,
-  }, allowedPaths: {
+  },
+  allowedPaths: {
     type: [PathsSchema],
   },
 });
 
 MainSubscriptionSchema.plugin(timestamps);
 
-MainSubscriptionSchema.index({ createdAt: 1, updatedAt: 1 }, { background: false });
+MainSubscriptionSchema.index({
+  createdAt: 1,
+  updatedAt: 1,
+}, { background: false });
 
 const MainSubscriptionModel = mongoose.model("MainSubScription", MainSubscriptionSchema);
 const MainSubscriptionTC = composeWithMongoose(MainSubscriptionModel);

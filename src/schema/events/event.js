@@ -15,17 +15,24 @@ const EventQuery = {
   eventMany: EventTC.getResolver("findMany"),
   eventPagination: EventTC.getResolver("pagination"),
   eventOwner: EventTC.addRelation("owner", {
-    resolver: () => BusinessTC.getResolver("findById"), prepareArgs: {
+    resolver: () => BusinessTC.getResolver("findById"),
+    prepareArgs: {
       _id: (source) => source.owner,
-    }, projection: { owner: 1 },
+    },
+    projection: { owner: 1 },
   }),
   eventIsLiked: EventTC.addFields({
     likeCount: {
-      type: "Int", resolve: (event) => event?.interestedUsers ? event.interestedUsers.length : 0,
-    }, isInterested: {
-      type: "Boolean", resolve: (event, _, { user }) => event?.interestedUsers.indexOf(user?._id) >= 0,
-    }, interestedUsers: {
-      type: "[MongoID]", resolve: () => [],
+      type: "Int",
+      resolve: (event) => event?.interestedUsers ? event.interestedUsers.length : 0,
+    },
+    isInterested: {
+      type: "Boolean",
+      resolve: (event, _, { user }) => event?.interestedUsers.indexOf(user?._id) >= 0,
+    },
+    interestedUsers: {
+      type: "[MongoID]",
+      resolve: () => [],
     },
   }),
 };

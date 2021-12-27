@@ -15,14 +15,18 @@ const CouponQuery = {
   couponOne: CouponTC.getResolver("findOne", [middleware.isAuth]),
   couponMany: CouponTC.getResolver("findMany", [middleware.isAuth]),
   owner: CouponTC.addRelation("owner", {
-    resolver: () => UserTC.getResolver("findById"), prepareArgs: {
+    resolver: () => UserTC.getResolver("findById"),
+    prepareArgs: {
       _id: (source) => source.owner,
-    }, projection: { owner: 1 },
+    },
+    projection: { owner: 1 },
   }),
   business: CouponTC.addRelation("business", {
-    resolver: () => BusinessTC.getResolver("findById"), prepareArgs: {
+    resolver: () => BusinessTC.getResolver("findById"),
+    prepareArgs: {
       _id: (source) => source.business,
-    }, projection: { business: 1 },
+    },
+    projection: { business: 1 },
   }),
 };
 
